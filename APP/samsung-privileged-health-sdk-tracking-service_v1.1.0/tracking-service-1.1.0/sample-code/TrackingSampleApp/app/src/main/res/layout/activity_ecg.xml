@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.wear.widget.BoxInsetLayout
+        android:keepScreenOn="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/ecg_box_inset_layout_padding_top"
+        android:paddingBottom="@dimen/ecg_box_inset_layout_padding_bottom"
+        android:paddingLeft="@dimen/ecg_box_inset_layout_padding_start"
+        android:paddingRight="@dimen/ecg_box_inset_layout_padding_end"
+        tools:context=".EcgActivity">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="@string/ECG"
+
+                    android:textSize="@dimen/header_text" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/ecg_start_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/custom_button"
+                            android:text="@string/start"
+                            android:textColor="@color/black" />
+
+                        <Button
+                            android:id="@+id/ecg_stop_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/custom_button"
+                            android:text="@string/stop"
+                            android:textColor="@color/black" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <ProgressBar
+                            android:id="@+id/progress_bar"
+                            style="@android:style/Widget.ProgressBar.Horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:indeterminate="true"
+                            android:visibility="invisible" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/liveData_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/live_data_header_margin_top"
+                        android:paddingStart="@dimen/live_data_padding_start"
+                        android:text="@string/live_data_header"
+                        android:textSize="@dimen/data_text" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/hr_table_row_padding_left"
+                        android:paddingEnd="@dimen/hr_table_row_padding_right">
+
+                        <TextView
+                            android:id="@+id/ecg1_data"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="@dimen/hr_table_col_padding"
+                            android:text="@string/ecg1"
+                            android:textSize="@dimen/value_text" />
+
+                        <TextView
+                            android:id="@+id/ecg1_data_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:padding="@dimen/hr_table_col_padding"
+                            android:text=""
+                            android:textSize="@dimen/value_text" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/hr_table_row_padding_left"
+                        android:paddingEnd="@dimen/hr_table_row_padding_right">
+
+                        <TextView
+                            android:id="@+id/lead_off_data"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="@dimen/hr_table_col_padding"
+                            android:text="@string/ecg_lead_off"
+                            android:textSize="@dimen/value_text" />
+
+                        <TextView
+                            android:id="@+id/lead_off_data_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:padding="@dimen/hr_table_col_padding"
+                            android:text=""
+                            android:textSize="@dimen/value_text" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/hr_table_row_padding_left"
+                        android:paddingEnd="@dimen/hr_table_row_padding_right">
+
+                        <TextView
+                            android:id="@+id/sequence"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="@dimen/hr_table_col_padding"
+                            android:text="@string/ecg_sequence"
+                            android:textSize="@dimen/value_text" />
+
+                        <TextView
+                            android:id="@+id/sequence_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:padding="@dimen/hr_table_col_padding"
+                            android:text=""
+                            android:textSize="@dimen/value_text" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/hr_table_row_padding_left"
+                        android:paddingEnd="@dimen/hr_table_row_padding_right">
+
+                        <TextView
+                            android:id="@+id/ecg_green_data"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="@dimen/hr_table_col_padding"
+                            android:text="@string/ecg_green"
+                            android:textSize="@dimen/value_text" />
+
+                        <TextView
+                            android:id="@+id/ecg_green_data_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:padding="@dimen/hr_table_col_padding"
+                            android:text=""
+                            android:textSize="@dimen/value_text" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/hr_table_row_padding_left"
+                        android:paddingEnd="@dimen/hr_table_row_padding_right">
+
+                        <TextView
+                            android:id="@+id/threshold1_data"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="@dimen/hr_table_col_padding"
+                            android:text="@string/ecg_threshold_max"
+                            android:textSize="@dimen/value_text" />
+
+                        <TextView
+                            android:id="@+id/threshold_max_data_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:padding="@dimen/hr_table_col_padding"
+                            android:text=""
+                            android:textSize="@dimen/value_text" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/hr_table_row_padding_left"
+                        android:paddingEnd="@dimen/hr_table_row_padding_right">
+
+                        <TextView
+                            android:id="@+id/threshold2_data"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="@dimen/hr_table_col_padding"
+                            android:text="@string/ecg_threshold_min"
+                            android:textSize="@dimen/value_text" />
+
+                        <TextView
+                            android:id="@+id/threshold_min_data_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:padding="@dimen/hr_table_col_padding"
+                            android:text=""
+                            android:textSize="@dimen/value_text" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </androidx.wear.widget.BoxInsetLayout>
+</layout>
