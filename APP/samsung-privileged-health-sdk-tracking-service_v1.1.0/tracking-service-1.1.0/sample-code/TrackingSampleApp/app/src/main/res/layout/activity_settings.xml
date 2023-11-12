@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.wear.widget.BoxInsetLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/box_inset_layout_padding">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/inner_frame_layout_padding">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="@string/settings"
+                    android:textSize="@dimen/header_text" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/up_table_row_padding_right">
+
+                        <TextView
+                            android:id="@+id/text_gender"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:padding="@dimen/up_table_col_padding"
+                            android:text="@string/user_profile"
+                            android:textSize="@dimen/value_text_up" />
+
+                        <RadioGroup
+                            android:id="@+id/radio_profile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkedButton="@+id/radio_female"
+                            android:gravity="end"
+                            android:orientation="vertical">
+
+                            <RadioButton
+                                android:id="@+id/radio_profile1"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="@string/profile_1"
+                                android:textSize="@dimen/value_text_up" />
+
+                            <RadioButton
+                                android:id="@+id/radio_profile2"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="@string/profile_2"
+                                android:textSize="@dimen/value_text_up" />
+
+                            <RadioButton
+                                android:id="@+id/radio_Default"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="@string/default_up"
+                                android:textSize="@dimen/value_text_up" />
+
+                        </RadioGroup>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/up_table_row_padding_save"
+                        android:paddingEnd="@dimen/up_table_row_padding_save">
+
+                        <Button
+                            android:id="@+id/button_ok"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="@string/save" />
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/fall_table_row_padding_left"
+                        android:paddingEnd="@dimen/fall_table_row_padding_right">
+
+                        <TextView
+                            android:id="@+id/app_version"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.7"
+                            android:gravity="end"
+                            android:padding="@dimen/fall_table_col_padding"
+                            android:text="@string/text_app_version"
+                            android:textSize="@dimen/value_text" />
+
+                        <TextView
+                            android:id="@+id/app_version_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="start"
+                            android:padding="@dimen/fall_table_col_padding"
+                            android:text=""
+                            android:textSize="@dimen/value_text" />
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/fall_table_row_padding_left"
+                        android:paddingEnd="@dimen/fall_table_row_padding_right">
+
+                        <TextView
+                            android:id="@+id/sdk_version"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.7"
+                            android:gravity="end"
+                            android:padding="@dimen/fall_table_col_padding"
+                            android:text="@string/text_sdk_version"
+                            android:textSize="@dimen/value_text" />
+
+                        <TextView
+                            android:id="@+id/sdk_version_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="start"
+                            android:padding="@dimen/fall_table_col_padding"
+                            android:text=""
+                            android:textSize="@dimen/value_text" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+    </androidx.wear.widget.BoxInsetLayout>
+</layout>

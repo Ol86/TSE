@@ -1,0 +1,59 @@
+<resources>
+    <!--
+    Because the window insets on round devices are larger than 15dp, this padding only applies
+    to square screens.
+    -->
+    <dimen name="box_inset_layout_padding">0dp</dimen>
+    <dimen name="box_inset_capability_padding">0dp</dimen>
+    <dimen name="bia_box_inset_layout_padding_top">0dp</dimen>
+    <dimen name="bia_box_inset_layout_padding_bottom">0dp</dimen>
+    <dimen name="bia_box_inset_layout_padding_start">0dp</dimen>
+    <dimen name="bia_box_inset_layout_padding_end">0dp</dimen>
+
+    <dimen name="ecg_box_inset_layout_padding_top">0dp</dimen>
+    <dimen name="ecg_box_inset_layout_padding_bottom">0dp</dimen>
+    <dimen name="ecg_box_inset_layout_padding_start">0dp</dimen>
+    <dimen name="ecg_box_inset_layout_padding_end">0dp</dimen>
+
+    <dimen name="spo2_box_inset_layout_padding_top">0dp</dimen>
+    <dimen name="spo2_box_inset_layout_padding_bottom">0dp</dimen>
+    <dimen name="spo2_box_inset_layout_padding_start">0dp</dimen>
+    <dimen name="spo2_box_inset_layout_padding_end">0dp</dimen>
+
+    <!--
+    This padding applies to both square and round screens. The total padding between the buttons
+    and the window insets is box_inset_layout_padding (above variable) on square screens and
+    inner_frame_layout_padding (below variable) on round screens.
+    -->
+    <dimen name="inner_frame_layout_padding">5dp</dimen>
+    <dimen name="header_text">20sp</dimen>
+    <dimen name="data_text">15sp</dimen>
+    <dimen name="value_text">10sp</dimen>
+    <dimen name="hr_table_row_padding_right">10dp</dimen>
+    <dimen name="hr_table_row_padding_left">10dp</dimen>
+    <dimen name="hr_table_col_padding">2dp</dimen>
+    <dimen name="fall_table_row_padding_right">10dp</dimen>
+    <dimen name="fall_table_row_padding_left">10dp</dimen>
+    <dimen name="up_table_row_padding_right">5dp</dimen>
+    <dimen name="up_table_row_padding_left">5dp</dimen>
+    <dimen name="fall_table_col_padding">2dp</dimen>
+    <dimen name="up_table_col_padding">2dp</dimen>
+    <dimen name="button_height">5dp</dimen>
+    <dimen name="button_padding">5dp</dimen>
+    <dimen name="button_corner_radius">15dp</dimen>
+    <dimen name="button_stroke_width">5dp</dimen>
+    <dimen name="label_data_margin">30dp</dimen>
+    <dimen name="data_db_header_margin_top">10dp</dimen>
+    <dimen name="data_db_header_padding_start">10dp</dimen>
+    <dimen name="live_data_header_margin_top">10dp</dimen>
+    <dimen name="live_data_padding_start">10dp</dimen>
+    <dimen name="connect_button_text_size">14sp</dimen>
+    <dimen name="button_text_size">10sp</dimen>
+    <dimen name="version_bottom_padding">12dp</dimen>
+    <dimen name="capability_list_text_size">14sp</dimen>
+    <dimen name="capability_header_text_size">18sp</dimen>
+    <dimen name="text_view_user_profile_padding">10dp</dimen>
+    <dimen name="text_size_user_profile">17sp</dimen>
+    <dimen name="up_table_row_padding_save">35dp</dimen>
+    <dimen name="value_text_up">12sp</dimen>
+</resources>
