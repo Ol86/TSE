@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.wear.widget.BoxInsetLayout
+        android:keepScreenOn="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/spo2_box_inset_layout_padding_top"
+        android:paddingBottom="@dimen/spo2_box_inset_layout_padding_bottom"
+        android:paddingStart="@dimen/spo2_box_inset_layout_padding_start"
+        android:paddingEnd="@dimen/spo2_box_inset_layout_padding_end">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="@string/spo2_tracker"
+                    android:textSize="@dimen/header_text" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/spo2_start_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/custom_button"
+                            android:text="@string/start"
+                            android:textColor="@color/black" />
+
+                        <Button
+                            android:id="@+id/spo2_stop_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/custom_button"
+                            android:text="@string/stop"
+                            android:textColor="@color/black" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <ProgressBar
+                            android:id="@+id/progress_bar"
+                            style="@android:style/Widget.ProgressBar.Horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:indeterminate="true"
+                            android:visibility="invisible" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/spo2_state"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/data_text" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/live_data_header_margin_top"
+                        android:paddingStart="@dimen/live_data_padding_start"
+                        android:text="@string/live_data_header"
+                        android:textSize="@dimen/data_text" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/fall_table_row_padding_left"
+                        android:paddingEnd="@dimen/fall_table_row_padding_right">
+
+                        <TextView
+                            android:id="@+id/spo2_status"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingTop="@dimen/fall_table_col_padding"
+                            android:paddingStart="@dimen/fall_table_col_padding"
+                            android:paddingEnd="@dimen/fall_table_col_padding"
+                            android:text="@string/spo2_status"
+                            android:textSize="@dimen/value_text" />
+
+                        <TextView
+                            android:id="@+id/spo2_status_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:padding="@dimen/fall_table_col_padding"
+                            android:text=""
+                            android:textSize="@dimen/value_text"
+                            android:autoSizeMinTextSize="8sp"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/fall_table_row_padding_left"
+                        android:paddingEnd="@dimen/fall_table_row_padding_right">
+
+                        <TextView
+                            android:id="@+id/Spo2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="@dimen/fall_table_col_padding"
+                            android:text="@string/spo2_tracker"
+                            android:textSize="@dimen/value_text" />
+
+                        <TextView
+                            android:id="@+id/spo2_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:padding="@dimen/fall_table_col_padding"
+                            android:textSize="@dimen/value_text" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/fall_table_row_padding_left"
+                        android:paddingEnd="@dimen/fall_table_row_padding_right">
+
+                        <TextView
+                            android:id="@+id/spo2_hr"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="@dimen/fall_table_col_padding"
+                            android:text="@string/Spo2_hr"
+                            android:textSize="@dimen/value_text" />
+
+                        <TextView
+                            android:id="@+id/spo2_hr_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:padding="@dimen/fall_table_col_padding"
+                            android:text=""
+                            android:textSize="@dimen/value_text" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </androidx.wear.widget.BoxInsetLayout>
+</layout>
