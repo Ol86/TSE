@@ -1,0 +1,9 @@
+ppg green: 	1 value 	i.e.: 2026313
+ppg ir: 	1 value 	i.e.: 2014325
+ppg red: 	1 value 	i.e.: 1801942
+accelerometer: 	3 value 	i.e.: -700, 294, 4050
+spo2: 		3 values 	i.e.: -5, 0, 0
+ecg:		6 values	i.e.: -6967144, -1, -1, -1, -1, -1
+heartrate:	4 values	i.e.: 74, 1, 1, 33403
+bia: error occurs
+sweatloss: only works after activating an exercise session
