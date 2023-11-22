@@ -1,0 +1,42 @@
+# This file is for the server to run all the needed services.
+version: '3.8'
+
+# This part of the code lists all the services and their specifications.
+services:
+  # We are using postgres as our database service.
+  # The specifications can be edited at this part.
+  postgres_db:
+    image: postgres:latest
+    container_name: database
+    restart: always
+    environment:
+    - POSTGRES_USER=admin
+    - POSTGRES_PASSWORD=TSE-kit-2023
+    - POSTGRES_DB=testing
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_db:/var/lib/postgresql/database
+
+  # We are using adminer as a configuration service for the database to have a nice overview.
+  adminer:
+   image: adminer
+   container_name: db_config
+   restart: always
+   ports:
+    - 8080:8080
+
+  # Superset is used for the bi&a system and is something like a frontend of the server.
+  superset:
+    image: apache/superset
+    container_name: bia
+    restart: always
+    environment:
+      - SUPERSET_SECRET_KEY=123456789
+    ports:
+      - 8088:8088
+
+# This specifies the place where the data is stored of the database.
+volumes:
+  postgres_db:
+    driver: local
