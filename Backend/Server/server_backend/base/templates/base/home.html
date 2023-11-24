@@ -1,0 +1,13 @@
+<h1>This is a home template inside base</h1>
+
+<div>
+
+    <div>
+        {% for experiment in experiments %}
+        <div>
+            <a></a><h3>{{experiment.id}} -- <a href="/experiment/{{experiment.id}}">{{experiment.title}}</a> </h3>
+        </div>    
+        {% endfor %}
+    </div>
+
+</div>
