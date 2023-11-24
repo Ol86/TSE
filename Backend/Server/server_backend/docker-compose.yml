@@ -9,34 +9,54 @@ services:
     image: postgres:latest
     container_name: database
     restart: always
-    environment:
-    - POSTGRES_USER=admin
-    - POSTGRES_PASSWORD=TSE-kit-2023
-    - POSTGRES_DB=testing
+    env_file:
+    - .env
     ports:
       - 5432:5432
     volumes:
       - postgres_db:/var/lib/postgresql/database
 
-  # We are using adminer as a configuration service for the database to have a nice overview.
-  adminer:
-   image: adminer
-   container_name: db_config
-   restart: always
-   ports:
-    - 8080:8080
+  # We are using pgadmin as a configuration service for the database to have a nice overview.
+  pg_admin:
+    image: dpage/pgadmin4
+    container_name: db_config
+    restart: always
+    ports:
+      - 2000:80
+    env_file:
+      - .env
+    volumes:
+      - pg_admin:/var/lib/pg_admin
+    depends_on:
+      - postgres_db
 
   # Superset is used for the bi&a system and is something like a frontend of the server.
   superset:
     image: apache/superset
     container_name: bia
     restart: always
-    environment:
-      - SUPERSET_SECRET_KEY=123456789
+    env_file:
+      - .env
     ports:
       - 8088:8088
+    depends_on:
+      - postgres_db
+
+  # This is the backend running on a Django web app.
+  server-backend:
+    container_name: backend
+    restart: always
+    build: .
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres_db
 
 # This specifies the place where the data is stored of the database.
 volumes:
   postgres_db:
+    driver: local
+  pg_admin:
     driver: local
