@@ -10,7 +10,7 @@ services:
     container_name: database
     restart: always
     env_file:
-    - config.env
+    - .env
     ports:
       - 5432:5432
     volumes:
@@ -24,7 +24,7 @@ services:
     ports:
       - 2000:80
     env_file:
-      - config.env
+      - .env
     volumes:
       - pg_admin:/var/lib/pg_admin
     depends_on:
@@ -36,9 +36,23 @@ services:
     container_name: bia
     restart: always
     env_file:
-      - config.env
+      - .env
     ports:
       - 8088:8088
+    depends_on:
+      - postgres_db
+
+  # This is the backend running on a Django web app.
+  server-backend:
+    container_name: backend
+    restart: always
+    build: .
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres_db
 
 # This specifies the place where the data is stored of the database.
 volumes:
