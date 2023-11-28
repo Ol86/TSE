@@ -1,10 +1,10 @@
-{% include 'main.html' %}
+{% extends 'main.html' %}
 {% block title %}
     <title>
-        Experiment
+        {{experiment.title}}
     </title>
 {% endblock %}
 
 {% block content %}
-<h1>This is a experiment template inside base</h1>
+<h1>{{experiment.title}}</h1>
 {% endblock %}
