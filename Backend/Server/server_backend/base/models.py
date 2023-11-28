@@ -1,14 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
-
-class Participant(models.Model):
-    id = models.AutoField(primary_key=True)
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.last_name
 
 class Watches(models.Model):
     id = models.AutoField(primary_key=True)
@@ -20,7 +13,7 @@ class Watches(models.Model):
 class Experiment(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=200)
-    participant_id = models.ForeignKey(Participant, on_delete=models.CASCADE)
+    participant_id = models.ForeignKey(User, on_delete=models.CASCADE)
     watch_id = models.ForeignKey(Watches, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
