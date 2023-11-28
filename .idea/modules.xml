@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/TSE.iml" filepath="$PROJECT_DIR$/.idea/TSE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/207900449/WearOsStopWatch.iml" filepath="$PROJECT_DIR$/.idea/modules/207900449/WearOsStopWatch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/WearOsStopWatch.app.iml" filepath="$PROJECT_DIR$/.idea/modules/WearOsStopWatch.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/WearOsStopWatch.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/WearOsStopWatch.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/WearOsStopWatch.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/WearOsStopWatch.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/WearOsStopWatch.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/WearOsStopWatch.app.unitTest.iml" />
+    </modules>
+  </component>
+</project>
