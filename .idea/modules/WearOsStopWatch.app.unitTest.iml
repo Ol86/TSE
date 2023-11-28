@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id=":app:unitTest" external.linked.project.path="$MODULE_DIR$/../../APP/WearOScollect-main/WearOScollect-main/app" external.root.project.path="$MODULE_DIR$/../../APP/WearOScollect-main/WearOScollect-main/app" external.system.id="GRADLE" external.system.module.type="sourceSet" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="android" name="Android">
+      <configuration>
+        <option name="SELECTED_BUILD_VARIANT" value="debug" />
+        <option name="ALLOW_USER_CONFIGURATION" value="false" />
+        <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/main/AndroidManifest.xml" />
+        <option name="RES_FOLDER_RELATIVE_PATH" value="/src/main/res" />
+        <option name="RES_FOLDERS_RELATIVE_PATH" value="" />
+        <option name="TEST_RES_FOLDERS_RELATIVE_PATH" value="" />
+        <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/src/main/assets" />
+      </configuration>
+    </facet>
+    <facet type="kotlin-language" name="Kotlin">
+      <configuration version="5" platform="JVM 1.8" allPlatforms="JVM [1.8]" useProjectSettings="false">
+        <additionalVisibleModuleNames>:app:main</additionalVisibleModuleNames>
+        <compilerSettings>
+          <option name="additionalArguments" value="-Xallow-no-source-files -Xallow-unstable-dependencies" />
+        </compilerSettings>
+        <compilerArguments>
+          <flagArguments>
+            <flagArg name="noReflect" arg="true" />
+            <flagArg name="noStdlib" arg="true" />
+          </flagArguments>
+          <stringArguments>
+            <stringArg name="classpath">
+              <args>
+                <arg>$MODULE_DIR$/../../APP/WearOScollect-main/WearOScollect-main/app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debug/R.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/3d74922ece7b21830cefe966b0698306/transformed/priv-health-tracking-v1.1.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/b77a3a72eed2c9bcaa8d8a9ca95dac74/transformed/viewbinding-8.1.4-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/eb2b108520d238edce423e04147a5bca/transformed/navigation-compose-2.5.3-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/5f3d8dcc37ec99c1550600f9a32d7b6e/transformed/navigation-ui-ktx-2.5.3-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/9901b4725ff707f1d2fa9e9fc548a2b6/transformed/navigation-ui-2.5.3-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/c404bc31213b6c4c41b5f948171dcefe/transformed/material-1.4.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/c2c3899cec1ba73808769c0e0c25c6cd/transformed/ui-test-manifest-1.3.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/0e2f6731eb4355ce6cb5c13cdab957f8/transformed/appcompat-1.6.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/fa1ccbf455c2720b85a0a606d586f2e8/transformed/legacy-support-v4-1.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/902965dba0a4d0312e4347e606183555/transformed/play-services-wearable-18.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/740f84047b5dbf95a24e95da4b9b1328/transformed/play-services-base-18.0.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/049277b185f4c9ecb917dd12d5d7c360/transformed/play-services-tasks-18.0.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/4e3d235774c99974caab0c34d070151b/transformed/play-services-basement-18.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/69cdad858e8ee444c6b58b563a2ddaf0/transformed/viewpager2-1.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/c47609f96882ec8b61fd0c431c016c85/transformed/navigation-fragment-ktx-2.5.3-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/a4be1bd8b6438dc1f5257c6d52d0a5f5/transformed/navigation-fragment-2.5.3-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/cb2256755f5087f419da8548ee115d4a/transformed/fragment-ktx-1.5.4-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/9d5c243505e862b6db653a0c5f8c3e45/transformed/fragment-1.5.4-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/582a807a1d0be7ad08cae398edcfef6e/transformed/activity-compose-1.5.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/6ebf62672416f9acdfa8955226826bc0/transformed/compose-navigation-1.1.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/26d7c6e1ec02ed687c5fd4ffc7160463/transformed/navigation-runtime-ktx-2.5.3-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/836e46e73880ba27ff1f7f429889b01f/transformed/navigation-runtime-2.5.3-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/b9a341807532bdecdb564706ac56d3d5/transformed/activity-ktx-1.6.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/80812eed905c5f958f34eed9443b8b65/transformed/activity-1.6.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/3e1daea9391fcfadd7f507bae2d6e687/transformed/legacy-support-core-ui-1.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/e994a4b9a82a59cbbad2637a8dd5d2ce/transformed/dynamicanimation-1.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/98e30c40c4b7e2d378b984bdd2155cdd/transformed/legacy-support-core-utils-1.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/2b59df796fdc0b8c31b5bf556f2e1626/transformed/loader-1.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/fd955e10a126bc6b51e63623cbfd5958/transformed/work-runtime-ktx-2.7.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/40cd2ad8fa97dabdc1309e1c0f976f98/transformed/work-runtime-2.7.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/cd4e2378375d41e36ceee5a4d8810309/transformed/lifecycle-livedata-core-ktx-2.6.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/208aaaba31f3fabafa7e91fe370b2981/transformed/lifecycle-livedata-2.6.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/androidx.lifecycle/lifecycle-common/2.6.0/10f354fdb64868baecd67128560c5a0d6312c495/lifecycle-common-2.6.0.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/684906a94987ddf21dbedc4b72bbd669/transformed/lifecycle-livedata-core-2.6.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/3a5822336136710c6346f4dbbe8fe854/transformed/lifecycle-viewmodel-2.6.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/08f16fdf07e6d63ce8ac94c39743b511/transformed/navigation-common-ktx-2.5.3-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/f9ccb69cd024546bee37537ec36e2e6f/transformed/navigation-common-2.5.3-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/9e4d33efaacdf16711f685aeee1c1003/transformed/lifecycle-viewmodel-ktx-2.6.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/androidx.lifecycle/lifecycle-common-java8/2.6.0/2ad14aed781c4a73ed4dbb421966d408a0a06686/lifecycle-common-java8-2.6.0.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/b1f5e8fab26e2b5bc72e7fcdbd018c9b/transformed/lifecycle-viewmodel-savedstate-2.6.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/f4c5ffb78661bf6a16d472e15286e12d/transformed/core-ktx-1.9.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/6498e661bcada32744232dc17cb2df4f/transformed/percentlayout-1.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/89dd96027f75a0df70c713e6f0df4736/transformed/recyclerview-1.3.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/b26ab189589be7a7890a7cd97c813fbb/transformed/media-1.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/b700ecd059f93996d8a7ee01d51ef6a9/transformed/coordinatorlayout-1.1.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/a3fecc07ce2f7a65239d4b3f7831ad8d/transformed/drawerlayout-1.1.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/f806520850706d8f22a5138a5057e728/transformed/viewpager-1.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/b5aa4bc5c538753d324c5ab64a48db5d/transformed/slidingpanelayout-1.2.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/1b29e7685948d9061fa4e558e8494e85/transformed/customview-1.1.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/3c79b1333f65139bec9d91642b4c5d24/transformed/transition-1.4.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/8822bd0c053cf18bf30d172121088979/transformed/appcompat-resources-1.6.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/c64ee79e8e0b5d491063ab8e4db0129a/transformed/vectordrawable-animated-1.1.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/f93988bb4a839178171d5834e35b6a6c/transformed/vectordrawable-1.1.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/0d2ecc6fdb9ece13f072db38e920282f/transformed/swiperefreshlayout-1.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/ff2015053b4a70934b99c398fab9ab98/transformed/asynclayoutinflater-1.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/d62dfed5586017a951972b573d7211dc/transformed/core-1.9.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/e321a3f1ef7bc7c9f08560a8469bb3e0/transformed/lifecycle-runtime-2.6.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/21e756b1eeba77379665834c6ec76de7/transformed/lifecycle-runtime-compose-2.6.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/6d3d6881e33ad08af607e6a5bd8bb3ad/transformed/lifecycle-viewmodel-compose-2.6.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/f88fdc4d6df718d090accb820c917e00/transformed/lifecycle-runtime-ktx-2.6.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/4f4ec73523db75f4036a131e2d09aa50/transformed/room-ktx-2.5.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/27e38025ff72cfe6450d9bf9fc7a5f09/transformed/ui-tooling-1.3.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/bc0f7c43e6b378bb1d6b0c5ecce1d4b0/transformed/compose-material-1.1.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/633cb340221f10429eeaa5403fcb25f2/transformed/compose-foundation-1.1.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/2d05ba68508889a189b8dc68226dc979/transformed/ui-tooling-preview-1.3.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/c4e3dacd35a8f3f3a7554c9d2b9711d1/transformed/ui-tooling-data-1.3.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/a4d4cd4c325b608bfd1c723a7d531b7e/transformed/foundation-1.3.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/c286c5687f8431fc2792a0ae916ab9cb/transformed/material-icons-extended-1.3.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/52ae49fffa29c7b0f0d926c08bb2fd03/transformed/material-icons-core-1.3.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/59ba67945439f94566ff5baab044e815/transformed/animation-1.3.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/020fc644e1f1703d4b6d8f988191d1af/transformed/foundation-layout-1.3.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/e3966c2cbd8e4524e173d01e9f62f907/transformed/ui-1.3.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/f203b07a54dd7d56d3f88f47891ff6f9/transformed/runtime-saveable-1.3.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/0feb38946e1168e131b7a42f6944a049/transformed/runtime-1.3.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/83b2934ad407fae84f55810df23211d8/transformed/animation-core-1.3.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-core-jvm/1.6.4/2c997cd1c0ef33f3e751d3831929aeff1390cb30/kotlinx-coroutines-core-jvm-1.6.4.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-android/1.6.4/f955fc8b2ad196e2f4429598440e15f7492eeb2b/kotlinx-coroutines-android-1.6.4.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/b4f7bb887e418ceb1a0600dee5ca3712/transformed/room-runtime-2.5.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/androidx.room/room-common/2.5.1/829a83fb92f1696a8a32f3beea884dfc87b2693/room-common-2.5.1.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.8.10/7c002ac41f547a82e81dfebd2a20577a738dbf3f/kotlin-stdlib-jdk8-1.8.10.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/79f23fa8000e27f2cc9334bbcfc7fee5/transformed/constraintlayout-2.1.4-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/288cbc583762557124a5c2021655681f/transformed/ui-text-1.3.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/d1b4f0456fbde01ead803c8f0dbb3604/transformed/ui-graphics-1.3.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/a0bebad54bdc0de5418e9780bee24667/transformed/ui-unit-1.3.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/f965f63ac18b7f70c323a971b8fe1e25/transformed/ui-geometry-1.3.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/b97feb58d72172a298569a9202388935/transformed/cardview-1.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/6c8847760b7570ad75c773d9d09e5599/transformed/cursoradapter-1.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/7d488be6aae97591af48879338c83379/transformed/savedstate-ktx-1.2.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/4e648a21a9e40c25382070e7f4bd134b/transformed/savedstate-1.2.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/4400ca6a6df62e5ba17a9f5ebb04f4b8/transformed/sqlite-framework-2.3.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/1f84ce8b1520edb9e31fbb6bb0ea8346/transformed/sqlite-2.3.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/d612f8a68991470ef1fb615398d2bb73/transformed/versionedparcelable-1.1.1-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/androidx.collection/collection-ktx/1.1.0/f807b2f366f7b75142a67d2f3c10031065b5168/collection-ktx-1.1.0.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/androidx.collection/collection/1.1.0/1f27220b47669781457de0d600849a5de0e89909/collection-1.1.0.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/1d61f66dead5fda45cf06a877aad2970/transformed/documentfile-1.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/1203155c216f80c28200a520743452cb/transformed/localbroadcastmanager-1.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/d300baaa9e6cb0618cca52d471fc2bb3/transformed/print-1.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/3b7552e967fece2e84ea503e16a5a778/transformed/interpolator-1.0.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/e4b82b151c7a8051ca2e368236db5559/transformed/core-runtime-2.2.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/androidx.arch.core/core-common/2.2.0/5e1b8b81dfd5f52c56a8d53b18ca759c19a301f3/core-common-2.2.0.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/androidx.annotation/annotation/1.5.0/857678d6b4ca7b28571ef7935c668bdb57e15027/annotation-1.5.0.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.8.10/cb726a23c808a850a43e7d6b9d1ba91b02fe9f05/kotlin-stdlib-jdk7-1.8.10.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/e6119e4a4c3f1de68d13bbce7f9240da/transformed/annotation-experimental-1.3.0-api.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.8.10/6d5560a229477df9406943d5feda5618e98eb64c/kotlin-stdlib-1.8.10.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.8.10/a61b182458550492c12aee66157d7b524a63a5ec/kotlin-stdlib-common-1.8.10.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/com.google.guava/listenablefuture/1.0/c949a840a6acbc5268d088e47b04177bf90b3cad/listenablefuture-1.0.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/transforms-3/0c205b56c9807160e0b99da2219a5924/transformed/startup-runtime-1.1.1-api.jar</arg>
+                <arg>$USER_HOME$/AppData/Local/Android/Sdk/platforms/android-33/android.jar</arg>
+                <arg>$USER_HOME$/AppData/Local/Android/Sdk/build-tools/33.0.1/core-lambda-stubs.jar</arg>
+              </args>
+            </stringArg>
+            <stringArg name="destination" arg="$MODULE_DIR$/../../APP/WearOScollect-main/WearOScollect-main/app/build/tmp/kotlin-classes/debugUnitTest" />
+            <stringArg name="jvmTarget" arg="1.8" />
+            <stringArg name="moduleName" arg="app_debug" />
+            <stringArg name="apiVersion" arg="1.8" />
+            <stringArg name="languageVersion" arg="1.8" />
+          </stringArguments>
+          <arrayArguments>
+            <arrayArg name="friendPaths">
+              <args>
+                <arg>$MODULE_DIR$/../../APP/WearOScollect-main/WearOScollect-main/app/build/tmp/kotlin-classes/debug</arg>
+                <arg>$MODULE_DIR$/../../APP/WearOScollect-main/WearOScollect-main/app/build/intermediates/javac/debug/classes</arg>
+                <arg>$MODULE_DIR$/../../APP/WearOScollect-main/WearOScollect-main/app/build/tmp/kapt3/classes/debug</arg>
+                <arg>$MODULE_DIR$/../../APP/WearOScollect-main/WearOScollect-main/app/build/intermediates/compile_app_classes_jar/debug/classes.jar</arg>
+              </args>
+            </arrayArg>
+            <arrayArg name="pluginClasspaths">
+              <args>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-compiler-embeddable/1.8.10/b0757fd774344d54ce93f5ad6c30ba1c1731c8ff/kotlin-compiler-embeddable-1.8.10.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.8.10/6d5560a229477df9406943d5feda5618e98eb64c/kotlin-stdlib-1.8.10.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.8.10/a61b182458550492c12aee66157d7b524a63a5ec/kotlin-stdlib-common-1.8.10.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-script-runtime/1.8.10/b13ea9c7e46d589139e56086a878763290e20bd5/kotlin-script-runtime-1.8.10.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.6.10/1cbe9c92c12a94eea200d23c2bbaedaf3daf5132/kotlin-reflect-1.6.10.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-daemon-embeddable/1.8.10/ad8541d9bc1cf9e52c3204161247910c2cf601d4/kotlin-daemon-embeddable-1.8.10.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/org.jetbrains.intellij.deps/trove4j/1.0.20200330/3afb14d5f9ceb459d724e907a21145e8ff394f02/trove4j-1.0.20200330.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/net.java.dev.jna/jna/5.6.0/330f2244e9030119ab3030fc3fededc86713d9cc/jna-5.6.0.jar</arg>
+                <arg>$MODULE_DIR$/../../../../caches/modules-2/files-2.1/androidx.compose.compiler/compiler/1.4.3/3d5ff820c24eb2c70ee29237f5b60403dd2c39fd/compiler-1.4.3.jar</arg>
+              </args>
+            </arrayArg>
+            <arrayArg name="pluginOptions">
+              <args>plugin:androidx.compose.plugins.idea:enabled=true</args>
+            </arrayArg>
+          </arrayArguments>
+        </compilerArguments>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+    <output-test url="file://$MODULE_DIR$/../../APP/WearOScollect-main/WearOScollect-main/app/build/intermediates/javac/debugUnitTest/classes" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../APP/WearOScollect-main/WearOScollect-main/app/build/generated/ap_generated_sources/debugUnitTest/out" />
+    <content url="file://$MODULE_DIR$/../../APP/WearOScollect-main/WearOScollect-main/app/build/generated/source/kapt/debugUnitTest" />
+    <content url="file://$MODULE_DIR$/../../APP/WearOScollect-main/WearOScollect-main/app/build/generated/source/kaptKotlin/debugUnitTest" />
+    <content url="file://$MODULE_DIR$/../../APP/WearOScollect-main/WearOScollect-main/app/src/test" />
+    <content url="file://$MODULE_DIR$/../../APP/WearOScollect-main/WearOScollect-main/app/src/testDebug" />
+    <orderEntry type="jdk" jdkName="Android API 33, extension level 3 Platform" jdkType="Android SDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="WearOsStopWatch.app.main" scope="TEST" />
+    <orderEntry type="module-library" scope="TEST">
+      <library name="Gradle: kaptGeneratedClasses">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../../APP/WearOScollect-main/WearOScollect-main/app/build/tmp/kapt3/classes/debugUnitTest" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.databinding:viewbinding:8.1.4@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.compose.ui:ui-tooling:1.3.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.compose.runtime:runtime:1.3.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.compose.ui:ui:1.3.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.compose.runtime:runtime-saveable:1.3.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.compose.ui:ui-geometry:1.3.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.compose.ui:ui-graphics:1.3.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.compose.ui:ui-unit:1.3.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.compose.ui:ui-text:1.3.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.compose.ui:ui-tooling-data:1.3.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.compose.ui:ui-tooling-preview:1.3.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.compose.ui:ui-test-manifest:1.3.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.activity:activity:1.6.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.core:core:1.9.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.annotation:annotation-experimental:1.3.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.lifecycle:lifecycle-runtime:2.6.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.versionedparcelable:versionedparcelable:1.1.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.lifecycle:lifecycle-viewmodel:2.6.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.core:core-ktx:1.9.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.lifecycle:lifecycle-livedata-core:2.6.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.savedstate:savedstate:1.2.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: com.google.android.gms:play-services-wearable:18.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: com.google.android.gms:play-services-base:18.0.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.fragment:fragment:1.5.4@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.loader:loader:1.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.lifecycle:lifecycle-livedata:2.6.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.arch.core:core-runtime:2.2.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.viewpager:viewpager:1.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.customview:customview:1.1.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: com.google.android.gms:play-services-basement:18.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: com.google.android.gms:play-services-tasks:18.0.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.percentlayout:percentlayout:1.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.legacy:legacy-support-v4:1.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.media:media:1.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.legacy:legacy-support-core-utils:1.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.documentfile:documentfile:1.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.localbroadcastmanager:localbroadcastmanager:1.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.print:print:1.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.legacy:legacy-support-core-ui:1.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.coordinatorlayout:coordinatorlayout:1.1.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.drawerlayout:drawerlayout:1.1.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.slidingpanelayout:slidingpanelayout:1.2.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.interpolator:interpolator:1.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.swiperefreshlayout:swiperefreshlayout:1.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.asynclayoutinflater:asynclayoutinflater:1.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.cursoradapter:cursoradapter:1.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.recyclerview:recyclerview:1.3.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.wear.compose:compose-material:1.1.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.compose.foundation:foundation:1.3.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.compose.animation:animation:1.3.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.compose.animation:animation-core:1.3.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.compose.foundation:foundation-layout:1.3.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.wear.compose:compose-foundation:1.1.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.lifecycle:lifecycle-runtime-ktx:2.6.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.activity:activity-compose:1.5.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.activity:activity-ktx:1.6.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.savedstate:savedstate-ktx:1.2.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.compose.material:material-icons-extended:1.3.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.compose.material:material-icons-core:1.3.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.work:work-runtime-ktx:2.7.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.work:work-runtime:2.7.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.startup:startup-runtime:1.1.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: com.google.android.material:material:1.4.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.appcompat:appcompat:1.6.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.appcompat:appcompat-resources:1.6.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.vectordrawable:vectordrawable:1.1.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.vectordrawable:vectordrawable-animated:1.1.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.cardview:cardview:1.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.constraintlayout:constraintlayout:2.1.4@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.dynamicanimation:dynamicanimation:1.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.transition:transition:1.4.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.viewpager2:viewpager2:1.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.navigation:navigation-fragment-ktx:2.5.3@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.navigation:navigation-fragment:2.5.3@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.fragment:fragment-ktx:1.5.4@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.lifecycle:lifecycle-livedata-core-ktx:2.6.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.navigation:navigation-runtime:2.5.3@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.navigation:navigation-common:2.5.3@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.navigation:navigation-runtime-ktx:2.5.3@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.navigation:navigation-common-ktx:2.5.3@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.navigation:navigation-ui-ktx:2.5.3@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.navigation:navigation-ui:2.5.3@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.wear.compose:compose-navigation:1.1.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.navigation:navigation-compose:2.5.3@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.lifecycle:lifecycle-runtime-compose:2.6.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.room:room-runtime:2.5.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.sqlite:sqlite:2.3.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.sqlite:sqlite-framework:2.3.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.room:room-ktx:2.5.1@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: F" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.annotation:annotation:1.5.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.8.10" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.8.10" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.10" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.arch.core:core-common:2.2.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.lifecycle:lifecycle-common:2.6.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.collection:collection:1.1.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: com.google.guava:listenablefuture:1.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.collection:collection-ktx:1.1.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.lifecycle:lifecycle-common-java8:2.6.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.room:room-common:2.5.1" level="project" />
+  </component>
+  <component name="TestModuleProperties" production-module="WearOsStopWatch.app.main" />
+</module>
