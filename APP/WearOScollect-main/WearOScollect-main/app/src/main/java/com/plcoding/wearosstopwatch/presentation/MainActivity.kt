@@ -40,10 +40,21 @@ import com.samsung.android.service.health.tracking.data.DataPoint
 import com.samsung.android.service.health.tracking.data.HealthTrackerType
 import java.util.concurrent.TimeUnit
 
-
 class MainActivity : ComponentActivity() {
 
     lateinit var healthTracking : HealthTrackingService
+    private lateinit var ppgGreenTracker: PpgGreenTracker
+    private lateinit var ecgTracker: ECGTracker
+    private lateinit var accelerometerTracker: AccelerometerTracker
+    private lateinit var sPO2Tracker: SPO2Tracker
+    private lateinit var ppgIRTracker: PpgIRTracker
+    private lateinit var ppgRedTracker: PpgRedTracker
+    private val ppgPpgGreenTrackerListener = PpgGreenTrackerListener(HealthTrackerType.PPG_GREEN)
+    private val ecgTrackerListener = ECGTrackerListener(HealthTrackerType.ECG)
+    private val accelerometerTrackerListener = AccelerometerTrackerListener(HealthTrackerType.ACCELEROMETER)
+    private val sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2)
+    private val ppgIRTrackerListener = PpgIRTrackerListener(HealthTrackerType.PPG_IR)
+    private val ppgRedTrackerListener = PpgRedTrackerListener(HealthTrackerType.PPG_RED)
 
     private val connectionListener = object : ConnectionListener {
         override fun onConnectionSuccess() {
@@ -57,129 +68,85 @@ class MainActivity : ComponentActivity() {
             Log.d("HealthTrackerList1", "Available trackers: $availableTrackers")
 
             if (availableTrackers.contains(HealthTrackerType.PPG_GREEN)) {
-                ppgGreenTracker = healthTracking.getHealthTracker(HealthTrackerType.PPG_GREEN)
-                ppgGreenTracker?.setEventListener(trackerListener)
-                Log.d("TrackerSSS1", trackerListener.toString())
-                println("DATAAAAAAAAAAAAAAAAAAAAAAA")
-                //ppgGreenTracker?.flush()
-                //ppgGreenTracker?.unsetEventListener()
+                ppgPpgGreenTrackerListener.isDataCollecting = isDataCollectionRunning
+                ppgGreenTracker = PpgGreenTracker(healthTracking, ppgPpgGreenTrackerListener)
             }
 
-            if (availableTrackers.contains((HealthTrackerType.PPG_RED))) {
-                ppgREDTracker = healthTracking.getHealthTracker(HealthTrackerType.PPG_RED)
-                ppgREDTracker?.setEventListener(trackerListener)
-                Log.d("TrackerSSS1", trackerListener.toString())
-                println("DATAAAAAAAAAAAAAAAAAAAAAAA")
-                //ppgGreenTracker?.flush()
-                //ppgGreenTracker?.unsetEventListener()
-
+            if (availableTrackers.contains(HealthTrackerType.ECG)) {
+                accelerometerTrackerListener.isDataCollecting = isDataCollectionRunning
+                ecgTracker = ECGTracker(healthTracking, ecgTrackerListener)
             }
 
-            if (availableTrackers.contains((HealthTrackerType.ECG))) {
-                ECGRateTracker = healthTracking.getHealthTracker(HealthTrackerType.ECG)
-                ECGRateTracker?.setEventListener(trackerListener)
-                Log.d("TrackerSSS1", trackerListener.toString())
-                println("DATAAAAAAAAAAAAAAAAAAAAAAA")
-                //ECGRateTracker?.flush()
-                //ECGRateTracker?.unsetEventListener()
-
+            if (availableTrackers.contains(HealthTrackerType.ACCELEROMETER)) {
+                accelerometerTrackerListener.isDataCollecting = isDataCollectionRunning
+                accelerometerTracker = AccelerometerTracker(healthTracking, accelerometerTrackerListener)
             }
 
-            if (availableTrackers.contains((HealthTrackerType.ACCELEROMETER))) {
-                accelerometer = healthTracking.getHealthTracker(HealthTrackerType.ACCELEROMETER)
-                accelerometer?.setEventListener(trackerListener)
-                Log.d("TrackerSSS1", trackerListener.toString())
-                println("DATAAAAAAAAAAAAAAAAAAAAAAA")
-                //accelerometer?.flush()
-                //accelerometer?.unsetEventListener()
+            if (availableTrackers.contains(HealthTrackerType.SPO2)) {
+                sPO2TrackerListener.isDataCollecting = isDataCollectionRunning
+                sPO2Tracker = SPO2Tracker(healthTracking, sPO2TrackerListener)
             }
 
-            if (availableTrackers.contains((HealthTrackerType.PPG_IR))) {
-                ppgIR = healthTracking.getHealthTracker(HealthTrackerType.PPG_IR)
-                ppgIR?.setEventListener(trackerListener)
-                Log.d("TrackerSSS1", trackerListener.toString())
-                println("DATAAAAAAAAAAAAAAAAAAAAAAA")
-                //ppgIR?.flush()
-                //ppgIR?.unsetEventListener()
-
+            if (availableTrackers.contains(HealthTrackerType.PPG_IR)) {
+                ppgIRTrackerListener.isDataCollecting = isDataCollectionRunning
+                ppgIRTracker = PpgIRTracker(healthTracking, ppgIRTrackerListener)
             }
 
-            if (availableTrackers.contains((HealthTrackerType.SPO2))) {
-                sPO2 = healthTracking.getHealthTracker(HealthTrackerType.SPO2)
-                sPO2?.setEventListener(trackerListener)
-                Log.d("TrackerSSS1", trackerListener.toString())
-                println("DATAAAAAAAAAAAAAAAAAAAAAAA")
-                //sPO2?.flush()
-                //sPO2?.unsetEventListener()
-
+            if (availableTrackers.contains(HealthTrackerType.PPG_RED)) {
+                ppgRedTrackerListener.isDataCollecting = isDataCollectionRunning
+                ppgRedTracker = PpgRedTracker(healthTracking, ppgRedTrackerListener)
             }
 
 
-
-            /*val delayMillis = 40000 // 40 seconds
-
-            val handler = Handler(Looper.getMainLooper())
-            handler.postDelayed({
-                if (availableTrackers.contains((HealthTrackerType.BIA))) {
-                    heartRateTracker = healthTracking.getHealthTracker(HealthTrackerType.BIA)
-                    heartRateTracker?.setEventListener(trackerListener)
-                    println("BIAAAAAAAAAAAAAA")
-                }
-            }, delayMillis.toLong())*/
         }
-
-        /*private val healthTrackingService: HealthTrackingService by lazy {
-            HealthTrackingService(connectionListener, this@com.plcoding.wearosstopwatch.presentation.MainActivity)
-        }*/
-
 
         override fun onConnectionEnded() {
             Log.d("HealthTracker", "Connection ended")
             val availableTrackers: List<HealthTrackerType> =
                 healthTracking.trackingCapability.supportHealthTrackerTypes
             Log.d("HealthTrackerList2", "Available trackers: $availableTrackers")
+            /*
+                        if (availableTrackers.contains(HealthTrackerType.PPG_GREEN)) {
+                            ppgGreenTracker?.flush()
+                            Log.d("TrackerSSS2", trackerListener.toString())
+                            ppgGreenTracker?.unsetEventListener()
+                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-GREEN++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+                        }
 
-            if (availableTrackers.contains(HealthTrackerType.PPG_GREEN)) {
-                ppgGreenTracker?.flush()
-                Log.d("TrackerSSS2", trackerListener.toString())
-                ppgGreenTracker?.unsetEventListener()
-                println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-GREEN++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-            }
+                        if (availableTrackers.contains((HealthTrackerType.PPG_RED))) {
+                            ppgREDTracker?.flush()
+                            Log.d("TrackerSSS2", trackerListener.toString())
+                            ppgREDTracker?.unsetEventListener()
+                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-RED++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+                        }
 
-            if (availableTrackers.contains((HealthTrackerType.PPG_RED))) {
-                ppgREDTracker?.flush()
-                Log.d("TrackerSSS2", trackerListener.toString())
-                ppgREDTracker?.unsetEventListener()
-                println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-RED++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-            }
+                        if (availableTrackers.contains((HealthTrackerType.ECG))) {
+                            ECGRateTracker?.flush()
+                            Log.d("TrackerSSS2", trackerListener.toString())
+                            ECGRateTracker?.unsetEventListener()
+                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-ECG++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+                        }
 
-            if (availableTrackers.contains((HealthTrackerType.ECG))) {
-                ECGRateTracker?.flush()
-                Log.d("TrackerSSS2", trackerListener.toString())
-                ECGRateTracker?.unsetEventListener()
-                println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-ECG++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-            }
+                        if (availableTrackers.contains((HealthTrackerType.ACCELEROMETER))) {
+                            accelerometer?.flush()
+                            Log.d("TrackerSSS2", trackerListener.toString())
+                            accelerometer?.unsetEventListener()
+                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-ACC++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+                        }
 
-            if (availableTrackers.contains((HealthTrackerType.ACCELEROMETER))) {
-                accelerometer?.flush()
-                Log.d("TrackerSSS2", trackerListener.toString())
-                accelerometer?.unsetEventListener()
-                println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-ACC++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-            }
+                        if (availableTrackers.contains((HealthTrackerType.PPG_IR))) {
+                            ppgIR?.flush()
+                            Log.d("TrackerSSS2", trackerListener.toString())
+                            ppgIR?.unsetEventListener()
+                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-IR++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+                        }
 
-            if (availableTrackers.contains((HealthTrackerType.PPG_IR))) {
-                ppgIR?.flush()
-                Log.d("TrackerSSS2", trackerListener.toString())
-                ppgIR?.unsetEventListener()
-                println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-IR++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-            }
-
-            if (availableTrackers.contains((HealthTrackerType.SPO2))) {
-                sPO2?.flush()
-                Log.d("TrackerSSS2", trackerListener.toString())
-                sPO2?.unsetEventListener()
-                println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-SPO2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-            }
+                        if (availableTrackers.contains((HealthTrackerType.SPO2))) {
+                            sPO2?.flush()
+                            Log.d("TrackerSSS2", trackerListener.toString())
+                            sPO2?.unsetEventListener()
+                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-SPO2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+                        }*/
         }
 
         override fun onConnectionFailed(e: HealthTrackerException) {
@@ -191,59 +158,8 @@ class MainActivity : ComponentActivity() {
         }
 
 
-        private var ppgGreenTracker: HealthTracker? = null
-        private var ECGRateTracker: HealthTracker? = null
-        private var ppgREDTracker: HealthTracker? = null
-        private var accelerometer: HealthTracker? = null
-        private var ppgIR : HealthTracker? = null
-        private var sPO2 : HealthTracker? = null
+
     }
-
-    private val trackerListener = object : HealthTracker.TrackerEventListener {
-        override fun onDataReceived(list: List<DataPoint>) {
-            Log.d("isDataCollectionRunning", isDataCollectionRunning.toString())
-            if (isDataCollectionRunning){
-                Log.d("List", ":$list")
-                Log.d("isDataCollectionRunning", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
-                for (dataPoint in list) {
-                    if (isDataCollectionRunning) {
-                        Log.d("MainActivity DataCollection", "DataPoint: $dataPoint")
-                        //Log.d("HealthTracker", "HeartRate: $dataPoint")
-                        Log.d("MainActivity DataCollection", "a: ${dataPoint.a}")
-                        Log.d("MainActivity DataCollection", "b: ${dataPoint.b}")
-                        Log.d("MainActivity DataCollection", "time: ${dataPoint.timestamp}")
-                    }
-
-                    //in .b is all relevant data
-                    for (entry in dataPoint.b) {
-                        val key = entry.key
-                        val value = entry.value.value.toString()
-
-                        // Now you have the actual value
-                        //Todo: differentiate between key types
-                        /*println("Key1: $key")
-                        println("Value1: $value")*/
-                    }
-
-
-                    // Update UI with received data
-                    // For example, you can use a Compose state to update the UI
-                }
-            }
-        }
-        override fun onError(error: HealthTracker.TrackerError) {
-            Log.e("HealthTracker", "Tracker error: ${error.name}")
-        }
-
-        override fun onFlushCompleted() {
-            Log.d("HealthTracker", "Flushing data completed")
-        }
-    }
-
-    /*protected fun stopTracking() {
-        // Unset the event listener stops tracking data.
-        ppgGreenTracker.unsetEventListener()
-    }*/
 
     private val WORK_TAG = "NotificationWorker"
     private val requestedPermissions = arrayOf(
@@ -285,9 +201,6 @@ class MainActivity : ComponentActivity() {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.BODY_SENSORS), 0)
         }
 
-        /*println("MEEEEHHHHHHHHHHHHHHHHH.$connectionListener")
-        healthTracking = HealthTrackingService(connectionListener, this@MainActivity)
-        healthTracking.connectService()*/
 
 
         setContent {
@@ -322,7 +235,14 @@ class MainActivity : ComponentActivity() {
             Log.i(TAG, "Starting data collection. $connectionListener")
             healthTracking = HealthTrackingService(connectionListener, this@MainActivity)
             healthTracking.connectService()
+            ppgGreenTracker = PpgGreenTracker(healthTracking, ppgPpgGreenTrackerListener)
             isDataCollectionRunning = true
+            ppgPpgGreenTrackerListener.isDataCollecting = isDataCollectionRunning
+            ecgTrackerListener.isDataCollecting = isDataCollectionRunning
+            accelerometerTrackerListener.isDataCollecting = isDataCollectionRunning
+            sPO2TrackerListener.isDataCollecting = isDataCollectionRunning
+            ppgIRTrackerListener.isDataCollecting = isDataCollectionRunning
+            ppgRedTrackerListener.isDataCollecting = isDataCollectionRunning
             Log.i(TAG, isDataCollectionRunning.toString())
         } catch (e: Exception) {
             Log.e(TAG, "Error starting data collection: ${e.message}")
@@ -334,7 +254,14 @@ class MainActivity : ComponentActivity() {
         try {
             Log.i(TAG, "Stopping data collection. $connectionListener")
             healthTracking.disconnectService()
+            ppgGreenTracker.disconnectTracker()
             isDataCollectionRunning = false
+            ppgPpgGreenTrackerListener.isDataCollecting = isDataCollectionRunning
+            ecgTrackerListener.isDataCollecting = isDataCollectionRunning
+            accelerometerTrackerListener.isDataCollecting = isDataCollectionRunning
+            sPO2TrackerListener.isDataCollecting = isDataCollectionRunning
+            ppgIRTrackerListener.isDataCollecting = isDataCollectionRunning
+            ppgRedTrackerListener.isDataCollecting = isDataCollectionRunning
             Log.i(TAG, isDataCollectionRunning.toString())
         } catch (e: Exception) {
             Log.e(TAG, "Error stopping data collection: ${e.message}")
