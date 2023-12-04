@@ -4,6 +4,11 @@ import android.util.Log
 import com.samsung.android.service.health.tracking.HealthTracker
 import com.samsung.android.service.health.tracking.data.DataPoint
 import com.samsung.android.service.health.tracking.data.HealthTrackerType
+import com.samsung.android.service.health.tracking.data.ValueKey
+import org.json.JSONObject
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
 
 class ECGTrackerListener(private val trackerType: HealthTrackerType) : HealthTracker.TrackerEventListener {
 
@@ -26,13 +31,37 @@ class ECGTrackerListener(private val trackerType: HealthTrackerType) : HealthTra
                     Log.d("MainActivity DataCollection ECG", "time: ${dataPoint.timestamp}")
                 }
 
-                for (entry in dataPoint.b) {
-                    val key = entry.key
-                    val value = entry.value.value.toString()
+                val json = JSON()
+                val allValues = ArrayList<String>()
+                allValues.add(dataPoint.timestamp.toString())
 
-                    // Now you have the actual value
-                    // Todo: differentiate between key types
+                if (dataPoint.b.size == 6) {
+                    //1st DataPoint
+                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.ECG).toString())
+                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.PPG_GREEN).toString())
+                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.LEAD_OFF).toString())
+                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.MAX_THRESHOLD).toString())
+                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.SEQUENCE).toString())
+                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.MIN_THRESHOLD).toString())
                 }
+                else if (dataPoint.b.size == 2) {
+                    //6st DataPoint
+                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.ECG).toString())
+                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.PPG_GREEN).toString())
+                }
+                else {
+                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.ECG).toString())
+                }
+
+                json.dataToJSON("ecg", allValues)
+
+                println("JSON Test")
+
+                /*val file: File = File(this@ECGTrackerListener.filesDir, "trackerData.json")
+                val fileWriter = FileWriter(file)
+                val bufferedWriter = BufferedWriter(fileWriter)
+                bufferedWriter.write(trackerData.toString())
+                bufferedWriter.close()*/
             }
         }
     }

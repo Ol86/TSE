@@ -64,7 +64,6 @@ class MainActivity : ComponentActivity() {
 
             val availableTrackers: List<HealthTrackerType> =
                 healthTracking.trackingCapability.supportHealthTrackerTypes
-            println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
             Log.d("HealthTrackerList1", "Available trackers: $availableTrackers")
 
             if (availableTrackers.contains(HealthTrackerType.PPG_GREEN)) {
