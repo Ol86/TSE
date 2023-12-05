@@ -19,20 +19,22 @@ class JSON {
             else if (trackerType == "ecg") {
                 put("time", values[0])
 
-                if (values.size == 7) {
-                    put("ecg", values[1])
-                    put("ppgGreen", values[2])
-                    put("leadOff", values[3])
-                    put("maxThreshold", values[4])
-                    put("sequence", values[5])
-                    put("minThreshold", values[6])
-                }
-                else if (values.size == 3) {
-                    put("ecg", values[1])
-                    put("ppgGreen", values[2])
-                }
-                else {
-                    put("ecg", values[1])
+                when (values.size) {
+                    7 -> {
+                        put("ecg", values[1])
+                        put("ppgGreen", values[2])
+                        put("leadOff", values[3])
+                        put("maxThreshold", values[4])
+                        put("sequence", values[5])
+                        put("minThreshold", values[6])
+                    }
+                    3 -> {
+                        put("ecg", values[1])
+                        put("ppgGreen", values[2])
+                    }
+                    else -> {
+                        put("ecg", values[1])
+                    }
                 }
             }
             else if (trackerType == "accelerometer") {
