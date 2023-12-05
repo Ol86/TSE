@@ -4,6 +4,7 @@ import android.util.Log
 import com.samsung.android.service.health.tracking.HealthTracker
 import com.samsung.android.service.health.tracking.data.DataPoint
 import com.samsung.android.service.health.tracking.data.HealthTrackerType
+import com.samsung.android.service.health.tracking.data.ValueKey
 
 class PpgGreenTrackerListener(private val trackerType: HealthTrackerType) : HealthTracker.TrackerEventListener {
 
@@ -25,13 +26,15 @@ class PpgGreenTrackerListener(private val trackerType: HealthTrackerType) : Heal
                     Log.d("MainActivity DataCollection Green", "time: ${dataPoint.timestamp}")
                 }
 
-                for (entry in dataPoint.b) {
-                    val key = entry.key
-                    val value = entry.value.value.toString()
+                val json = JSON()
+                val allValues = ArrayList<String>()
+                allValues.add(dataPoint.timestamp.toString())
 
-                    // Now you have the actual value
-                    // Todo: differentiate between key types
-                }
+                allValues.add(dataPoint.getValue(ValueKey.PpgGreenSet.PPG_GREEN).toString())
+
+                json.dataToJSON("ppggreen", allValues)
+
+                println("json pggGreen")
             }
         }
     }

@@ -4,6 +4,7 @@ import android.util.Log
 import com.samsung.android.service.health.tracking.HealthTracker
 import com.samsung.android.service.health.tracking.data.DataPoint
 import com.samsung.android.service.health.tracking.data.HealthTrackerType
+import com.samsung.android.service.health.tracking.data.ValueKey
 
 class SPO2TrackerListener(private val trackerType: HealthTrackerType) : HealthTracker.TrackerEventListener {
 
@@ -25,13 +26,17 @@ class SPO2TrackerListener(private val trackerType: HealthTrackerType) : HealthTr
                     Log.d("MainActivity DataCollection SPO2", "time: ${dataPoint.timestamp}")
                 }
 
-                for (entry in dataPoint.b) {
-                    val key = entry.key
-                    val value = entry.value.value.toString()
+                val json = JSON()
+                val allValues = ArrayList<String>()
+                allValues.add(dataPoint.timestamp.toString())
 
-                    // Now you have the actual value
-                    // Todo: differentiate between key types
-                }
+                allValues.add(dataPoint.getValue(ValueKey.SpO2Set.SPO2).toString())
+                allValues.add(dataPoint.getValue(ValueKey.SpO2Set.HEART_RATE).toString())
+                allValues.add(dataPoint.getValue(ValueKey.SpO2Set.STATUS).toString())
+
+                json.dataToJSON("spo2", allValues)
+
+                println("json spo2")
             }
         }
     }
