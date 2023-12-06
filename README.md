@@ -1,5 +1,5 @@
 # TSE
-Das Repository beinhaltet all unsere Daten zum TSE, bei denen wir entscheiden, was wir anschließend hochladen werden und all unsere Änderungen Eintragen werrden.
+Das Repository beinhaltet all unsere Daten zum TSE, bei denen wir entscheiden, was wir anschließend hochladen werden und all unsere Änderungen Eintragen werden.
 
 ## App
 Hier können wir notizen und Todos für die Entwicklung der App eintragen
