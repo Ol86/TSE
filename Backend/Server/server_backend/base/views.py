@@ -44,7 +44,7 @@ def createExperiment(request):
     context = {'form': form}
     return render(request, 'base/create_experiment.html', context)
 
-class TestView(APIView):
+class TestAPI(APIView):
 
     permission_classes = (IsAuthenticated,)
 
