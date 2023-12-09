@@ -15,6 +15,14 @@ def home(request):
     context = {'experiments': experiments}              #gibt unserer home.html die Experimente
     return render(request, 'base/home.html', context)   #siehe templates/base/home.html
 
+def login(request):
+    """ This function handle the generation of the homepage to display the latest experiments.
+
+    :param request: The request of the page and the user.
+    :return: The function returns the resulting webpage.
+    """     
+    return render(request, 'base/login.html')
+
 
 def experiment(request, pk):
     """ This funtion handles the specific experiments and their display type.

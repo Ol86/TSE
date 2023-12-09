@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+
+{% block title %}
+    <title>
+        Welcome to our TSE - Smartwatch-Cloud System
+    </title>
+{% endblock %}
+
+{% block content %}
+    <h1> Please login</h1>
+
+    <div>
+        <form action="/action_page.php">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username"><br><br>
+            <label for="password">Password:</label>
+            <input type="text" id="password" name="password"><br><br>
+            <input type="submit" value="Submit">
+          </form>
+    </div>
+{% endblock %}
