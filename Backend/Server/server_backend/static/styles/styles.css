@@ -6,17 +6,21 @@
 }
 
 @media (prefers-color-scheme: light) {
-    body, a {
+    body, a, head {
         background-color: var(--background-main-light);
         color: var(--color-main-light);
     }
 }
 
 @media (prefers-color-scheme: dark) {
-    body, a {
+    body, a, head {
         background-color: #23272e;
         color: #abb2bf;
     }
+}
+
+head {
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 body {

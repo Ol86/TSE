@@ -1,10 +1,46 @@
 from django.contrib.auth.models import User
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import render, redirect
 from .models import *
 from .forms import ExperimentForm
+
+
+def loginPage(request):
+    """ This function handle the generation of loginpage.
+    The function will check the POST request submitted from the html <form>
+    variable user will be None if username and password does not match any user in the
+    database.
+
+    :param request: The request of the page and the user.
+    :return: The function returns the resulting webpage.
+    """     
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+    
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'Username or password does not exist')
+
+    context = {}
+    return render(request, 'base/login.html', context)
+
+def logoutUser(request):
+    """ This function handle the logout of the user.
+
+    :param request: The request of the page and the user.
+    :return: The function returns the resulting webpage and logouts the current user.
+    """
+    logout(request)
+    return redirect('home')
 
 def home(request):
     """ This function handle the generation of the homepage to display the latest experiments.
@@ -15,15 +51,6 @@ def home(request):
     experiments = Experiment.objects.all()  	        #objects.all() gibt alle Experiment Instanzen zurück als Querryset
     context = {'experiments': experiments}              #gibt unserer home.html die Experimente
     return render(request, 'base/home.html', context)   #siehe templates/base/home.html
-
-def login(request):
-    """ This function handle the generation of the homepage to display the latest experiments.
-
-    :param request: The request of the page and the user.
-    :return: The function returns the resulting webpage.
-    """     
-    return render(request, 'base/login.html')
-
 
 def experiment(request, pk):
     """ This funtion handles the specific experiments and their display type.
