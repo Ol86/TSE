@@ -13,5 +13,5 @@ urlpatterns = [
     # This url sends the user to the creation page of a new experiment.
     path('create-experiment/', views.createExperiment, name="create-experiment"),
     # This url sends the user to the deletion page of an experiment.
-    path('delete-experiment/', views.deleteExperiment, name="delete-experiment"),
+    path('delete-experiment/<str:pk>/', views.deleteExperiment, name="delete-experiment"),
 ]

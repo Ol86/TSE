@@ -7,12 +7,12 @@
 {% endblock %}
 
 {% block content %}
-    <h1> Create Experiment</h1>
+    <h1> Delete Experiment</h1>
 
     <div>
         <form method="POST" action="" >
             {% csrf_token %}
-            <p>Are you sure that you want to delete "{{obj}}"</p>
+            <p>Are you sure that you want to delete "{{obj.title}}"</p>
             
             <a href="{{request.META.HTTP_REFERER}}">Go back</a>
             <input type="submit" value="Confirm"/>

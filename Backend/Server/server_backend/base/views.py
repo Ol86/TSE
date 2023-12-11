@@ -93,7 +93,7 @@ def deleteExperiment(request, pk):
 
     experiment = Experiment.objects.get(id=pk)
     if request.method == 'POST':
-        experiment.delete
+        experiment.delete()
         return redirect('home')
     return render(request, 'base/delete_experiment.html', {'experiments': experiment})
 
