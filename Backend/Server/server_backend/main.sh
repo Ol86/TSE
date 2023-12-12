@@ -1,23 +1,24 @@
 #!/bin/bash
-# Basic script to delete and restart the docker with new changes.
+# Basic script to restart the docker with new changes.
 
 # Stop all container
-docker stop $(docker ps -q)
+docker stop database bia backend db_config
 
 # Delete all container
-docker rm $(docker ps -a -q)
+docker rm database bia backend db_config
 
-# Delete all Images
-docker rmi $(docker images -aq)
+# Delete backend image
+docker rmi tse-server-backend
 
 # Delete all Volumes
-docker volume rm $(docker volume ls -q)
+docker volume prune -a -f
 
 # Create new Project
 docker-compose --project-name tse up -d
 
 # Create Mirgrations of the backend
 docker-compose -p tse exec server-backend python manage.py makemigrations base
+docker-compose -p tse exec server-backend python manage.py makemigrations devices
 
 # Wait 5 sec before migrating
 sleep 5
