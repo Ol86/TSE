@@ -1,6 +1,23 @@
 #!/bin/bash
 # Basic script to restart the docker with new changes.
 
+repos=( 
+  "/home/ubuntu/TSE"
+)
+
+echo ""
+echo "Getting latest for" ${#repos[@]} "repositories using pull --rebase"
+
+for repo in "${repos[@]}"
+do
+  echo ""
+  echo "****** Getting latest for" ${repo} "******"
+  cd "${repo}"
+  git stash
+  git pull --rebase
+  echo "******************************************"
+done
+
 # Stop all container
 docker stop database bia backend db_config
 
@@ -12,6 +29,9 @@ docker rmi tse-server-backend
 
 # Delete all Volumes
 docker volume prune -a -f
+
+sleep 5
+cd "/home/ubuntu/TSE/Backend/Server/server_backend"
 
 # Create new Project
 docker-compose --project-name tse up -d
