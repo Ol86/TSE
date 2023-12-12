@@ -318,41 +318,52 @@ private fun StopWatch(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = notifications,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
+                text = "Experiment 1",
+                fontSize = 18.sp,
                 textAlign = TextAlign.Center
             )
-            Text(
-                text = " / 10",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Light,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.align(Alignment.Bottom)
-            )
         }
-        Spacer(modifier = Modifier.height(20.dp))
+
+        Spacer(modifier = Modifier.height(10.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
                 text = time,
-                fontSize = 20.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center
             )
             Text(
                 text = " / 1:30:00",
-                fontSize = 15.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Light,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.Bottom)
             )
         }
-        Spacer(modifier = Modifier.height(20.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = notifications,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = " / 10",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Light,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Alignment.Bottom)
+            )
+        }
+        Spacer(modifier = Modifier.height(10.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -385,7 +396,7 @@ private fun StopWatch(
                             enabled = state != TimerState.RESET,
                             label = {
                                 Text(
-                                    text = "Studie beendet",
+                                    text = "Studie beenden",
                                     maxLines = 1, overflow = TextOverflow.Ellipsis
                                 )
                             },
@@ -406,6 +417,7 @@ private fun StopWatch(
                 }
             }
         }
+        Spacer(modifier = Modifier.height(10.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -416,8 +428,11 @@ private fun StopWatch(
                         onStopDataCollection()
                     },
                     colors = ButtonDefaults.buttonColors(
-                        MaterialTheme.colors.surface
+                        backgroundColor = Color.Red
                     )
+                    /*colors = ButtonDefaults.buttonColors(
+                        MaterialTheme.colors.surface
+                    )*/
                 ) {
                     Text("STOP")
                 }
