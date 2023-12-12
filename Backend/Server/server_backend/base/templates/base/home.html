@@ -16,6 +16,7 @@
         <div>
             {% for experiment in experiments %}
                 <div>
+                    <a href="{% url 'delete-experiment' experiment.id %}">Delete</a>
                     <a href="{% url 'experiment' experiment.id %}">{{experiment.title}}</a>
                 </div>
                 <hr>

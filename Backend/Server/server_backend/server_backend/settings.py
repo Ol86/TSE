@@ -31,7 +31,10 @@ SECRET_KEY = 'django-insecure-mom7)4h7o!pq^8bgxu96yrpw17pr#9ja-=-8*553xfhm*xln4i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '193.196.36.62:9000',
+    '193.196.36.62',
+]
 
 
 # Application definition
@@ -45,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'base.apps.BaseConfig',
+    'devices.apps.DevicesConfig',
 
     'rest_framework',
     'rest_framework.authtoken',
@@ -148,3 +152,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Custom User model
+
+AUTH_USER_MODEL = 'devices.Account'

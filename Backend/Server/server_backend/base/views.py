@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -42,6 +43,7 @@ def logoutUser(request):
     logout(request)
     return redirect('home')
 
+@login_required(login_url='login')
 def home(request):
     """ This function handle the generation of the homepage to display the latest experiments.
 
@@ -52,6 +54,7 @@ def home(request):
     context = {'experiments': experiments}              #gibt unserer home.html die Experimente
     return render(request, 'base/home.html', context)   #siehe templates/base/home.html
 
+@login_required(login_url='login')
 def experiment(request, pk):
     """ This funtion handles the specific experiments and their display type.
     
@@ -63,6 +66,7 @@ def experiment(request, pk):
     context = {'experiment': experiment}
     return render(request, 'base/experiment.html', context)
 
+@login_required(login_url='login')
 def createExperiment(request):
     """ This function handles the creation of a new experiment.
 
@@ -78,6 +82,20 @@ def createExperiment(request):
 
     context = {'form': form}
     return render(request, 'base/create_experiment.html', context)
+
+@login_required(login_url='login')
+def deleteExperiment(request, pk):
+    """ This function handles the deletion of an experiment.
+
+    :param request: It handles the request to delete an experiment and update the database.
+    :return: This function returns the same page before delete was clicked, or it redirects the user to the homepage if the deletion of an experiment was successful
+    """
+
+    experiment = Experiment.objects.get(id=pk)
+    if request.method == 'POST':
+        experiment.delete()
+        return redirect('home')
+    return render(request, 'base/delete_experiment.html', {'experiments': experiment})
 
 class TestAPI(APIView):
 
