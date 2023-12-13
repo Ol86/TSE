@@ -216,7 +216,7 @@ class MainActivity : ComponentActivity() {
             val viewModel = viewModel<StopWatchViewModel>()
             val timerState by viewModel.timerState.collectAsStateWithLifecycle()
             val stopWatchText by viewModel.stopWatchText.collectAsStateWithLifecycle()
-            var currentView by remember { mutableStateOf(ViewType.StopWatch) }
+            var currentView by remember { mutableStateOf(ViewType.FirstScreen) }
             when (currentView) {
                 ViewType.StopWatch -> {
                     StopWatch(
@@ -228,15 +228,15 @@ class MainActivity : ComponentActivity() {
                         isDataCollectionRunning = isDataCollectionRunning1,
                         onStartDataCollection = {startDataCollection()},
                         onStopDataCollection = {stopDataCollection()},
+                        onBackToSettings = {currentView = ViewType.FirstScreen},
                         arrayListOf(true, false, true, true, true, false),
-                        onNavigateToSecondActivity = {currentView = ViewType.SecondActivity},
                         modifier = Modifier.fillMaxSize()
                     )
                 }
                 ViewType.SecondActivity -> {
                     SecondActivity(
                         enabled = enabled1,
-                        onBack = { currentView = ViewType.StopWatch },
+                        onBack = { currentView = ViewType.FirstScreen },
                         onAccOff = {accelerometerOff()},
                         onAccOn = {accelerometerOn()},
                         onPPGGreenOff = {ppgGreenOff()},
@@ -249,6 +249,12 @@ class MainActivity : ComponentActivity() {
                         onHeartRateOn = {heartRateOn()},
                         onSPO2Off = {sPO2Off()},
                         onSPO2On = {sPO2On()}
+                    )
+                }
+                ViewType.FirstScreen -> {
+                    FirstScreen(
+                        onNavigateToSecondActivity = {currentView = ViewType.SecondActivity},
+                        onAccept = {currentView = ViewType.StopWatch}
                     )
                 }
             }
@@ -372,8 +378,8 @@ private fun StopWatch(
     isDataCollectionRunning: Boolean,
     onStartDataCollection: () -> Unit,
     onStopDataCollection: () -> Unit,
+    onBackToSettings: () -> Unit,
     tracker: ArrayList<Boolean>,    //Accelerometer,ECG,ppgGreen,ppgIR,ppgRed,SPO2
-    onNavigateToSecondActivity: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -381,17 +387,6 @@ private fun StopWatch(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Experiment 1",
-                fontSize = 18.sp,
-                textAlign = TextAlign.Center
-            )
-        }
-
         Spacer(modifier = Modifier.height(10.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -522,42 +517,18 @@ private fun StopWatch(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            if (tracker[0]) {
-                Button(
-                    onClick = {
-                        tracker[0] = false
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.Green
-                    )
-                ) {
-                    Text("Acm")
-                }
-            }
-            else {
-                Button(
-                    onClick = {
-                        tracker[0] = true
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.Red
-                    )
-                ) {
-                    Text("Acm")
-                }
-            }
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
             Button(
-                onClick = onNavigateToSecondActivity,
-                // ...
+                onClick = {
+                    onBackToSettings()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.DarkGray
+                )
             ) {
-                Text("Go to Second Activity")
+                Text("Back to Settings")
             }
         }
+
 
     }
 }
@@ -592,7 +563,9 @@ private fun SecondActivity(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
@@ -736,4 +709,60 @@ private fun SecondActivity(
         }
     }
     // ...
+}
+
+@Composable
+private fun FirstScreen(
+
+    onNavigateToSecondActivity: () -> Unit,
+    onAccept: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(30.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "Experiment 1",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = onNavigateToSecondActivity,
+                // ...
+            ) {
+                Text("Go to Second Activity")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = onAccept,
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.Green
+                )
+            ) {
+                Text("Accept")
+            }
+        }
+    }
 }

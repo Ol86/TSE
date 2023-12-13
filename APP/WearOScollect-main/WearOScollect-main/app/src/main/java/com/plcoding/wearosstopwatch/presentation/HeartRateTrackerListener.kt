@@ -5,6 +5,8 @@ import com.samsung.android.service.health.tracking.HealthTracker
 import com.samsung.android.service.health.tracking.data.DataPoint
 import com.samsung.android.service.health.tracking.data.HealthTrackerType
 import com.samsung.android.service.health.tracking.data.ValueKey
+import java.sql.DriverManager.println
+import java.util.ArrayList
 
 class HeartRateTrackerListener(private val trackerType: HealthTrackerType) : HealthTracker.TrackerEventListener {
 
