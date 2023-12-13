@@ -10,8 +10,8 @@ COPY . app
 WORKDIR /app
 
 # open the port 8000
-EXPOSE 8000
+EXPOSE 9000
 
 # start the app
 ENTRYPOINT [ "python", "manage.py" ]
-CMD [ "runserver", "0.0.0.0:8000"]
+CMD [ "runserver", "0.0.0.0:9000"]
