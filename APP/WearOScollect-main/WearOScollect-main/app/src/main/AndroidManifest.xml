@@ -45,6 +45,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".presentation.LabelActivity"
             android:excludeFromRecents="true"
@@ -52,7 +53,14 @@
             android:label="LabelWatch"
             android:parentActivityName=".presentation.MainActivity"
             android:taskAffinity=""
-            android:theme="@android:style/Theme.DeviceDefault"></activity>
+            android:theme="@android:style/Theme.DeviceDefault">
+        </activity>
+
+        <activity
+            android:name=".presentation.SecondActivity"
+            android:label="Second Activity">
+        </activity>
+
     </application>
 
 </manifest>
