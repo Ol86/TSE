@@ -45,6 +45,7 @@ import java.util.concurrent.TimeUnit
 class MainActivity : ComponentActivity() {
 
     lateinit var healthTracking : HealthTrackingService
+    private lateinit var heartRateTracker: HeartRateTracker
     private lateinit var ppgGreenTracker: PpgGreenTracker
     private lateinit var ecgTracker: ECGTracker
     private lateinit var accelerometerTracker: AccelerometerTracker
@@ -52,6 +53,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var ppgIRTracker: PpgIRTracker
     private lateinit var ppgRedTracker: PpgRedTracker
     private val ppgPpgGreenTrackerListener = PpgGreenTrackerListener(HealthTrackerType.PPG_GREEN)
+    private val heartRateTrackerListener = HeartRateTrackerListener(HealthTrackerType.HEART_RATE)
     private val ecgTrackerListener = ECGTrackerListener(HealthTrackerType.ECG)
     private val accelerometerTrackerListener = AccelerometerTrackerListener(HealthTrackerType.ACCELEROMETER)
     private val sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2)
@@ -98,6 +100,10 @@ class MainActivity : ComponentActivity() {
                 ppgRedTracker = PpgRedTracker(healthTracking, ppgRedTrackerListener)
             }
 
+            if (availableTrackers.contains(HealthTrackerType.HEART_RATE)) {
+                heartRateTrackerListener.isDataCollecting = isDataCollectionRunning
+                heartRateTracker = HeartRateTracker(healthTracking, heartRateTrackerListener)
+            }
 
         }
 
@@ -245,6 +251,7 @@ class MainActivity : ComponentActivity() {
             sPO2TrackerListener.isDataCollecting = isDataCollectionRunning
             ppgIRTrackerListener.isDataCollecting = isDataCollectionRunning
             ppgRedTrackerListener.isDataCollecting = isDataCollectionRunning
+            heartRateTrackerListener.isDataCollecting = isDataCollectionRunning
             Log.i(TAG, isDataCollectionRunning.toString())
         } catch (e: Exception) {
             Log.e(TAG, "Error starting data collection: ${e.message}")
@@ -264,6 +271,7 @@ class MainActivity : ComponentActivity() {
             sPO2TrackerListener.isDataCollecting = isDataCollectionRunning
             ppgIRTrackerListener.isDataCollecting = isDataCollectionRunning
             ppgRedTrackerListener.isDataCollecting = isDataCollectionRunning
+            heartRateTrackerListener.isDataCollecting = isDataCollectionRunning
             Log.i(TAG, isDataCollectionRunning.toString())
         } catch (e: Exception) {
             Log.e(TAG, "Error stopping data collection: ${e.message}")
