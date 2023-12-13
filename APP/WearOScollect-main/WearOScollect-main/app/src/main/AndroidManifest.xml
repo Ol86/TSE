@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <uses-feature android:name="android.hardware.type.watch" />
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.BODY_SENSORS" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -11,9 +14,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
-
-    <uses-feature android:name="android.hardware.type.watch" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 
     <application
         android:allowBackup="true"
@@ -21,10 +22,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
-
         <uses-library
             android:name="com.google.android.wearable"
             android:required="true" />
+
         <!--
                Set to true if your app is Standalone, that is, it does not require the handheld
                app to run.
@@ -44,19 +45,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".presentation.LabelActivity"
+            android:excludeFromRecents="true"
             android:exported="true"
             android:label="LabelWatch"
-            android:taskAffinity=""
-            android:excludeFromRecents="true"
             android:parentActivityName=".presentation.MainActivity"
-            android:theme="@android:style/Theme.DeviceDefault">
-        </activity>
-
-
-
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.DeviceDefault"></activity>
     </application>
 
 </manifest>

@@ -63,6 +63,8 @@ class NotificationManager(private val context: Context) {
         }
         val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(notificationChannel)
+        //added to set mode to vibration
+        notificationChannel.enableVibration(true)
     }
 
     //TODO Method to cancel the notification

@@ -7,6 +7,8 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -215,6 +217,7 @@ class MainActivity : ComponentActivity() {
                 isDataCollectionRunning = isDataCollectionRunning,
                 onStartDataCollection = {startDataCollection()},
                 onStopDataCollection = {stopDataCollection()},
+                arrayListOf(true, false, true, true, true, false),
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -307,10 +310,11 @@ private fun StopWatch(
     isDataCollectionRunning: Boolean,
     onStartDataCollection: () -> Unit,
     onStopDataCollection: () -> Unit,
+    tracker: ArrayList<Boolean>,    //Accelerometer,ECG,ppgGreen,ppgIR,ppgRed,SPO2
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -446,6 +450,37 @@ private fun StopWatch(
                     )
                 ) {
                     Text("Datenaufnahme")
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(50.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            if (tracker[0]) {
+                Button(
+                    onClick = {
+                        tracker[0] = false
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.Green
+                    )
+                ) {
+                    Text("Acm")
+                }
+            }
+            else {
+                Button(
+                    onClick = {
+                        tracker[0] = true
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.Red
+                    )
+                ) {
+                    Text("Acm")
                 }
             }
         }
