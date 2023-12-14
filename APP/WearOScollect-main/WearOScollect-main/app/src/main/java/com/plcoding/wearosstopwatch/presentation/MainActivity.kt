@@ -197,7 +197,8 @@ class MainActivity : ComponentActivity() {
     //private lateinit var healthTrackingService: HealthTrackingService
 
     private var isDataCollectionRunning1 = false
-    private var enabled1 = true
+    //Accelerometer,ECG,HeartRate,ppgGreen,ppgIR,ppgRed,SPO2
+    private var activeTrackers = arrayListOf(true, false, true, true, true, false, true)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -229,24 +230,26 @@ class MainActivity : ComponentActivity() {
                         onStartDataCollection = {startDataCollection()},
                         onStopDataCollection = {stopDataCollection()},
                         onBackToSettings = {currentView = ViewType.FirstScreen},
-                        arrayListOf(true, false, true, true, true, false),
+                        activeTrackers,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
                 ViewType.SecondActivity -> {
                     SecondActivity(
-                        enabled = enabled1,
+                        trackers = activeTrackers,
                         onBack = { currentView = ViewType.FirstScreen },
                         onAccOff = {accelerometerOff()},
                         onAccOn = {accelerometerOn()},
-                        onPPGGreenOff = {ppgGreenOff()},
-                        onPPGGreenOn = {ppgGreenOn()},
-                        onPPGRedOff = {ppgRedOff()},
-                        onPPGRedOn = {ppgRedOn()},
-                        onPPGIROff = {ppgIROff()},
-                        onPPGIROn = {ppIROn()},
+                        onEcgOff = {ecgOff()},
+                        onEcgOn = {ecgOn()},
                         onHeartRateOff = {heartRateOff()},
                         onHeartRateOn = {heartRateOn()},
+                        onPPGGreenOff = {ppgGreenOff()},
+                        onPPGGreenOn = {ppgGreenOn()},
+                        onPPGIROff = {ppgIROff()},
+                        onPPGIROn = {ppIROn()},
+                        onPPGRedOff = {ppgRedOff()},
+                        onPPGRedOn = {ppgRedOn()},
                         onSPO2Off = {sPO2Off()},
                         onSPO2On = {sPO2On()}
                     )
@@ -316,53 +319,73 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun accelerometerOff(){
-        Log.i("Button", "AccOff " + enabled1.toString())
-        enabled1 = false
+        activeTrackers[0] = false
+        Log.i("Button", "Acc is " + activeTrackers[0].toString())
     }
 
     private fun accelerometerOn(){
-        Log.i("Button", "AccOn " +enabled1.toString())
-        enabled1 = true
+        activeTrackers[0] = true
+        Log.i("Button", "Acc is " + activeTrackers[0].toString())
+    }
+
+    private fun ecgOff() {
+        activeTrackers[1] = false
+        Log.i("Button", "ECG is " + activeTrackers[1].toString())
+    }
+
+    private fun ecgOn() {
+        activeTrackers[1] = true
+        Log.i("Button", "Ecg is " + activeTrackers[1].toString())
+    }
+
+    private fun heartRateOff() {
+        activeTrackers[2] = false
+        Log.i("Button", "HeartRate is " + activeTrackers[2].toString())
+    }
+
+    private fun heartRateOn() {
+        activeTrackers[2] = true
+        Log.i("Button", "HeartRate is " + activeTrackers[2].toString())
     }
 
     private fun ppgGreenOff(){
-        Log.i("Button", "ppgGreenOff ")
+        activeTrackers[3] = false
+        Log.i("Button", "ppgGreen is " + activeTrackers[3].toString())
     }
 
     private fun ppgGreenOn(){
-        Log.i("Button", "ppgGreenOn ")
-    }
-
-    private fun ppgRedOff(){
-        Log.i("Button", "ppgRedOff ")
-    }
-
-    private fun ppgRedOn(){
-        Log.i("Button", "ppgRedOn ")
+        activeTrackers[3] = true
+        Log.i("Button", "ppgGreen is " + activeTrackers[3].toString())
     }
 
     private fun ppgIROff(){
-        Log.i("Button", "ppgIROff ")
+        activeTrackers[4] = false
+        Log.i("Button", "ppgIR is " + activeTrackers[4].toString())
     }
 
     private fun ppIROn(){
-        Log.i("Button", "ppIROn ")
+        activeTrackers[4] = true
+        Log.i("Button", "ppgIR is " + activeTrackers[4].toString())
     }
 
-    private fun heartRateOff(){
-        Log.i("Button", "heartRateOff ")
+    private fun ppgRedOff(){
+        activeTrackers[5] = false
+        Log.i("Button", "ppgRed is " + activeTrackers[5].toString())
     }
 
-    private fun heartRateOn(){
-        Log.i("Button", "heartRateOn ")
+    private fun ppgRedOn(){
+        activeTrackers[5] = true
+        Log.i("Button", "ppgRed is " + activeTrackers[5].toString())
     }
 
     private fun sPO2Off(){
-        Log.i("Button", "sPO2Off ")
+        activeTrackers[6] = false
+        Log.i("Button", "SPO2 is " + activeTrackers[6].toString())
     }
 
-        private fun sPO2On(){
-        Log.i("Button", "sPO2On ")
+    private fun sPO2On(){
+        activeTrackers[6] = true
+        Log.i("Button", "SPO2 is " + activeTrackers[6].toString())
     }
 
 
@@ -379,7 +402,7 @@ private fun StopWatch(
     onStartDataCollection: () -> Unit,
     onStopDataCollection: () -> Unit,
     onBackToSettings: () -> Unit,
-    tracker: ArrayList<Boolean>,    //Accelerometer,ECG,ppgGreen,ppgIR,ppgRed,SPO2
+    trackers: ArrayList<Boolean>,    //Accelerometer,ECG,HeartRate,ppgGreen,ppgIR,ppgRed,SPO2
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -535,28 +558,31 @@ private fun StopWatch(
 
 @Composable
 private fun SecondActivity(
-    enabled: Boolean,
-    onPPGGreenOff: () -> Unit,
-    onPPGGreenOn: () -> Unit,
-    onPPGRedOn: () -> Unit,
-    onPPGRedOff: () -> Unit,
-    onPPGIROff: () -> Unit,
-    onPPGIROn: () -> Unit,
+    trackers: ArrayList<Boolean>,
+    onAccOff: () -> Unit,
+    onAccOn: () -> Unit,
+    onEcgOff: () -> Unit,
+    onEcgOn: () -> Unit,
     onHeartRateOff: () -> Unit,
     onHeartRateOn: () -> Unit,
+    onPPGGreenOff: () -> Unit,
+    onPPGGreenOn: () -> Unit,
+    onPPGIROff: () -> Unit,
+    onPPGIROn: () -> Unit,
+    onPPGRedOn: () -> Unit,
+    onPPGRedOff: () -> Unit,
     onSPO2On: () -> Unit,
     onSPO2Off: () -> Unit,
     onBack: () -> Unit,
-    onAccOff: () -> Unit,
-    onAccOn: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var localEnabled1 by remember { mutableStateOf(true) }
-    var localEnabled2 by remember { mutableStateOf(true) }
-    var localEnabled3 by remember { mutableStateOf(true) }
-    var localEnabled4 by remember { mutableStateOf(true) }
-    var localEnabled5 by remember { mutableStateOf(true) }
-    var localEnabled6 by remember { mutableStateOf(true) }
+    var localEnabled0 by remember { mutableStateOf(trackers[0]) }
+    var localEnabled1 by remember { mutableStateOf(trackers[1]) }
+    var localEnabled2 by remember { mutableStateOf(trackers[2]) }
+    var localEnabled3 by remember { mutableStateOf(trackers[3]) }
+    var localEnabled4 by remember { mutableStateOf(trackers[4]) }
+    var localEnabled5 by remember { mutableStateOf(trackers[5]) }
+    var localEnabled6 by remember { mutableStateOf(trackers[6]) }
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
@@ -582,16 +608,15 @@ private fun SecondActivity(
         ) {
             Button(
                 onClick = {
-                    // Fügen Sie hier den Code ein, den Sie ausführen möchten, wenn der Button geklickt wird
-                    localEnabled1 = !localEnabled1 // Umkehrung des Werts von enabled
-                    if (localEnabled1) {
+                    localEnabled0 = !localEnabled0 // Umkehrung des Werts von enabled
+                    if (localEnabled0) {
                         onAccOn()
                     } else {
                         onAccOff()
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled1) Color.Green else Color.Red
+                    backgroundColor = if (localEnabled0) Color.Green else Color.Red
                 )
             ) {
                 Text("Accelerometer")
@@ -604,16 +629,57 @@ private fun SecondActivity(
         ) {
             Button(
                 onClick = {
-                    // Fügen Sie hier den Code ein, den Sie ausführen möchten, wenn der Button geklickt wird
-                    localEnabled2 = !localEnabled2 // Umkehrung des Werts von enabled
+                    localEnabled1 = !localEnabled1
+                    if (localEnabled1) {
+                        onEcgOn()
+                    } else {
+                        onEcgOff()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = if (localEnabled1) Color.Green else Color.Red
+                )
+            ) {
+                Text("ECG")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {
+                    localEnabled2 = !localEnabled2
                     if (localEnabled2) {
+                        onHeartRateOn()
+                    } else {
+                        onHeartRateOff()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = if (localEnabled2) Color.Green else Color.Red
+                )
+            ) {
+                Text("HeartRate")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {
+                    localEnabled3 = !localEnabled3
+                    if (localEnabled3) {
                         onPPGGreenOn()
                     } else {
                         onPPGGreenOff()
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled2) Color.Green else Color.Red
+                    backgroundColor = if (localEnabled3) Color.Green else Color.Red
                 )
             ) {
                 Text("PPGGreen")
@@ -626,30 +692,7 @@ private fun SecondActivity(
         ) {
             Button(
                 onClick = {
-                    // Fügen Sie hier den Code ein, den Sie ausführen möchten, wenn der Button geklickt wird
-                    localEnabled3 = !localEnabled3 // Umkehrung des Werts von enabled
-                    if (localEnabled3) {
-                        onPPGRedOn()
-                    } else {
-                        onPPGRedOff()
-                    }
-                },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled3) Color.Green else Color.Red
-                )
-            ) {
-                Text("PPGRed")
-            }
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Button(
-                onClick = {
-                    // Fügen Sie hier den Code ein, den Sie ausführen möchten, wenn der Button geklickt wird
-                    localEnabled4 = !localEnabled4 // Umkehrung des Werts von enabled
+                    localEnabled4 = !localEnabled4
                     if (localEnabled4) {
                         onPPGIROn()
                     } else {
@@ -670,19 +713,18 @@ private fun SecondActivity(
         ) {
             Button(
                 onClick = {
-                    // Fügen Sie hier den Code ein, den Sie ausführen möchten, wenn der Button geklickt wird
-                    localEnabled5 = !localEnabled5 // Umkehrung des Werts von enabled
+                    localEnabled5 = !localEnabled5
                     if (localEnabled5) {
-                        onHeartRateOn()
+                        onPPGRedOn()
                     } else {
-                        onHeartRateOff()
+                        onPPGRedOff()
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (localEnabled5) Color.Green else Color.Red
                 )
             ) {
-                Text("HeartRate")
+                Text("PPGRed")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -692,8 +734,7 @@ private fun SecondActivity(
         ) {
             Button(
                 onClick = {
-                    // Fügen Sie hier den Code ein, den Sie ausführen möchten, wenn der Button geklickt wird
-                    localEnabled6 = !localEnabled6 // Umkehrung des Werts von enabled
+                    localEnabled6 = !localEnabled6
                     if (localEnabled6) {
                         onSPO2On()
                     } else {
