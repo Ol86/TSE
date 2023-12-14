@@ -25,11 +25,11 @@ class ECGTrackerListener(private val trackerType: HealthTrackerType) : HealthTra
 
     override fun onDataReceived(list: List<DataPoint>) {
         Log.d("Button trackerActive ECG", trackerActive.toString())
-        if (trackerActive && isDataCollecting) {
+        if (trackerActive) {
             Log.d("List", ":$list")
             Log.d("Button trackerActive ECG", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
             for (dataPoint in list) {
-                if (trackerActive && isDataCollecting) {
+                if (trackerActive) {
                     Log.d("Button trackerActive ECG", "DataPoint: $dataPoint")
                     Log.d("Button trackerActive ECG", "a: ${dataPoint.a}")
                     Log.d("Button trackerActive ECG", "b: ${dataPoint.b}")

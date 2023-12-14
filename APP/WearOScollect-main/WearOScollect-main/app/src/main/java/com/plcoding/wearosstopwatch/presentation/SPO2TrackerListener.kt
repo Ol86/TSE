@@ -20,11 +20,11 @@ class SPO2TrackerListener(private val trackerType: HealthTrackerType) : HealthTr
 
     override fun onDataReceived(list: List<DataPoint>) {
 //        Log.d("Button trackerActive SPO", trackerActive.toString())
-        if (trackerActive && isDataCollecting) {
+        if (trackerActive) {
             Log.d("List", ":$list")
             Log.d("isDataCollectionRunning", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
             for (dataPoint in list) {
-                if (trackerActive && isDataCollecting) {
+                if (trackerActive) {
 //                    Log.d("Button trackerActive SPO", "DataPoint: $dataPoint")
 //                    Log.d("Button trackerActive SPO", "a: ${dataPoint.a}")
                     Log.d("Button trackerActive SPO", "b: ${dataPoint.b}")

@@ -281,6 +281,7 @@ class MainActivity : ComponentActivity() {
         viewModel.start()
         WorkManager.getInstance(this).cancelAllWork()
         WorkManager.getInstance(this).enqueue(periodicWorkRequest)
+        startDataCollection()
     }
     private fun resetRoutine(viewModel: StopWatchViewModel) {
         viewModel.resetTimer()
@@ -292,15 +293,7 @@ class MainActivity : ComponentActivity() {
             Log.i(TAG, "Starting data collection. $connectionListener")
             healthTracking = HealthTrackingService(connectionListener, this@MainActivity)
             healthTracking.connectService()
-            ppgGreenTracker = PpgGreenTracker(healthTracking, ppgPpgGreenTrackerListener)
             isDataCollectionRunning1 = true
-            ppgPpgGreenTrackerListener.isDataCollecting = isDataCollectionRunning1
-            ecgTrackerListener.isDataCollecting = isDataCollectionRunning1
-            accelerometerTrackerListener.isDataCollecting = isDataCollectionRunning1
-            sPO2TrackerListener.isDataCollecting = isDataCollectionRunning1
-            ppgIRTrackerListener.isDataCollecting = isDataCollectionRunning1
-            ppgRedTrackerListener.isDataCollecting = isDataCollectionRunning1
-            heartRateTrackerListener.isDataCollecting = isDataCollectionRunning1
             Log.i(TAG, isDataCollectionRunning1.toString())
         } catch (e: Exception) {
             Log.e(TAG, "Error starting data collection: ${e.message}")
@@ -314,13 +307,6 @@ class MainActivity : ComponentActivity() {
             healthTracking.disconnectService()
             ppgGreenTracker.disconnectTracker()
             isDataCollectionRunning1 = false
-            ppgPpgGreenTrackerListener.isDataCollecting = isDataCollectionRunning1
-            ecgTrackerListener.isDataCollecting = isDataCollectionRunning1
-            accelerometerTrackerListener.isDataCollecting = isDataCollectionRunning1
-            sPO2TrackerListener.isDataCollecting = isDataCollectionRunning1
-            ppgIRTrackerListener.isDataCollecting = isDataCollectionRunning1
-            ppgRedTrackerListener.isDataCollecting = isDataCollectionRunning1
-            heartRateTrackerListener.isDataCollecting = isDataCollectionRunning1
             Log.i(TAG, isDataCollectionRunning1.toString())
         } catch (e: Exception) {
             Log.e(TAG, "Error stopping data collection: ${e.message}")
@@ -544,7 +530,7 @@ private fun StopWatch(
                 }
             }
         }
-        Spacer(modifier = Modifier.height(10.dp))
+        /*Spacer(modifier = Modifier.height(10.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -575,7 +561,7 @@ private fun StopWatch(
                     Text("Datenaufnahme")
                 }
             }
-        }
+        }*/
 
         Spacer(modifier = Modifier.height(50.dp))
         Row(

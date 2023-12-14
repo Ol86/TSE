@@ -22,11 +22,11 @@ class HeartRateTrackerListener(private val trackerType: HealthTrackerType) : Hea
 
     override fun onDataReceived(list: List<DataPoint>) {
 //        Log.d("Button trackerActive HTR", trackerActive.toString())
-        if (trackerActive && isDataCollecting) {
+        if (trackerActive) {
             Log.d("List", ":$list")
             Log.d("isDataCollectionRunning", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
             for (dataPoint in list) {
-                if (trackerActive && isDataCollecting) {
+                if (trackerActive) {
 //                    Log.d("Button trackerActive HTR", "DataPoint: $dataPoint")
 //                    Log.d("Button trackerActive HTR", "a: ${dataPoint.a}")
                     Log.d("Button trackerActive HTR", "b: ${dataPoint.b}")
