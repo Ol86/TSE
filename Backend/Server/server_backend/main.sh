@@ -19,10 +19,10 @@ do
 done
 
 # Stop all container
-docker stop database bia backend db_config
+docker stop bia backend db_config
 
 # Delete all container
-docker rm database bia backend db_config
+docker rm bia backend db_config
 
 # Delete backend image
 docker rmi tse-server-backend
