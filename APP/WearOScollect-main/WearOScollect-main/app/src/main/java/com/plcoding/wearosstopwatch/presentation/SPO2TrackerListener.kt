@@ -13,17 +13,22 @@ class SPO2TrackerListener(private val trackerType: HealthTrackerType) : HealthTr
             field = value
         }
 
+    var trackerActive = true
+        set(value) {
+            field = value
+        }
+
     override fun onDataReceived(list: List<DataPoint>) {
-        Log.d("isDataCollectionRunning", isDataCollecting.toString())
-        if (isDataCollecting) {
+//        Log.d("Button trackerActive SPO", trackerActive.toString())
+        if (trackerActive && isDataCollecting) {
             Log.d("List", ":$list")
             Log.d("isDataCollectionRunning", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
             for (dataPoint in list) {
-                if (isDataCollecting) {
-                    Log.d("MainActivity DataCollection SPO2", "DataPoint: $dataPoint")
-                    Log.d("MainActivity DataCollection SPO2", "a: ${dataPoint.a}")
-                    Log.d("MainActivity DataCollection SPO2", "b: ${dataPoint.b}")
-                    Log.d("MainActivity DataCollection SPO2", "time: ${dataPoint.timestamp}")
+                if (trackerActive && isDataCollecting) {
+//                    Log.d("Button trackerActive SPO", "DataPoint: $dataPoint")
+//                    Log.d("Button trackerActive SPO", "a: ${dataPoint.a}")
+                    Log.d("Button trackerActive SPO", "b: ${dataPoint.b}")
+//                    Log.d("Button trackerActive SPO", "time: ${dataPoint.timestamp}")
                 }
 
                 val json = JSON()

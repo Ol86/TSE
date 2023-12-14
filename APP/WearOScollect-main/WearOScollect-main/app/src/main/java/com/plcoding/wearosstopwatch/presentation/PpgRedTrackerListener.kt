@@ -13,17 +13,22 @@ class PpgRedTrackerListener(private val trackerType: HealthTrackerType) : Health
             field = value
         }
 
+    var trackerActive = true
+        set(value) {
+            field = value
+        }
+
     override fun onDataReceived(list: List<DataPoint>) {
-        Log.d("isDataCollectionRunning", isDataCollecting.toString())
-        if (isDataCollecting) {
+//        Log.d("Button trackerActive Red", trackerActive.toString())
+        if (trackerActive && isDataCollecting) {
             Log.d("List", ":$list")
             Log.d("isDataCollectionRunning", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
             for (dataPoint in list) {
-                if (isDataCollecting) {
-                    Log.d("MainActivity DataCollection Red", "DataPoint: $dataPoint")
-                    Log.d("MainActivity DataCollection Red", "a: ${dataPoint.a}")
-                    Log.d("MainActivity DataCollection Red", "b: ${dataPoint.b}")
-                    Log.d("MainActivity DataCollection Red", "time: ${dataPoint.timestamp}")
+                if (trackerActive && isDataCollecting) {
+//                    Log.d("Button trackerActive Red", "DataPoint: $dataPoint")
+//                    Log.d("Button trackerActive Red", "a: ${dataPoint.a}")
+                    Log.d("Button trackerActive Red", "b: ${dataPoint.b}")
+//                    Log.d("Button trackerActive Red", "time: ${dataPoint.timestamp}")
                 }
 
                 val json = JSON()
