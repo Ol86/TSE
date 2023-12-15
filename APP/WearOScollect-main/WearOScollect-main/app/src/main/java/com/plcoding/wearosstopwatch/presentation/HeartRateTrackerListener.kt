@@ -21,17 +21,27 @@ class HeartRateTrackerListener(private val trackerType: HealthTrackerType) : Hea
         }
 
     override fun onDataReceived(list: List<DataPoint>) {
+//        Log.d("Button trackerActive HTR", trackerActive.toString())
         if (trackerActive) {
+            Log.d("List", ":$list")
+            Log.d("isDataCollectionRunning", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
             for (dataPoint in list) {
-                val json = JSON()
-                val allValues = ArrayList<String>()
-                allValues.add(dataPoint.timestamp.toString())
+                if (trackerActive) {
+//                    Log.d("Button trackerActive HTR", "DataPoint: $dataPoint")
+//                    Log.d("Button trackerActive HTR", "a: ${dataPoint.a}")
+                    Log.d("Button trackerActive HTR", "b: ${dataPoint.b}")
+//                    Log.d("Button trackerActive HTR", "time: ${dataPoint.timestamp}")
 
-                allValues.add(dataPoint.getValue(ValueKey.HeartRateSet.HEART_RATE).toString())
+                    val json = JSON()
+                    val allValues = ArrayList<String>()
+                    allValues.add(dataPoint.timestamp.toString())
 
-                json.dataToJSON("heartrate", allValues)
+                    allValues.add(dataPoint.getValue(ValueKey.HeartRateSet.HEART_RATE).toString())
 
-                println("json heartRate")
+                    json.dataToJSON("heartrate", allValues)
+
+                    println("json heartRate")
+                }
             }
         }
     }

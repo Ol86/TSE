@@ -29,19 +29,25 @@ class AccelerometerTrackerListener(private val trackerType: HealthTrackerType) :
 //                    Log.d("Button trackerActive Acc", "a: ${dataPoint.a}")
 //                    Log.d("Button trackerActive Acc", "b: ${dataPoint.b}")
 //                    Log.d("Button trackerActive Acc", "time: ${dataPoint.timestamp}")
+
+                    val json = JSON()
+                    val allValues = ArrayList<String>()
+                    allValues.add(dataPoint.timestamp.toString())
+
+                    allValues.add(
+                        dataPoint.getValue(ValueKey.AccelerometerSet.ACCELEROMETER_X).toString()
+                    )
+                    allValues.add(
+                        dataPoint.getValue(ValueKey.AccelerometerSet.ACCELEROMETER_Y).toString()
+                    )
+                    allValues.add(
+                        dataPoint.getValue(ValueKey.AccelerometerSet.ACCELEROMETER_Z).toString()
+                    )
+
+                    json.dataToJSON("accelerometer", allValues)
+
+                    println("json accelerometer")
                 }
-
-                val json = JSON()
-                val allValues = ArrayList<String>()
-                allValues.add(dataPoint.timestamp.toString())
-
-                allValues.add(dataPoint.getValue(ValueKey.AccelerometerSet.ACCELEROMETER_X).toString())
-                allValues.add(dataPoint.getValue(ValueKey.AccelerometerSet.ACCELEROMETER_Y).toString())
-                allValues.add(dataPoint.getValue(ValueKey.AccelerometerSet.ACCELEROMETER_Z).toString())
-
-                json.dataToJSON("accelerometer", allValues)
-
-                println("json accelerometer")
             }
         }
     }

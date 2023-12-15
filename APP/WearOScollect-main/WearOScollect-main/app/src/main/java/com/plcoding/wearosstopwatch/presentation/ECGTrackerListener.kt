@@ -24,49 +24,47 @@ class ECGTrackerListener(private val trackerType: HealthTrackerType) : HealthTra
         }
 
     override fun onDataReceived(list: List<DataPoint>) {
-//        Log.d("Button trackerActive ECG", trackerActive.toString())
+        Log.d("Button trackerActive ECG", trackerActive.toString())
         if (trackerActive) {
-//            Log.d("List", ":$list")
-//            Log.d("Button trackerActive ECG", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
+            Log.d("List", ":$list")
+            Log.d("Button trackerActive ECG", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
             for (dataPoint in list) {
                 if (trackerActive) {
-//                    Log.d("Button trackerActive ECG", "DataPoint: $dataPoint")
-//                    Log.d("Button trackerActive ECG", "a: ${dataPoint.a}")
-//                    Log.d("Button trackerActive ECG", "b: ${dataPoint.b}")
-//                    Log.d("Button trackerActive ECG", "time: ${dataPoint.timestamp}")
-                }
+                    Log.d("Button trackerActive ECG", "DataPoint: $dataPoint")
+                    Log.d("Button trackerActive ECG", "a: ${dataPoint.a}")
+                    Log.d("Button trackerActive ECG", "b: ${dataPoint.b}")
+                    Log.d("Button trackerActive ECG", "time: ${dataPoint.timestamp}")
 
-                val json = JSON()
-                val allValues = ArrayList<String>()
-                allValues.add(dataPoint.timestamp.toString())
+                    val json = JSON()
+                    val allValues = ArrayList<String>()
+                    allValues.add(dataPoint.timestamp.toString())
 
-                if (dataPoint.b.size == 6) {
-                    //1st DataPoint
-                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.ECG).toString())
-                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.PPG_GREEN).toString())
-                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.LEAD_OFF).toString())
-                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.MAX_THRESHOLD).toString())
-                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.SEQUENCE).toString())
-                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.MIN_THRESHOLD).toString())
-                }
-                else if (dataPoint.b.size == 2) {
-                    //6st DataPoint
-                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.ECG).toString())
-                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.PPG_GREEN).toString())
-                }
-                else {
-                    allValues.add(dataPoint.getValue(ValueKey.EcgSet.ECG).toString())
-                }
+                    if (dataPoint.b.size == 6) {
+                        //1st DataPoint
+                        allValues.add(dataPoint.getValue(ValueKey.EcgSet.ECG).toString())
+                        allValues.add(dataPoint.getValue(ValueKey.EcgSet.PPG_GREEN).toString())
+                        allValues.add(dataPoint.getValue(ValueKey.EcgSet.LEAD_OFF).toString())
+                        allValues.add(dataPoint.getValue(ValueKey.EcgSet.MAX_THRESHOLD).toString())
+                        allValues.add(dataPoint.getValue(ValueKey.EcgSet.SEQUENCE).toString())
+                        allValues.add(dataPoint.getValue(ValueKey.EcgSet.MIN_THRESHOLD).toString())
+                    } else if (dataPoint.b.size == 2) {
+                        //6st DataPoint
+                        allValues.add(dataPoint.getValue(ValueKey.EcgSet.ECG).toString())
+                        allValues.add(dataPoint.getValue(ValueKey.EcgSet.PPG_GREEN).toString())
+                    } else {
+                        allValues.add(dataPoint.getValue(ValueKey.EcgSet.ECG).toString())
+                    }
 
-                json.dataToJSON("ecg", allValues)
+                    json.dataToJSON("ecg", allValues)
 
-                println("JSON Test")
+                    println("JSON Test")
 
-                /*val file: File = File(this@ECGTrackerListener.filesDir, "trackerData.json")
+                    /*val file: File = File(this@ECGTrackerListener.filesDir, "trackerData.json")
                 val fileWriter = FileWriter(file)
                 val bufferedWriter = BufferedWriter(fileWriter)
                 bufferedWriter.write(trackerData.toString())
                 bufferedWriter.close()*/
+                }
             }
         }
     }
