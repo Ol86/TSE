@@ -7,16 +7,23 @@
 {% endblock %}
 
 {% block content %}
-    <h1> Please login</h1>
+    <div class="login">
+        <div class="content">
 
-    <div>
-        <form method="POST" action="" id="login">
-            {% csrf_token %}
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" placeholder="Enter username"><br><br>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter password"><br><br>
-            <input type="submit" value="Login">
-          </form>
+            <h2> Please login</h2>
+
+            <form method="POST" action="">
+                {% csrf_token %}
+                <div class="inputBox">
+                    <input type="text" name="username" placeholder="Username">
+                </div>
+                <div class="inputBox">
+                    <input type="password" name="password" placeholder="Password">
+                </div>
+                <div class="inputBox">
+                    <input type="submit" value="Login">
+                </div>
+            </form>
+        </div>
     </div>
 {% endblock %}
