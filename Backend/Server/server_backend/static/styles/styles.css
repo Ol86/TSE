@@ -1,28 +1,34 @@
-:root {
-    --color-main: #abb2bf;
-    --color-main-light: #000000;
-    --background-main: #23272e;
-    --background-main-light: #f8f8f8;
+#login {
+
 }
 
-@media (prefers-color-scheme: light) {
-    body, a, head {
-        background-color: var(--background-main-light);
-        color: var(--color-main-light);
-    }
+.pagetop {
+    position: fixed;
+    display: block;
+    width: 50px;
+    height: 50px;
+    right: 20px;
+    bottom: 20px;
+    background: darkslategrey;
+    border-radius: 50%;
+    text-indent: -9999em;
+    -webkit-transition: .3s ease-out; transition: .3s ease-out;
+    z-index: 2;
 }
-
-@media (prefers-color-scheme: dark) {
-    body, a, head {
-        background-color: #23272e;
-        color: #abb2bf;
-    }
+.pagetop::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: 5px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    border-top: 2px solid turquoise;
+    border-right: 2px solid turquoise;
+    -webkit-transform: rotate(-45deg); transform: rotate(-45deg);
 }
-
-html {
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-a {
-    text-decoration: none;
+.pagetop:hover {
+    bottom: 25px;
 }

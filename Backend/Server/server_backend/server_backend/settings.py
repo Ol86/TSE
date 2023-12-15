@@ -34,6 +34,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '193.196.36.62:9000',
     '193.196.36.62',
+    'localhost',
+    'localhost:9000',
 ]
 
 
