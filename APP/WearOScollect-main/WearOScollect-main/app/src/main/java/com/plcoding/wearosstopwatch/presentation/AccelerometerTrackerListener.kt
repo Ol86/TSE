@@ -21,13 +21,13 @@ class AccelerometerTrackerListener(private val trackerType: HealthTrackerType) :
     override fun onDataReceived(list: List<DataPoint>) {
 //        Log.d("Button trackerActive Acc", trackerActive.toString())
         if (trackerActive) {
-            Log.d("List", ":$list")
-            Log.d("Button trackerActive Acc", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
+//            Log.d("List", ":$list")
+//            Log.d("Button trackerActive Acc", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
             for (dataPoint in list) {
                 if (trackerActive) {
 //                    Log.d("Button trackerActive Acc", "DataPoint: $dataPoint")
 //                    Log.d("Button trackerActive Acc", "a: ${dataPoint.a}")
-                    Log.d("Button trackerActive Acc", "b: ${dataPoint.b}")
+//                    Log.d("Button trackerActive Acc", "b: ${dataPoint.b}")
 //                    Log.d("Button trackerActive Acc", "time: ${dataPoint.timestamp}")
                 }
 

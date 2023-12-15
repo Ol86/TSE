@@ -118,48 +118,6 @@ class MainActivity : ComponentActivity() {
             val availableTrackers: List<HealthTrackerType> =
                 healthTracking.trackingCapability.supportHealthTrackerTypes
             Log.d("HealthTrackerList2", "Available trackers: $availableTrackers")
-            /*
-                        if (availableTrackers.contains(HealthTrackerType.PPG_GREEN)) {
-                            ppgGreenTracker?.flush()
-                            Log.d("TrackerSSS2", trackerListener.toString())
-                            ppgGreenTracker?.unsetEventListener()
-                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-GREEN++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                        }
-
-                        if (availableTrackers.contains((HealthTrackerType.PPG_RED))) {
-                            ppgREDTracker?.flush()
-                            Log.d("TrackerSSS2", trackerListener.toString())
-                            ppgREDTracker?.unsetEventListener()
-                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-RED++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                        }
-
-                        if (availableTrackers.contains((HealthTrackerType.ECG))) {
-                            ECGRateTracker?.flush()
-                            Log.d("TrackerSSS2", trackerListener.toString())
-                            ECGRateTracker?.unsetEventListener()
-                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-ECG++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                        }
-
-                        if (availableTrackers.contains((HealthTrackerType.ACCELEROMETER))) {
-                            accelerometer?.flush()
-                            Log.d("TrackerSSS2", trackerListener.toString())
-                            accelerometer?.unsetEventListener()
-                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-ACC++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                        }
-
-                        if (availableTrackers.contains((HealthTrackerType.PPG_IR))) {
-                            ppgIR?.flush()
-                            Log.d("TrackerSSS2", trackerListener.toString())
-                            ppgIR?.unsetEventListener()
-                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-IR++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                        }
-
-                        if (availableTrackers.contains((HealthTrackerType.SPO2))) {
-                            sPO2?.flush()
-                            Log.d("TrackerSSS2", trackerListener.toString())
-                            sPO2?.unsetEventListener()
-                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-SPO2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                        }*/
         }
 
         override fun onConnectionFailed(e: HealthTrackerException) {
@@ -169,9 +127,6 @@ class MainActivity : ComponentActivity() {
                 e.resolve(this@MainActivity)
             }
         }
-
-
-
     }
 
     private val WORK_TAG = "NotificationWorker"
@@ -284,6 +239,7 @@ class MainActivity : ComponentActivity() {
         startDataCollection()
     }
     private fun resetRoutine(viewModel: StopWatchViewModel) {
+        stopDataCollection()
         viewModel.resetTimer()
         WorkManager.getInstance(this).cancelAllWork()
     }
@@ -304,8 +260,22 @@ class MainActivity : ComponentActivity() {
     private fun stopDataCollection() {
         try {
             Log.i(TAG, "Stopping data collection. $connectionListener")
-            healthTracking.disconnectService()
+            accelerometerOff()
+            accelerometerTracker.disconnectTracker()
+            ecgOff()
+            ecgTracker.disconnectTracker()
+            heartRateOff()
+            heartRateTracker.disconnectTracker()
+            ppgGreenOff()
             ppgGreenTracker.disconnectTracker()
+            ppgIROff()
+            ppgIRTracker.disconnectTracker()
+            ppgRedOff()
+            ppgRedTracker?.disconnectTracker()
+            sPO2Off()
+            sPO2Tracker.disconnectTracker()
+
+            healthTracking.disconnectService()
             isDataCollectionRunning1 = false
             Log.i(TAG, isDataCollectionRunning1.toString())
         } catch (e: Exception) {
@@ -517,7 +487,7 @@ private fun StopWatch(
                         )
                     }else{
                         Chip(
-                            onClick =onReset,
+                            onClick = onReset,
                             enabled = state != TimerState.RESET,
                             label = {
                                 Text(
