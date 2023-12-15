@@ -29,17 +29,17 @@ class PpgGreenTrackerListener(private val trackerType: HealthTrackerType) : Heal
 //                    Log.d("Button trackerActive PPGGreen", "a: ${dataPoint.a}")
                     Log.d("Button trackerActive PPGGreen", "b: ${dataPoint.b}")
 //                    Log.d("Button trackerActive PPGGreen", "time: ${dataPoint.timestamp}")
+
+                    val json = JSON()
+                    val allValues = ArrayList<String>()
+                    allValues.add(dataPoint.timestamp.toString())
+
+                    allValues.add(dataPoint.getValue(ValueKey.PpgGreenSet.PPG_GREEN).toString())
+
+                    json.dataToJSON("ppggreen", allValues)
+                    Log.d("Json Green", allValues.toString())
+                    println("json pggGreen")
                 }
-
-                val json = JSON()
-                val allValues = ArrayList<String>()
-                allValues.add(dataPoint.timestamp.toString())
-
-                allValues.add(dataPoint.getValue(ValueKey.PpgGreenSet.PPG_GREEN).toString())
-
-                json.dataToJSON("ppggreen", allValues)
-
-                println("json pggGreen")
             }
         }
     }

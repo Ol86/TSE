@@ -31,17 +31,17 @@ class HeartRateTrackerListener(private val trackerType: HealthTrackerType) : Hea
 //                    Log.d("Button trackerActive HTR", "a: ${dataPoint.a}")
                     Log.d("Button trackerActive HTR", "b: ${dataPoint.b}")
 //                    Log.d("Button trackerActive HTR", "time: ${dataPoint.timestamp}")
+
+                    val json = JSON()
+                    val allValues = ArrayList<String>()
+                    allValues.add(dataPoint.timestamp.toString())
+
+                    allValues.add(dataPoint.getValue(ValueKey.HeartRateSet.HEART_RATE).toString())
+
+                    json.dataToJSON("heartrate", allValues)
+
+                    println("json heartRate")
                 }
-
-                val json = JSON()
-                val allValues = ArrayList<String>()
-                allValues.add(dataPoint.timestamp.toString())
-
-                allValues.add(dataPoint.getValue(ValueKey.HeartRateSet.HEART_RATE).toString())
-
-                json.dataToJSON("heartrate", allValues)
-
-                println("json heartRate")
             }
         }
     }

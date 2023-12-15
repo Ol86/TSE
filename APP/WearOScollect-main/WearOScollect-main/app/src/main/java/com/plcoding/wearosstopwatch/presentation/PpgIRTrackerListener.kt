@@ -29,17 +29,17 @@ class PpgIRTrackerListener(private val trackerType: HealthTrackerType) : HealthT
 //                    Log.d("Button trackerActive PIR", "a: ${dataPoint.a}")
                     Log.d("Button trackerActive PIR", "b: ${dataPoint.b}")
 //                    Log.d("Button trackerActive PIR", "time: ${dataPoint.timestamp}")
+
+                    val json = JSON()
+                    val allValues = ArrayList<String>()
+                    allValues.add(dataPoint.timestamp.toString())
+
+                    allValues.add(dataPoint.getValue(ValueKey.PpgIrSet.PPG_IR).toString())
+
+                    json.dataToJSON("ppgir", allValues)
+
+                    println("json ppgIR")
                 }
-
-                val json = JSON()
-                val allValues = ArrayList<String>()
-                allValues.add(dataPoint.timestamp.toString())
-
-                allValues.add(dataPoint.getValue(ValueKey.PpgIrSet.PPG_IR).toString())
-
-                json.dataToJSON("ppgir", allValues)
-
-                println("json ppgIR")
             }
         }
     }
