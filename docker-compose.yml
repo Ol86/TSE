@@ -46,7 +46,7 @@ services:
   server-backend:
     container_name: backend
     restart: always
-    build: .
+    build: ./Backend/Server/server_backend/
     env_file:
       - .env
     ports:
