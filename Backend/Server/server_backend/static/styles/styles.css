@@ -1,20 +1,23 @@
-#login {
-
+.buttonList {
+	position: fixed;
+    right: 20px;
+    bottom: 20px;
 }
 
-.pagetop {
-    position: fixed;
+.buttonList>a {
+    position: relative;
     display: block;
     width: 50px;
     height: 50px;
-    right: 20px;
-    bottom: 20px;
+    right: 0px;
+    bottom: 0px;
     background: darkslategrey;
     border-radius: 50%;
     text-indent: -9999em;
     -webkit-transition: .3s ease-out; transition: .3s ease-out;
     z-index: 2;
 }
+
 .pagetop::after {
     content: "";
     position: absolute;
@@ -29,6 +32,30 @@
     border-right: 2px solid turquoise;
     -webkit-transform: rotate(-45deg); transform: rotate(-45deg);
 }
-.pagetop:hover {
-    bottom: 25px;
+
+.createExperiment::after {
+    content: "";
+    position: absolute;
+    background-color: turquoise;
+    margin-top: -1px;
+    height: 2px;
+    top: 50%;
+    left: 15px;
+    right: 15px;
 }
+    
+.createExperiment::before {
+    content: "";
+    position: absolute;
+    background-color: turquoise;
+    width: 2px;
+    margin-left: -1px;
+    left: 50%;
+    top: 15px;
+    bottom: 15px;
+}
+    
+.buttonList>a:hover {
+    bottom: 5px;
+}
+ 
