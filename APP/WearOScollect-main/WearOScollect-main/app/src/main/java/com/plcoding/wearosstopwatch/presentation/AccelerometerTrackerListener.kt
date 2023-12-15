@@ -13,17 +13,22 @@ class AccelerometerTrackerListener(private val trackerType: HealthTrackerType) :
             field = value
         }
 
+    var trackerActive = true
+        set(value) {
+            field = value
+        }
+
     override fun onDataReceived(list: List<DataPoint>) {
-        Log.d("isDataCollectionRunning", isDataCollecting.toString())
-        if (isDataCollecting) {
+//        Log.d("Button trackerActive Acc", trackerActive.toString())
+        if (trackerActive) {
             Log.d("List", ":$list")
-            Log.d("isDataCollectionRunning", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
+            Log.d("Button trackerActive Acc", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
             for (dataPoint in list) {
-                if (isDataCollecting) {
-                    Log.d("MainActivity DataCollection Acc", "DataPoint: $dataPoint")
-                    Log.d("MainActivity DataCollection Acc", "a: ${dataPoint.a}")
-                    Log.d("MainActivity DataCollection Acc", "b: ${dataPoint.b}")
-                    Log.d("MainActivity DataCollection Acc", "time: ${dataPoint.timestamp}")
+                if (trackerActive) {
+//                    Log.d("Button trackerActive Acc", "DataPoint: $dataPoint")
+//                    Log.d("Button trackerActive Acc", "a: ${dataPoint.a}")
+                    Log.d("Button trackerActive Acc", "b: ${dataPoint.b}")
+//                    Log.d("Button trackerActive Acc", "time: ${dataPoint.timestamp}")
                 }
 
                 val json = JSON()

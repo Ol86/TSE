@@ -13,17 +13,22 @@ class PpgIRTrackerListener(private val trackerType: HealthTrackerType) : HealthT
             field = value
         }
 
+    var trackerActive = true
+        set(value) {
+            field = value
+        }
+
     override fun onDataReceived(list: List<DataPoint>) {
-        Log.d("isDataCollectionRunning", isDataCollecting.toString())
-        if (isDataCollecting) {
+//        Log.d("Button trackerActive PIR", trackerActive.toString())
+        if (trackerActive) {
             Log.d("List", ":$list")
             Log.d("isDataCollectionRunning", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
             for (dataPoint in list) {
-                if (isDataCollecting) {
-                    Log.d("MainActivity DataCollection IR", "DataPoint: $dataPoint")
-                    Log.d("MainActivity DataCollection IR", "a: ${dataPoint.a}")
-                    Log.d("MainActivity DataCollection IR", "b: ${dataPoint.b}")
-                    Log.d("MainActivity DataCollection IR", "time: ${dataPoint.timestamp}")
+                if (trackerActive) {
+//                    Log.d("Button trackerActive PIR", "DataPoint: $dataPoint")
+//                    Log.d("Button trackerActive PIR", "a: ${dataPoint.a}")
+                    Log.d("Button trackerActive PIR", "b: ${dataPoint.b}")
+//                    Log.d("Button trackerActive PIR", "time: ${dataPoint.timestamp}")
                 }
 
                 val json = JSON()

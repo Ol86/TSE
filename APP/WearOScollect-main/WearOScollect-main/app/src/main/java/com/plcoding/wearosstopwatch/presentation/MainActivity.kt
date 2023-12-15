@@ -7,6 +7,8 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -33,16 +35,17 @@ import androidx.wear.compose.material.Text
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.samsung.android.service.health.tracking.ConnectionListener
-import com.samsung.android.service.health.tracking.HealthTracker
 import com.samsung.android.service.health.tracking.HealthTrackerException
 import com.samsung.android.service.health.tracking.HealthTrackingService
-import com.samsung.android.service.health.tracking.data.DataPoint
 import com.samsung.android.service.health.tracking.data.HealthTrackerType
 import java.util.concurrent.TimeUnit
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 class MainActivity : ComponentActivity() {
 
     lateinit var healthTracking : HealthTrackingService
+    private lateinit var heartRateTracker: HeartRateTracker
     private lateinit var ppgGreenTracker: PpgGreenTracker
     private lateinit var ecgTracker: ECGTracker
     private lateinit var accelerometerTracker: AccelerometerTracker
@@ -50,6 +53,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var ppgIRTracker: PpgIRTracker
     private lateinit var ppgRedTracker: PpgRedTracker
     private val ppgPpgGreenTrackerListener = PpgGreenTrackerListener(HealthTrackerType.PPG_GREEN)
+    private val heartRateTrackerListener = HeartRateTrackerListener(HealthTrackerType.HEART_RATE)
     private val ecgTrackerListener = ECGTrackerListener(HealthTrackerType.ECG)
     private val accelerometerTrackerListener = AccelerometerTrackerListener(HealthTrackerType.ACCELEROMETER)
     private val sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2)
@@ -66,37 +70,47 @@ class MainActivity : ComponentActivity() {
                 healthTracking.trackingCapability.supportHealthTrackerTypes
             Log.d("HealthTrackerList1", "Available trackers: $availableTrackers")
 
-            if (availableTrackers.contains(HealthTrackerType.PPG_GREEN)) {
-                ppgPpgGreenTrackerListener.isDataCollecting = isDataCollectionRunning
-                ppgGreenTracker = PpgGreenTracker(healthTracking, ppgPpgGreenTrackerListener)
-            }
-
-            if (availableTrackers.contains(HealthTrackerType.ECG)) {
-                accelerometerTrackerListener.isDataCollecting = isDataCollectionRunning
-                ecgTracker = ECGTracker(healthTracking, ecgTrackerListener)
-            }
-
             if (availableTrackers.contains(HealthTrackerType.ACCELEROMETER)) {
-                accelerometerTrackerListener.isDataCollecting = isDataCollectionRunning
+                accelerometerTrackerListener.isDataCollecting = isDataCollectionRunning1
+                accelerometerTrackerListener.trackerActive = trackerActive0
                 accelerometerTracker = AccelerometerTracker(healthTracking, accelerometerTrackerListener)
             }
 
-            if (availableTrackers.contains(HealthTrackerType.SPO2)) {
-                sPO2TrackerListener.isDataCollecting = isDataCollectionRunning
-                sPO2Tracker = SPO2Tracker(healthTracking, sPO2TrackerListener)
+            if (availableTrackers.contains(HealthTrackerType.ECG)) {
+                ecgTrackerListener.isDataCollecting = isDataCollectionRunning1
+                ecgTrackerListener.trackerActive = trackerActive1
+                ecgTracker = ECGTracker(healthTracking, ecgTrackerListener)
+            }
+
+            if (availableTrackers.contains(HealthTrackerType.HEART_RATE)) {
+                heartRateTrackerListener.isDataCollecting = isDataCollectionRunning1
+                heartRateTrackerListener.trackerActive = trackerActive2
+                heartRateTracker = HeartRateTracker(healthTracking, heartRateTrackerListener)
+            }
+
+            if (availableTrackers.contains(HealthTrackerType.PPG_GREEN)) {
+                ppgPpgGreenTrackerListener.isDataCollecting = isDataCollectionRunning1
+                ppgPpgGreenTrackerListener.trackerActive = trackerActive3
+                ppgGreenTracker = PpgGreenTracker(healthTracking, ppgPpgGreenTrackerListener)
             }
 
             if (availableTrackers.contains(HealthTrackerType.PPG_IR)) {
-                ppgIRTrackerListener.isDataCollecting = isDataCollectionRunning
+                ppgIRTrackerListener.isDataCollecting = isDataCollectionRunning1
+                ppgIRTrackerListener.trackerActive = trackerActive4
                 ppgIRTracker = PpgIRTracker(healthTracking, ppgIRTrackerListener)
             }
 
             if (availableTrackers.contains(HealthTrackerType.PPG_RED)) {
-                ppgRedTrackerListener.isDataCollecting = isDataCollectionRunning
+                ppgRedTrackerListener.isDataCollecting = isDataCollectionRunning1
+                ppgRedTrackerListener.trackerActive = trackerActive5
                 ppgRedTracker = PpgRedTracker(healthTracking, ppgRedTrackerListener)
             }
 
-
+            if (availableTrackers.contains(HealthTrackerType.SPO2)) {
+                sPO2TrackerListener.isDataCollecting = isDataCollectionRunning1
+                sPO2TrackerListener.trackerActive = trackerActive6
+                sPO2Tracker = SPO2Tracker(healthTracking, sPO2TrackerListener)
+            }
         }
 
         override fun onConnectionEnded() {
@@ -188,7 +202,18 @@ class MainActivity : ComponentActivity() {
 
     //private lateinit var healthTrackingService: HealthTrackingService
 
-    private var isDataCollectionRunning = false
+    private var isDataCollectionRunning1 = false
+    private var trackerActive0 = true
+    private var trackerActive1 = true
+    private var trackerActive2 = true
+    private var trackerActive3 = true
+    private var trackerActive4 = true
+    private var trackerActive5 = true
+    private var trackerActive6 = true
+
+    //Accelerometer,ECG,HeartRate,ppgGreen,ppgIR,ppgRed,SPO2
+    private var activeTrackers = arrayListOf(true, true, true, true, true, true, true)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestPermissions(requestedPermissions, 0)
@@ -206,23 +231,57 @@ class MainActivity : ComponentActivity() {
             val viewModel = viewModel<StopWatchViewModel>()
             val timerState by viewModel.timerState.collectAsStateWithLifecycle()
             val stopWatchText by viewModel.stopWatchText.collectAsStateWithLifecycle()
-            StopWatch(
-                state = timerState,
-                time = stopWatchText,
-                notifications = "0",
-                onStart = {startRoutine(viewModel)},
-                onReset = {resetRoutine(viewModel)},
-                isDataCollectionRunning = isDataCollectionRunning,
-                onStartDataCollection = {startDataCollection()},
-                onStopDataCollection = {stopDataCollection()},
-                modifier = Modifier.fillMaxSize()
-            )
+            var currentView by remember { mutableStateOf(ViewType.FirstScreen) }
+            when (currentView) {
+                ViewType.StopWatch -> {
+                    StopWatch(
+                        state = timerState,
+                        time = stopWatchText,
+                        notifications = "0",
+                        onStart = {startRoutine(viewModel)},
+                        onReset = {resetRoutine(viewModel)},
+                        isDataCollectionRunning = isDataCollectionRunning1,
+                        onStartDataCollection = {startDataCollection()},
+                        onStopDataCollection = {stopDataCollection()},
+                        onBackToSettings = {currentView = ViewType.FirstScreen},
+                        activeTrackers,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+                ViewType.SecondActivity -> {
+                    SecondActivity(
+                        trackers = activeTrackers,
+                        onBack = { currentView = ViewType.FirstScreen },
+                        onAccOff = {accelerometerOff()},
+                        onAccOn = {accelerometerOn()},
+                        onEcgOff = {ecgOff()},
+                        onEcgOn = {ecgOn()},
+                        onHeartRateOff = {heartRateOff()},
+                        onHeartRateOn = {heartRateOn()},
+                        onPPGGreenOff = {ppgGreenOff()},
+                        onPPGGreenOn = {ppgGreenOn()},
+                        onPPGIROff = {ppgIROff()},
+                        onPPGIROn = {ppIROn()},
+                        onPPGRedOff = {ppgRedOff()},
+                        onPPGRedOn = {ppgRedOn()},
+                        onSPO2Off = {sPO2Off()},
+                        onSPO2On = {sPO2On()}
+                    )
+                }
+                ViewType.FirstScreen -> {
+                    FirstScreen(
+                        onNavigateToSecondActivity = {currentView = ViewType.SecondActivity},
+                        onAccept = {currentView = ViewType.StopWatch}
+                    )
+                }
+            }
         }
     }
     private fun startRoutine(viewModel: StopWatchViewModel) {
         viewModel.start()
         WorkManager.getInstance(this).cancelAllWork()
         WorkManager.getInstance(this).enqueue(periodicWorkRequest)
+        startDataCollection()
     }
     private fun resetRoutine(viewModel: StopWatchViewModel) {
         viewModel.resetTimer()
@@ -234,15 +293,8 @@ class MainActivity : ComponentActivity() {
             Log.i(TAG, "Starting data collection. $connectionListener")
             healthTracking = HealthTrackingService(connectionListener, this@MainActivity)
             healthTracking.connectService()
-            ppgGreenTracker = PpgGreenTracker(healthTracking, ppgPpgGreenTrackerListener)
-            isDataCollectionRunning = true
-            ppgPpgGreenTrackerListener.isDataCollecting = isDataCollectionRunning
-            ecgTrackerListener.isDataCollecting = isDataCollectionRunning
-            accelerometerTrackerListener.isDataCollecting = isDataCollectionRunning
-            sPO2TrackerListener.isDataCollecting = isDataCollectionRunning
-            ppgIRTrackerListener.isDataCollecting = isDataCollectionRunning
-            ppgRedTrackerListener.isDataCollecting = isDataCollectionRunning
-            Log.i(TAG, isDataCollectionRunning.toString())
+            isDataCollectionRunning1 = true
+            Log.i(TAG, isDataCollectionRunning1.toString())
         } catch (e: Exception) {
             Log.e(TAG, "Error starting data collection: ${e.message}")
             // Handle the error appropriately (e.g., show a message to the user)
@@ -254,14 +306,8 @@ class MainActivity : ComponentActivity() {
             Log.i(TAG, "Stopping data collection. $connectionListener")
             healthTracking.disconnectService()
             ppgGreenTracker.disconnectTracker()
-            isDataCollectionRunning = false
-            ppgPpgGreenTrackerListener.isDataCollecting = isDataCollectionRunning
-            ecgTrackerListener.isDataCollecting = isDataCollectionRunning
-            accelerometerTrackerListener.isDataCollecting = isDataCollectionRunning
-            sPO2TrackerListener.isDataCollecting = isDataCollectionRunning
-            ppgIRTrackerListener.isDataCollecting = isDataCollectionRunning
-            ppgRedTrackerListener.isDataCollecting = isDataCollectionRunning
-            Log.i(TAG, isDataCollectionRunning.toString())
+            isDataCollectionRunning1 = false
+            Log.i(TAG, isDataCollectionRunning1.toString())
         } catch (e: Exception) {
             Log.e(TAG, "Error stopping data collection: ${e.message}")
             // Handle the error appropriately (e.g., show a message to the user)
@@ -272,29 +318,105 @@ class MainActivity : ComponentActivity() {
         private const val TAG = "MainActivity DataCollection"
     }
 
-    /*private fun startDataCollection() {
-        println("MEEEEHHHHHHHHHHHHHHHHH.$connectionListener")
-        healthTracking.connectService()
-        isDataCollectionRunning = true
+    private fun accelerometerOff(){
+        activeTrackers[0] = false
+        trackerActive0 = activeTrackers[0]
+        accelerometerTrackerListener.trackerActive = trackerActive0
+        Log.i("Button", "Acc is " + activeTrackers[0].toString())
     }
 
-    private fun stopDataCollection() {
-        println("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ.$connectionListener")
-        healthTracking.disconnectService()
-        isDataCollectionRunning = false
-    }*/
+    private fun accelerometerOn(){
+        activeTrackers[0] = true
+        trackerActive0 = activeTrackers[0]
+        accelerometerTrackerListener.trackerActive = trackerActive0
+        Log.i("Button", "Acc is " + activeTrackers[0].toString())
+    }
 
-    /*private fun dataCollection(){
-        println("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ.$connectionListener")
-        healthTracking = HealthTrackingService(connectionListener, this@MainActivity)
-        isDataCollectionRunning = if(isDataCollectionRunning){
-            healthTracking.disconnectService()
-            false
-        } else {
-            healthTracking.connectService()
-            true
-        }
-    }*/
+    private fun ecgOff() {
+        activeTrackers[1] = false
+        trackerActive1 = activeTrackers[1]
+        ecgTrackerListener.trackerActive = trackerActive1
+        Log.i("Button", "ECG is " + activeTrackers[1].toString())
+    }
+
+    private fun ecgOn() {
+        activeTrackers[1] = true
+        trackerActive1 = activeTrackers[1]
+        ecgTrackerListener.trackerActive = trackerActive1
+        Log.i("Button", "Ecg is " + activeTrackers[1].toString())
+    }
+
+    private fun heartRateOff() {
+        activeTrackers[2] = false
+        trackerActive2 = activeTrackers[2]
+        heartRateTrackerListener.trackerActive = trackerActive2
+        Log.i("Button", "HeartRate is " + activeTrackers[2].toString())
+    }
+
+    private fun heartRateOn() {
+        activeTrackers[2] = true
+        trackerActive2 = activeTrackers[2]
+        heartRateTrackerListener.trackerActive = trackerActive2
+        Log.i("Button", "HeartRate is " + activeTrackers[2].toString())
+    }
+
+    private fun ppgGreenOff(){
+        activeTrackers[3] = false
+        trackerActive3 = activeTrackers[3]
+        ppgPpgGreenTrackerListener.trackerActive = trackerActive3
+        Log.i("Button", "ppgGreen is " + activeTrackers[3].toString())
+    }
+
+    private fun ppgGreenOn(){
+        activeTrackers[3] = true
+        trackerActive3 = activeTrackers[3]
+        ppgPpgGreenTrackerListener.trackerActive = trackerActive3
+        Log.i("Button", "ppgGreen is " + activeTrackers[3].toString())
+    }
+
+    private fun ppgIROff(){
+        activeTrackers[4] = false
+        trackerActive4 = activeTrackers[4]
+        ppgIRTrackerListener.trackerActive = trackerActive4
+        Log.i("Button", "ppgIR is " + activeTrackers[4].toString())
+    }
+
+    private fun ppIROn(){
+        activeTrackers[4] = true
+        trackerActive4 = activeTrackers[4]
+        ppgIRTrackerListener.trackerActive = trackerActive4
+        Log.i("Button", "ppgIR is " + activeTrackers[4].toString())
+    }
+
+    private fun ppgRedOff(){
+        activeTrackers[5] = false
+        trackerActive5 = activeTrackers[5]
+        ppgRedTrackerListener.trackerActive = trackerActive5
+        Log.i("Button", "ppgRed is " + activeTrackers[5].toString())
+    }
+
+    private fun ppgRedOn(){
+        activeTrackers[5] = true
+        trackerActive5 = activeTrackers[5]
+        ppgRedTrackerListener.trackerActive = trackerActive5
+        Log.i("Button", "ppgRed is " + activeTrackers[5].toString())
+    }
+
+    private fun sPO2Off(){
+        activeTrackers[6] = false
+        trackerActive6 = activeTrackers[6]
+        sPO2TrackerListener.trackerActive = trackerActive6
+        Log.i("Button", "SPO2 is " + activeTrackers[6].toString())
+    }
+
+    private fun sPO2On(){
+        activeTrackers[6] = true
+        trackerActive6 = activeTrackers[6]
+        sPO2TrackerListener.trackerActive = trackerActive6
+        Log.i("Button", "SPO2 is " + activeTrackers[6].toString())
+    }
+
+
 }
 
 @Composable
@@ -307,24 +429,15 @@ private fun StopWatch(
     isDataCollectionRunning: Boolean,
     onStartDataCollection: () -> Unit,
     onStopDataCollection: () -> Unit,
+    onBackToSettings: () -> Unit,
+    trackers: ArrayList<Boolean>,    //Accelerometer,ECG,HeartRate,ppgGreen,ppgIR,ppgRed,SPO2
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Experiment 1",
-                fontSize = 18.sp,
-                textAlign = TextAlign.Center
-            )
-        }
-
         Spacer(modifier = Modifier.height(10.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -417,7 +530,7 @@ private fun StopWatch(
                 }
             }
         }
-        Spacer(modifier = Modifier.height(10.dp))
+        /*Spacer(modifier = Modifier.height(10.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -448,7 +561,277 @@ private fun StopWatch(
                     Text("Datenaufnahme")
                 }
             }
+        }*/
+
+        Spacer(modifier = Modifier.height(50.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {
+                    onBackToSettings()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.DarkGray
+                )
+            ) {
+                Text("Back to Settings")
+            }
         }
 
+
+    }
+}
+
+@Composable
+private fun SecondActivity(
+    trackers: ArrayList<Boolean>,
+    onAccOff: () -> Unit,
+    onAccOn: () -> Unit,
+    onEcgOff: () -> Unit,
+    onEcgOn: () -> Unit,
+    onHeartRateOff: () -> Unit,
+    onHeartRateOn: () -> Unit,
+    onPPGGreenOff: () -> Unit,
+    onPPGGreenOn: () -> Unit,
+    onPPGIROff: () -> Unit,
+    onPPGIROn: () -> Unit,
+    onPPGRedOn: () -> Unit,
+    onPPGRedOff: () -> Unit,
+    onSPO2On: () -> Unit,
+    onSPO2Off: () -> Unit,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var localEnabled0 by remember { mutableStateOf(trackers[0]) }
+    var localEnabled1 by remember { mutableStateOf(trackers[1]) }
+    var localEnabled2 by remember { mutableStateOf(trackers[2]) }
+    var localEnabled3 by remember { mutableStateOf(trackers[3]) }
+    var localEnabled4 by remember { mutableStateOf(trackers[4]) }
+    var localEnabled5 by remember { mutableStateOf(trackers[5]) }
+    var localEnabled6 by remember { mutableStateOf(trackers[6]) }
+    Column(
+        modifier = modifier.verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = onBack,
+                // ...
+            ) {
+                Text("Back to StopWatch")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {
+                    localEnabled0 = !localEnabled0 // Umkehrung des Werts von enabled
+                    if (localEnabled0) {
+                        onAccOn()
+                    } else {
+                        onAccOff()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = if (localEnabled0) Color.Green else Color.Red
+                )
+            ) {
+                Text("Accelerometer")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {
+                    localEnabled1 = !localEnabled1
+                    if (localEnabled1) {
+                        onEcgOn()
+                    } else {
+                        onEcgOff()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = if (localEnabled1) Color.Green else Color.Red
+                )
+            ) {
+                Text("ECG")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {
+                    localEnabled2 = !localEnabled2
+                    if (localEnabled2) {
+                        onHeartRateOn()
+                    } else {
+                        onHeartRateOff()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = if (localEnabled2) Color.Green else Color.Red
+                )
+            ) {
+                Text("HeartRate")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {
+                    localEnabled3 = !localEnabled3
+                    if (localEnabled3) {
+                        onPPGGreenOn()
+                    } else {
+                        onPPGGreenOff()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = if (localEnabled3) Color.Green else Color.Red
+                )
+            ) {
+                Text("PPGGreen")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {
+                    localEnabled4 = !localEnabled4
+                    if (localEnabled4) {
+                        onPPGIROn()
+                    } else {
+                        onPPGIROff()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = if (localEnabled4) Color.Green else Color.Red
+                )
+            ) {
+                Text("PPGIR")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {
+                    localEnabled5 = !localEnabled5
+                    if (localEnabled5) {
+                        onPPGRedOn()
+                    } else {
+                        onPPGRedOff()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = if (localEnabled5) Color.Green else Color.Red
+                )
+            ) {
+                Text("PPGRed")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {
+                    localEnabled6 = !localEnabled6
+                    if (localEnabled6) {
+                        onSPO2On()
+                    } else {
+                        onSPO2Off()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = if (localEnabled6) Color.Green else Color.Red
+                )
+            ) {
+                Text("SPO2")
+            }
+        }
+    }
+    // ...
+}
+
+@Composable
+private fun FirstScreen(
+
+    onNavigateToSecondActivity: () -> Unit,
+    onAccept: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(30.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "Experiment 1",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = onNavigateToSecondActivity,
+                // ...
+            ) {
+                Text("Go to Second Activity")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = onAccept,
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.Green
+                )
+            ) {
+                Text("Accept")
+            }
+        }
     }
 }

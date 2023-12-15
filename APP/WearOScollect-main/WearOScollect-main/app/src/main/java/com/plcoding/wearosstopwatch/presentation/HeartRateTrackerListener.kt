@@ -5,8 +5,10 @@ import com.samsung.android.service.health.tracking.HealthTracker
 import com.samsung.android.service.health.tracking.data.DataPoint
 import com.samsung.android.service.health.tracking.data.HealthTrackerType
 import com.samsung.android.service.health.tracking.data.ValueKey
+import java.sql.DriverManager.println
+import java.util.ArrayList
 
-class SPO2TrackerListener(private val trackerType: HealthTrackerType) : HealthTracker.TrackerEventListener {
+class HeartRateTrackerListener(private val trackerType: HealthTrackerType) : HealthTracker.TrackerEventListener {
 
     var isDataCollecting = true
         set(value) {
@@ -19,29 +21,27 @@ class SPO2TrackerListener(private val trackerType: HealthTrackerType) : HealthTr
         }
 
     override fun onDataReceived(list: List<DataPoint>) {
-//        Log.d("Button trackerActive SPO", trackerActive.toString())
+//        Log.d("Button trackerActive HTR", trackerActive.toString())
         if (trackerActive) {
             Log.d("List", ":$list")
             Log.d("isDataCollectionRunning", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
             for (dataPoint in list) {
                 if (trackerActive) {
-//                    Log.d("Button trackerActive SPO", "DataPoint: $dataPoint")
-//                    Log.d("Button trackerActive SPO", "a: ${dataPoint.a}")
-                    Log.d("Button trackerActive SPO", "b: ${dataPoint.b}")
-//                    Log.d("Button trackerActive SPO", "time: ${dataPoint.timestamp}")
+//                    Log.d("Button trackerActive HTR", "DataPoint: $dataPoint")
+//                    Log.d("Button trackerActive HTR", "a: ${dataPoint.a}")
+                    Log.d("Button trackerActive HTR", "b: ${dataPoint.b}")
+//                    Log.d("Button trackerActive HTR", "time: ${dataPoint.timestamp}")
                 }
 
                 val json = JSON()
                 val allValues = ArrayList<String>()
                 allValues.add(dataPoint.timestamp.toString())
 
-                allValues.add(dataPoint.getValue(ValueKey.SpO2Set.SPO2).toString())
-                allValues.add(dataPoint.getValue(ValueKey.SpO2Set.HEART_RATE).toString())
-                allValues.add(dataPoint.getValue(ValueKey.SpO2Set.STATUS).toString())
+                allValues.add(dataPoint.getValue(ValueKey.HeartRateSet.HEART_RATE).toString())
 
-                json.dataToJSON("spo2", allValues)
+                json.dataToJSON("heartrate", allValues)
 
-                println("json spo2")
+                println("json heartRate")
             }
         }
     }

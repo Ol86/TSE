@@ -18,17 +18,22 @@ class ECGTrackerListener(private val trackerType: HealthTrackerType) : HealthTra
             field = value
         }
 
+    var trackerActive = true
+        set(value) {
+            field = value
+        }
+
     override fun onDataReceived(list: List<DataPoint>) {
-        Log.d("isDataCollectionRunning", isDataCollecting.toString())
-        if (isDataCollecting) {
+        Log.d("Button trackerActive ECG", trackerActive.toString())
+        if (trackerActive) {
             Log.d("List", ":$list")
-            Log.d("isDataCollectionRunning", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
+            Log.d("Button trackerActive ECG", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
             for (dataPoint in list) {
-                if (isDataCollecting) {
-                    Log.d("MainActivity DataCollection ECG", "DataPoint: $dataPoint")
-                    Log.d("MainActivity DataCollection ECG", "a: ${dataPoint.a}")
-                    Log.d("MainActivity DataCollection ECG", "b: ${dataPoint.b}")
-                    Log.d("MainActivity DataCollection ECG", "time: ${dataPoint.timestamp}")
+                if (trackerActive) {
+                    Log.d("Button trackerActive ECG", "DataPoint: $dataPoint")
+                    Log.d("Button trackerActive ECG", "a: ${dataPoint.a}")
+                    Log.d("Button trackerActive ECG", "b: ${dataPoint.b}")
+                    Log.d("Button trackerActive ECG", "time: ${dataPoint.timestamp}")
                 }
 
                 val json = JSON()
