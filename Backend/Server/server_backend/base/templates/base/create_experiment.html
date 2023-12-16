@@ -7,13 +7,15 @@
 {% endblock %}
 
 {% block content %}
+<div class="createExperiment">
     <h1> Create Experiment</h1>
 
-    <div>
+    <div class="createExperimentForm">
         <form method="POST" action="" >
             {% csrf_token %}
             {{form.as_p}}
             <input type="submit" value="Submit"/>
         </form>
     </div>
+</div>
 {% endblock %}
