@@ -1,9 +1,23 @@
 
-body {
+main {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+}
+
+header>a {
+  float: right;
+  width: fit-content;
+  text-decoration: none;
+  padding: 12px;
+  background: darkslategray;
+  color: turquoise;
+  font-weight: 600;
+  font-size: 1.35em;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
 .login {
@@ -72,11 +86,45 @@ body {
   cursor: pointer;
 }
 
-input[type="submit"]:active
-{
+input[type="submit"]:active {
   opacity: 0.6;
 }
 
+
+.createExperiment {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  gap: 10px;
+}
+  
+.experimentList>div>a:first-child, .createExperiment>a  {
+    position: relative;
+    width: fit-content;
+    text-decoration: none;
+    padding: 12px;
+    background: darkslategray;
+    color: turquoise;
+    font-weight: 600;
+    font-size: 1.35em;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border-radius: 4px;
+}
+  
+.experimentList>div>a  {
+    text-decoration: none;
+    padding: 12px;
+    font-weight: 600;
+    font-size: 1.50em;
+    letter-spacing: 0.05em;
+}
+
+.experimentList {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
 
 .buttonList {
 	position: fixed;
@@ -113,7 +161,7 @@ input[type="submit"]:active
     -webkit-transform: rotate(-45deg); transform: rotate(-45deg);
 }
 
-.createExperiment::after {
+.createExperimentButton::after {
     content: "";
     position: absolute;
     background-color: turquoise;
@@ -124,7 +172,7 @@ input[type="submit"]:active
     right: 15px;
 }
     
-.createExperiment::before {
+.createExperimentButton::before {
     content: "";
     position: absolute;
     background-color: turquoise;

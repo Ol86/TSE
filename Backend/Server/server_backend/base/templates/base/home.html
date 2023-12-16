@@ -6,20 +6,19 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Experiments</h1>
-
-    <div>
+    <div class="createExperiment">
 
         <a href="{% url 'create-experiment' %}">Create experiment</a>
-        <hr>
 
-        <div>
+        <h1>Experiments</h1>
+
+
+        <div class="experimentList">
             {% for experiment in experiments %}
                 <div>
                     <a href="{% url 'delete-experiment' experiment.id %}">Delete</a>
                     <a href="{% url 'experiment' experiment.id %}">{{experiment.title}}</a>
                 </div>
-                <hr>
             {% endfor %}
         </div>
 
@@ -27,7 +26,7 @@
 
     <footer id="footerWrap">
         <div class="buttonList">
-            <a href="{% url 'create-experiment' %}" class="createExperiment">Create experiment</a>
+            <a href="{% url 'create-experiment' %}" class="createExperimentButton">Create experiment</a>
             <a href="#top" class="pagetop">toTop</a>
         </div>
     </footer>
