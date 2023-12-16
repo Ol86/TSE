@@ -2,6 +2,7 @@ package com.plcoding.wearosstopwatch.presentation
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Color.parseColor
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -271,7 +272,7 @@ class MainActivity : ComponentActivity() {
             ppgIROff()
             ppgIRTracker.disconnectTracker()
             ppgRedOff()
-            ppgRedTracker?.disconnectTracker()
+            ppgRedTracker.disconnectTracker()
             sPO2Off()
             sPO2Tracker.disconnectTracker()
 
@@ -408,20 +409,21 @@ private fun StopWatch(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
                 text = time,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Alignment.Bottom)
             )
             Text(
                 text = " / 1:30:00",
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Light,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.Bottom)
@@ -431,22 +433,23 @@ private fun StopWatch(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(35.dp))
             Text(
                 text = notifications,
-                fontSize = 14.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Alignment.Bottom)
             )
             Text(
                 text = " / 10",
-                fontSize = 14.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Light,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.Bottom)
             )
         }
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(15.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -533,24 +536,24 @@ private fun StopWatch(
             }
         }*/
 
-        Spacer(modifier = Modifier.height(50.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Button(
-                onClick = {
-                    onBackToSettings()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.DarkGray
-                )
+        if (state != TimerState.RUNNING) {
+            Spacer(modifier = Modifier.height(15.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
             ) {
-                Text("Back to Settings")
+                Button(
+                    onClick = {
+                        onBackToSettings()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.DarkGray
+                    )
+                ) {
+                    Text("  Back to Settings  ")
+                }
             }
         }
-
-
     }
 }
 
@@ -594,9 +597,12 @@ private fun SecondActivity(
         ) {
             Button(
                 onClick = onBack,
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.DarkGray
+                )
                 // ...
             ) {
-                Text("Back to StopWatch")
+                Text("      Back      ")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -614,10 +620,11 @@ private fun SecondActivity(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled0) Color.Green else Color.Red
+                    backgroundColor = if (localEnabled0) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("Accelerometer")
+                Text("  Accelerometer  ")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -635,7 +642,8 @@ private fun SecondActivity(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled1) Color.Green else Color.Red
+                    backgroundColor = if (localEnabled1) Color(parseColor("#0FADF0"))
+                        else Color(parseColor("#AC3123"))
                 )
             ) {
                 Text("ECG")
@@ -656,10 +664,11 @@ private fun SecondActivity(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled2) Color.Green else Color.Red
+                    backgroundColor = if (localEnabled2) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("HeartRate")
+                Text("  HeartRate  ")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -677,10 +686,11 @@ private fun SecondActivity(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled3) Color.Green else Color.Red
+                    backgroundColor = if (localEnabled3) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("PPGGreen")
+                Text("  PPGGreen  ")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -698,10 +708,11 @@ private fun SecondActivity(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled4) Color.Green else Color.Red
+                    backgroundColor = if (localEnabled4) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("PPGIR")
+                Text("  PPGIR  ")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -719,10 +730,11 @@ private fun SecondActivity(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled5) Color.Green else Color.Red
+                    backgroundColor = if (localEnabled5) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("PPGRed")
+                Text("  PPGRed  ")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -740,10 +752,11 @@ private fun SecondActivity(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled6) Color.Green else Color.Red
+                    backgroundColor = if (localEnabled6) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("SPO2")
+                Text("  SPO2  ")
             }
         }
     }
@@ -785,11 +798,11 @@ private fun FirstScreen(
                 onClick = onNavigateToSecondActivity,
                 // ...
             ) {
-                Text("Go to Second Activity")
+                Text("Tracker Settings")
             }
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(5.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -797,10 +810,10 @@ private fun FirstScreen(
             Button(
                 onClick = onAccept,
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.Green
+                    backgroundColor = Color(parseColor("#32CD32"))
                 )
             ) {
-                Text("Accept")
+                Text("     Accept     ")
             }
         }
     }
