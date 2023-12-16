@@ -1,0 +1,28 @@
+:root {
+    --color-main: #abb2bf;
+    --color-main-light: #000000;
+    --background-main: #23272e;
+    --background-main-light: #f8f8f8;
+}
+
+@media (prefers-color-scheme: light) {
+    body, a, head {
+        background-color: var(--background-main-light);
+        color: var(--color-main-light);
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    body, a, head {
+        background-color: #23272e;
+        color: #abb2bf;
+    }
+}
+
+html {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+    text-decoration: none;
+}

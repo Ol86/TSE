@@ -32,13 +32,16 @@ services:
 
   # Superset is used for the bi&a system and is something like a frontend of the server.
   superset:
-    image: apache/superset
     container_name: bia
-    restart: always
+    build:
+      context: ./ApacheSuperset/superset
+      dockerfile: dockerfile
     env_file:
       - .env
     ports:
-      - 8088:8088
+      - '8088:8088'
+    volumes:
+    - ./plugin:/app/superset-frontend/superset/plugins
     depends_on:
       - postgres_db
 
