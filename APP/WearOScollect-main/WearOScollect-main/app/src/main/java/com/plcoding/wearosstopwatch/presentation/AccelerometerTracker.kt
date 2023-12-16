@@ -1,6 +1,7 @@
 package com.plcoding.wearosstopwatch.presentation
 
 // PpgGreenTracker.kt
+import android.util.Log
 import com.samsung.android.service.health.tracking.HealthTracker
 import com.samsung.android.service.health.tracking.HealthTrackerException
 import com.samsung.android.service.health.tracking.HealthTrackingService
@@ -37,6 +38,7 @@ class AccelerometerTracker(
             accelerometerTracker = null
         } catch (e: HealthTrackerException) {
             // Handle disconnection error
+            Log.e("Error", "NOOOOOOOOOOOOOO Disconnect Tracker")
         }
     }
 

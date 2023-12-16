@@ -19,29 +19,21 @@ class SPO2TrackerListener(private val trackerType: HealthTrackerType) : HealthTr
         }
 
     override fun onDataReceived(list: List<DataPoint>) {
-//        Log.d("Button trackerActive SPO", trackerActive.toString())
         if (trackerActive) {
-            Log.d("List", ":$list")
-            Log.d("isDataCollectionRunning", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
             for (dataPoint in list) {
                 if (trackerActive) {
-//                    Log.d("Button trackerActive SPO", "DataPoint: $dataPoint")
-//                    Log.d("Button trackerActive SPO", "a: ${dataPoint.a}")
-                    Log.d("Button trackerActive SPO", "b: ${dataPoint.b}")
-//                    Log.d("Button trackerActive SPO", "time: ${dataPoint.timestamp}")
+                    val json = JSON()
+                    val allValues = ArrayList<String>()
+                    allValues.add(dataPoint.timestamp.toString())
+
+                    allValues.add(dataPoint.getValue(ValueKey.SpO2Set.SPO2).toString())
+                    allValues.add(dataPoint.getValue(ValueKey.SpO2Set.HEART_RATE).toString())
+                    allValues.add(dataPoint.getValue(ValueKey.SpO2Set.STATUS).toString())
+
+                    json.dataToJSON("spo2", allValues)
+
+                    println("json spo2")
                 }
-
-                val json = JSON()
-                val allValues = ArrayList<String>()
-                allValues.add(dataPoint.timestamp.toString())
-
-                allValues.add(dataPoint.getValue(ValueKey.SpO2Set.SPO2).toString())
-                allValues.add(dataPoint.getValue(ValueKey.SpO2Set.HEART_RATE).toString())
-                allValues.add(dataPoint.getValue(ValueKey.SpO2Set.STATUS).toString())
-
-                json.dataToJSON("spo2", allValues)
-
-                println("json spo2")
             }
         }
     }

@@ -21,27 +21,33 @@ class AccelerometerTrackerListener(private val trackerType: HealthTrackerType) :
     override fun onDataReceived(list: List<DataPoint>) {
 //        Log.d("Button trackerActive Acc", trackerActive.toString())
         if (trackerActive) {
-            Log.d("List", ":$list")
-            Log.d("Button trackerActive Acc", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
+//            Log.d("List", ":$list")
+//            Log.d("Button trackerActive Acc", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
             for (dataPoint in list) {
                 if (trackerActive) {
 //                    Log.d("Button trackerActive Acc", "DataPoint: $dataPoint")
 //                    Log.d("Button trackerActive Acc", "a: ${dataPoint.a}")
-                    Log.d("Button trackerActive Acc", "b: ${dataPoint.b}")
+//                    Log.d("Button trackerActive Acc", "b: ${dataPoint.b}")
 //                    Log.d("Button trackerActive Acc", "time: ${dataPoint.timestamp}")
+
+                    val json = JSON()
+                    val allValues = ArrayList<String>()
+                    allValues.add(dataPoint.timestamp.toString())
+
+                    allValues.add(
+                        dataPoint.getValue(ValueKey.AccelerometerSet.ACCELEROMETER_X).toString()
+                    )
+                    allValues.add(
+                        dataPoint.getValue(ValueKey.AccelerometerSet.ACCELEROMETER_Y).toString()
+                    )
+                    allValues.add(
+                        dataPoint.getValue(ValueKey.AccelerometerSet.ACCELEROMETER_Z).toString()
+                    )
+
+                    json.dataToJSON("accelerometer", allValues)
+
+                    println("json accelerometer")
                 }
-
-                val json = JSON()
-                val allValues = ArrayList<String>()
-                allValues.add(dataPoint.timestamp.toString())
-
-                allValues.add(dataPoint.getValue(ValueKey.AccelerometerSet.ACCELEROMETER_X).toString())
-                allValues.add(dataPoint.getValue(ValueKey.AccelerometerSet.ACCELEROMETER_Y).toString())
-                allValues.add(dataPoint.getValue(ValueKey.AccelerometerSet.ACCELEROMETER_Z).toString())
-
-                json.dataToJSON("accelerometer", allValues)
-
-                println("json accelerometer")
             }
         }
     }

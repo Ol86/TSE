@@ -19,27 +19,19 @@ class PpgIRTrackerListener(private val trackerType: HealthTrackerType) : HealthT
         }
 
     override fun onDataReceived(list: List<DataPoint>) {
-//        Log.d("Button trackerActive PIR", trackerActive.toString())
         if (trackerActive) {
-            Log.d("List", ":$list")
-            Log.d("isDataCollectionRunning", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
             for (dataPoint in list) {
                 if (trackerActive) {
-//                    Log.d("Button trackerActive PIR", "DataPoint: $dataPoint")
-//                    Log.d("Button trackerActive PIR", "a: ${dataPoint.a}")
-                    Log.d("Button trackerActive PIR", "b: ${dataPoint.b}")
-//                    Log.d("Button trackerActive PIR", "time: ${dataPoint.timestamp}")
+                    val json = JSON()
+                    val allValues = ArrayList<String>()
+                    allValues.add(dataPoint.timestamp.toString())
+
+                    allValues.add(dataPoint.getValue(ValueKey.PpgIrSet.PPG_IR).toString())
+
+                    json.dataToJSON("ppgir", allValues)
+
+                    println("json ppgIR")
                 }
-
-                val json = JSON()
-                val allValues = ArrayList<String>()
-                allValues.add(dataPoint.timestamp.toString())
-
-                allValues.add(dataPoint.getValue(ValueKey.PpgIrSet.PPG_IR).toString())
-
-                json.dataToJSON("ppgir", allValues)
-
-                println("json ppgIR")
             }
         }
     }

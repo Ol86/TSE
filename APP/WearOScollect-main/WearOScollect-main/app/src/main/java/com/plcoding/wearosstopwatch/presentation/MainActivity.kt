@@ -2,6 +2,7 @@ package com.plcoding.wearosstopwatch.presentation
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Color.parseColor
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -118,48 +119,6 @@ class MainActivity : ComponentActivity() {
             val availableTrackers: List<HealthTrackerType> =
                 healthTracking.trackingCapability.supportHealthTrackerTypes
             Log.d("HealthTrackerList2", "Available trackers: $availableTrackers")
-            /*
-                        if (availableTrackers.contains(HealthTrackerType.PPG_GREEN)) {
-                            ppgGreenTracker?.flush()
-                            Log.d("TrackerSSS2", trackerListener.toString())
-                            ppgGreenTracker?.unsetEventListener()
-                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-GREEN++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                        }
-
-                        if (availableTrackers.contains((HealthTrackerType.PPG_RED))) {
-                            ppgREDTracker?.flush()
-                            Log.d("TrackerSSS2", trackerListener.toString())
-                            ppgREDTracker?.unsetEventListener()
-                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-RED++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                        }
-
-                        if (availableTrackers.contains((HealthTrackerType.ECG))) {
-                            ECGRateTracker?.flush()
-                            Log.d("TrackerSSS2", trackerListener.toString())
-                            ECGRateTracker?.unsetEventListener()
-                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-ECG++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                        }
-
-                        if (availableTrackers.contains((HealthTrackerType.ACCELEROMETER))) {
-                            accelerometer?.flush()
-                            Log.d("TrackerSSS2", trackerListener.toString())
-                            accelerometer?.unsetEventListener()
-                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-ACC++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                        }
-
-                        if (availableTrackers.contains((HealthTrackerType.PPG_IR))) {
-                            ppgIR?.flush()
-                            Log.d("TrackerSSS2", trackerListener.toString())
-                            ppgIR?.unsetEventListener()
-                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-IR++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                        }
-
-                        if (availableTrackers.contains((HealthTrackerType.SPO2))) {
-                            sPO2?.flush()
-                            Log.d("TrackerSSS2", trackerListener.toString())
-                            sPO2?.unsetEventListener()
-                            println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++Connection-SPO2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                        }*/
         }
 
         override fun onConnectionFailed(e: HealthTrackerException) {
@@ -169,9 +128,6 @@ class MainActivity : ComponentActivity() {
                 e.resolve(this@MainActivity)
             }
         }
-
-
-
     }
 
     private val WORK_TAG = "NotificationWorker"
@@ -284,6 +240,7 @@ class MainActivity : ComponentActivity() {
         startDataCollection()
     }
     private fun resetRoutine(viewModel: StopWatchViewModel) {
+        stopDataCollection()
         viewModel.resetTimer()
         WorkManager.getInstance(this).cancelAllWork()
     }
@@ -304,8 +261,22 @@ class MainActivity : ComponentActivity() {
     private fun stopDataCollection() {
         try {
             Log.i(TAG, "Stopping data collection. $connectionListener")
-            healthTracking.disconnectService()
+            accelerometerOff()
+            accelerometerTracker.disconnectTracker()
+            ecgOff()
+            ecgTracker.disconnectTracker()
+            heartRateOff()
+            heartRateTracker.disconnectTracker()
+            ppgGreenOff()
             ppgGreenTracker.disconnectTracker()
+            ppgIROff()
+            ppgIRTracker.disconnectTracker()
+            ppgRedOff()
+            ppgRedTracker.disconnectTracker()
+            sPO2Off()
+            sPO2Tracker.disconnectTracker()
+
+            healthTracking.disconnectService()
             isDataCollectionRunning1 = false
             Log.i(TAG, isDataCollectionRunning1.toString())
         } catch (e: Exception) {
@@ -438,20 +409,21 @@ private fun StopWatch(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
                 text = time,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Alignment.Bottom)
             )
             Text(
                 text = " / 1:30:00",
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Light,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.Bottom)
@@ -461,22 +433,23 @@ private fun StopWatch(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(35.dp))
             Text(
                 text = notifications,
-                fontSize = 14.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Alignment.Bottom)
             )
             Text(
                 text = " / 10",
-                fontSize = 14.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Light,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.Bottom)
             )
         }
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(15.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -517,7 +490,7 @@ private fun StopWatch(
                         )
                     }else{
                         Chip(
-                            onClick =onReset,
+                            onClick = onReset,
                             enabled = state != TimerState.RESET,
                             label = {
                                 Text(
@@ -563,24 +536,24 @@ private fun StopWatch(
             }
         }*/
 
-        Spacer(modifier = Modifier.height(50.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Button(
-                onClick = {
-                    onBackToSettings()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.DarkGray
-                )
+        if (state != TimerState.RUNNING) {
+            Spacer(modifier = Modifier.height(15.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
             ) {
-                Text("Back to Settings")
+                Button(
+                    onClick = {
+                        onBackToSettings()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.DarkGray
+                    )
+                ) {
+                    Text("  Back to Settings  ")
+                }
             }
         }
-
-
     }
 }
 
@@ -624,9 +597,12 @@ private fun SecondActivity(
         ) {
             Button(
                 onClick = onBack,
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.DarkGray
+                )
                 // ...
             ) {
-                Text("Back to StopWatch")
+                Text("      Back      ")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -644,10 +620,11 @@ private fun SecondActivity(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled0) Color.Green else Color.Red
+                    backgroundColor = if (localEnabled0) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("Accelerometer")
+                Text("  Accelerometer  ")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -665,7 +642,8 @@ private fun SecondActivity(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled1) Color.Green else Color.Red
+                    backgroundColor = if (localEnabled1) Color(parseColor("#0FADF0"))
+                        else Color(parseColor("#AC3123"))
                 )
             ) {
                 Text("ECG")
@@ -686,10 +664,11 @@ private fun SecondActivity(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled2) Color.Green else Color.Red
+                    backgroundColor = if (localEnabled2) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("HeartRate")
+                Text("  HeartRate  ")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -707,10 +686,11 @@ private fun SecondActivity(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled3) Color.Green else Color.Red
+                    backgroundColor = if (localEnabled3) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("PPGGreen")
+                Text("  PPGGreen  ")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -728,10 +708,11 @@ private fun SecondActivity(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled4) Color.Green else Color.Red
+                    backgroundColor = if (localEnabled4) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("PPGIR")
+                Text("  PPGIR  ")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -749,10 +730,11 @@ private fun SecondActivity(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled5) Color.Green else Color.Red
+                    backgroundColor = if (localEnabled5) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("PPGRed")
+                Text("  PPGRed  ")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -770,10 +752,11 @@ private fun SecondActivity(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled6) Color.Green else Color.Red
+                    backgroundColor = if (localEnabled6) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("SPO2")
+                Text("  SPO2  ")
             }
         }
     }
@@ -815,11 +798,11 @@ private fun FirstScreen(
                 onClick = onNavigateToSecondActivity,
                 // ...
             ) {
-                Text("Go to Second Activity")
+                Text("Tracker Settings")
             }
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(5.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -827,10 +810,10 @@ private fun FirstScreen(
             Button(
                 onClick = onAccept,
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.Green
+                    backgroundColor = Color(parseColor("#32CD32"))
                 )
             ) {
-                Text("Accept")
+                Text("     Accept     ")
             }
         }
     }

@@ -19,27 +19,19 @@ class PpgGreenTrackerListener(private val trackerType: HealthTrackerType) : Heal
         }
 
     override fun onDataReceived(list: List<DataPoint>) {
-//        Log.d("Button trackerActive PPGGreen", trackerActive.toString())
         if (trackerActive) {
-            Log.d("List", ":$list")
-            Log.d("Button trackerActive PPGGreen", "IN HEEEEEEEEEEEEEEEEEEEEEEEEEERE")
             for (dataPoint in list) {
                 if (trackerActive) {
-//                    Log.d("Button trackerActive PPGGreen", "DataPoint: $dataPoint")
-//                    Log.d("Button trackerActive PPGGreen", "a: ${dataPoint.a}")
-                    Log.d("Button trackerActive PPGGreen", "b: ${dataPoint.b}")
-//                    Log.d("Button trackerActive PPGGreen", "time: ${dataPoint.timestamp}")
+                    val json = JSON()
+                    val allValues = ArrayList<String>()
+                    allValues.add(dataPoint.timestamp.toString())
+
+                    allValues.add(dataPoint.getValue(ValueKey.PpgGreenSet.PPG_GREEN).toString())
+
+                    json.dataToJSON("ppggreen", allValues)
+                    Log.d("Json Green", allValues.toString())
+                    println("json pggGreen")
                 }
-
-                val json = JSON()
-                val allValues = ArrayList<String>()
-                allValues.add(dataPoint.timestamp.toString())
-
-                allValues.add(dataPoint.getValue(ValueKey.PpgGreenSet.PPG_GREEN).toString())
-
-                json.dataToJSON("ppggreen", allValues)
-
-                println("json pggGreen")
             }
         }
     }
