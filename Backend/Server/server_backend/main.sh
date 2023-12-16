@@ -8,7 +8,7 @@ docker stop bia backend db_config
 docker rm bia backend db_config
 
 # Delete backend image
-docker rmi tse-server-backend
+docker rmi tse-server-backend tse-superset
 
 # Delete all Volumes
 docker volume prune -a -f
@@ -36,15 +36,3 @@ sleep 5
 
 # Restart server-backend to submit all changes
 docker-compose -p tse restart server-backend
-
-# Wait 5 sec
-sleep 5
-
-# Create superuser for superset
-docker-compose -p tse exec -it superset superset fab create-admin --username admin --firstname Superset --lastname Admin --email admin@superset.com --password admin
-
-# Generate database for superset
-docker-compose -p tse exec -it superset superset db upgrade
-
-# Commit the changes to superset
-docker-compose -p tse exec -it superset superset init
