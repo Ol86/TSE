@@ -13,6 +13,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -474,33 +477,45 @@ private fun StopWatch(
                         },
                         contentDescription = null
                     )
-                }else {
+                } else {
                     val clickCount = remember { mutableStateOf(0) }
-                    if (clickCount.value <= 2){
+                    if (clickCount.value <= 2) {
                         Chip(
                             onClick = {clickCount.value++},
                             enabled = state != TimerState.RESET,
                             label = {
                                 Text(
-                                    text = "Studie beenden",
+                                    text = "End Study",
                                     maxLines = 1, overflow = TextOverflow.Ellipsis
                                 )
                             },
                             colors = ChipDefaults.primaryChipColors(backgroundColor = Color(0x99FFFFFF))
                         )
-                    }else{
+                    } else{
                         Chip(
                             onClick = onReset,
                             enabled = state != TimerState.RESET,
                             label = {
                                 Text(
-                                    text = "Sicher?",
+                                    text = "Sure?",
                                     maxLines = 1, overflow = TextOverflow.Ellipsis
                                 )
                             }
                         )
                     }
                 }
+            }
+            Spacer(modifier = Modifier.width(15.dp))
+            Button(
+                onClick = { onBackToSettings() },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(parseColor("#ED9620"))
+                )
+                ) {
+                Icon(
+                    imageVector = Icons.Default.Send,
+                    contentDescription = "Send Data"
+                )
             }
         }
         /*Spacer(modifier = Modifier.height(10.dp))
@@ -795,10 +810,22 @@ private fun FirstScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
-                onClick = onNavigateToSecondActivity,
-                // ...
+                onClick = { onNavigateToSecondActivity() },
             ) {
-                Text("Tracker Settings")
+                Icon(
+                    imageVector = Icons.Default.Sync,
+                    contentDescription = "Sync Template"
+                )
+            }
+
+            Spacer(modifier = Modifier.width(15.dp))
+            Button(
+                onClick = { onNavigateToSecondActivity() },
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "Tracker Settings"
+                )
             }
         }
 
