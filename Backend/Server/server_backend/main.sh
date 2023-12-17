@@ -45,3 +45,20 @@ sleep 5
 # Restart server-backend to submit all changes
 echo "------------- Restart Backend -------------"
 docker-compose -p tse restart server-backend
+
+# Wait 5 sec
+sleep 5
+
+# Create superuser for superset
+echo "---------- Create admin superset ----------"
+docker-compose -p tse exec -it superset superset fab create-admin --username "$SUPERSET_ADMIN_USERNAME" --firstname Superset --lastname Admin --email "$SUPERSET_ADMIN_EMAIL" --password "$SUPERSET_ADMIN_PASSWORD"
+
+# Generate database for superset
+echo "------- Create database connection --------"
+docker-compose -p tse exec -it superset superset db upgrade
+
+# Commit the changes to superset
+echo "--------- Init the db connection ----------"
+docker-compose -p tse exec -it superset superset init
+
+echo "---------------- Finished -----------------"
