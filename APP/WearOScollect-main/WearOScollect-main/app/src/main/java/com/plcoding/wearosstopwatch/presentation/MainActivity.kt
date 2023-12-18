@@ -77,43 +77,57 @@ class MainActivity : ComponentActivity() {
             if (availableTrackers.contains(HealthTrackerType.ACCELEROMETER)) {
                 accelerometerTrackerListener.isDataCollecting = isDataCollectionRunning1
                 accelerometerTrackerListener.trackerActive = trackerActive0
-                accelerometerTracker = AccelerometerTracker(healthTracking, accelerometerTrackerListener)
+                if(trackerActive0 ) {
+                    accelerometerTracker = AccelerometerTracker(healthTracking, accelerometerTrackerListener)
+                }
             }
 
             if (availableTrackers.contains(HealthTrackerType.ECG)) {
                 ecgTrackerListener.isDataCollecting = isDataCollectionRunning1
                 ecgTrackerListener.trackerActive = trackerActive1
-                ecgTracker = ECGTracker(healthTracking, ecgTrackerListener)
+                if(trackerActive1) {
+                    ecgTracker = ECGTracker(healthTracking, ecgTrackerListener)
+                }
             }
 
             if (availableTrackers.contains(HealthTrackerType.HEART_RATE)) {
                 heartRateTrackerListener.isDataCollecting = isDataCollectionRunning1
                 heartRateTrackerListener.trackerActive = trackerActive2
-                heartRateTracker = HeartRateTracker(healthTracking, heartRateTrackerListener)
+                if(trackerActive2) {
+                    heartRateTracker = HeartRateTracker(healthTracking, heartRateTrackerListener)
+                }
             }
 
             if (availableTrackers.contains(HealthTrackerType.PPG_GREEN)) {
                 ppgPpgGreenTrackerListener.isDataCollecting = isDataCollectionRunning1
                 ppgPpgGreenTrackerListener.trackerActive = trackerActive3
-                ppgGreenTracker = PpgGreenTracker(healthTracking, ppgPpgGreenTrackerListener)
+                if(trackerActive3) {
+                    ppgGreenTracker = PpgGreenTracker(healthTracking, ppgPpgGreenTrackerListener)
+                }
             }
 
             if (availableTrackers.contains(HealthTrackerType.PPG_IR)) {
                 ppgIRTrackerListener.isDataCollecting = isDataCollectionRunning1
                 ppgIRTrackerListener.trackerActive = trackerActive4
-                ppgIRTracker = PpgIRTracker(healthTracking, ppgIRTrackerListener)
+                if(trackerActive4) {
+                    ppgIRTracker = PpgIRTracker(healthTracking, ppgIRTrackerListener)
+                }
             }
 
             if (availableTrackers.contains(HealthTrackerType.PPG_RED)) {
                 ppgRedTrackerListener.isDataCollecting = isDataCollectionRunning1
                 ppgRedTrackerListener.trackerActive = trackerActive5
-                ppgRedTracker = PpgRedTracker(healthTracking, ppgRedTrackerListener)
+                if(trackerActive5) {
+                    ppgRedTracker = PpgRedTracker(healthTracking, ppgRedTrackerListener)
+                }
             }
 
             if (availableTrackers.contains(HealthTrackerType.SPO2)) {
                 sPO2TrackerListener.isDataCollecting = isDataCollectionRunning1
                 sPO2TrackerListener.trackerActive = trackerActive6
-                sPO2Tracker = SPO2Tracker(healthTracking, sPO2TrackerListener)
+                if(trackerActive6) {
+                    sPO2Tracker = SPO2Tracker(healthTracking, sPO2TrackerListener)
+                }
             }
         }
 
