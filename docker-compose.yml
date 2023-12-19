@@ -33,7 +33,7 @@ services:
   # Superset is used for the bi&a system and is something like a frontend of the server.
   superset:
     container_name: bia
-    image: apache/superset
+    image: apache/superset:latest
     restart: always
     env_file:
       - .env

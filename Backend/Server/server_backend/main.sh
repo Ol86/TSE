@@ -51,7 +51,7 @@ sleep 5
 
 # Create superuser for superset
 echo "---------- Create admin superset ----------"
-docker-compose -p tse exec -it superset superset fab create-admin --username "$SUPERSET_ADMIN_USERNAME" --firstname Superset --lastname Admin --email "$SUPERSET_ADMIN_EMAIL" --password "$SUPERSET_ADMIN_PASSWORD"
+docker-compose -p tse exec -it superset superset fab create-admin --username "admin" --firstname Superset --lastname Admin --email "admin@superset.com" --password "admin"
 
 # Generate database for superset
 echo "------- Create database connection --------"
