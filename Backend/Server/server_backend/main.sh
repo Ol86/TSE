@@ -11,7 +11,7 @@ docker rm bia backend db_config
 
 # Delete backend and superset image
 echo "----- Delete backend & superset image -----"
-docker rmi tse-server-backend apache/suiperset
+docker rmi tse-server-backend apache/superset
 
 # Delete all Volumes
 echo "----------- Delete all Volumes ------------"
