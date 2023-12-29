@@ -26,7 +26,7 @@ docker-compose --project-name tse up -d
 # Create Mirgrations of the backend
 echo "----------- Create Mirgrations ------------"
 docker-compose -p tse exec server-backend python manage.py makemigrations base
-docker-compose -p tse exec server-backend python manage.py makemigrations devices
+docker-compose -p tse exec server-backend python manage.py makemigrations user
 
 # Wait 5 sec before migrating
 sleep 5
