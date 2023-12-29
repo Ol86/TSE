@@ -49,8 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'base.apps.BaseConfig',
-    'devices.apps.DevicesConfig',
+    'user',
+    'base',
 
     'rest_framework',
     'rest_framework.authtoken',
@@ -157,4 +157,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom User model
 
-AUTH_USER_MODEL = 'devices.Account'
+AUTH_USER_MODEL = 'user.BaseUser'
