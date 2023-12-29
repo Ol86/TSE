@@ -1,5 +1,5 @@
 from django.db import models
-from devices.models import Watch
+from user.models import Watch
 
 class Questions(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True)
