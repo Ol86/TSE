@@ -26,7 +26,7 @@ class Experiment(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True)
     title = models.CharField(max_length=200)
     # Add user to 
-    watch_id = models.ForeignKey(Watch, on_delete=models.CASCADE)
+    watch_id = models.ManyToManyField(Watch)
     # Enable the different sensors
     accelerometer = models.BooleanField(default=False)
     hearth_rate = models.BooleanField(default=False)

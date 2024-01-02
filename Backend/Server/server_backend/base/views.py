@@ -2,12 +2,17 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+
 from django.shortcuts import render, redirect
-from .models import *
-from .forms import ExperimentForm
+
+from base.serializers import *
+from base.models import *
+from base.forms import ExperimentForm
+from base.json import returnExperimentInfo
 
 
 def loginPage(request):
@@ -105,3 +110,22 @@ class TestAPI(APIView):
         content = {'message': 'Hello, World!'}
         return Response(content)
 
+class WatchAPI(APIView):
+
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        if self.request.query_params.get('id'):
+            pk = self.request.query_params.get('id')
+            experiment = ExperimentSerializer(Experiment.objects.get(id=pk), many=False).data
+        
+            result = returnExperimentInfo(experiment)
+        else:
+            experiment = ExperimentSerializer(Experiment.objects.all(), many=True).data
+            result_list = []
+            for i in experiment:
+                result_list.append(returnExperimentInfo(i))
+            result = {}
+            for i in range(0, len(result_list)):
+                result[i + 1] = result_list[i]
+        return Response(result)

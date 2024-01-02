@@ -23,6 +23,7 @@ urlpatterns = [
     path('', include('base.urls')),
     path('', include('user.urls')),
     path('admin/', admin.site.urls),
+    path('api/watch/', views.WatchAPI.as_view(), name='watch-api'),
     path('test-api/', views.TestAPI.as_view(), name='test'),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
 ]
