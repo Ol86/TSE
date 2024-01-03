@@ -1,4 +1,10 @@
 {% extends 'main.html' %}
+{% load static %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}"/>
+{% endblock %}
+
 {% block title %}
     <title>
         Register

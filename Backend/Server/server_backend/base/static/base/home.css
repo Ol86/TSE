@@ -1,0 +1,118 @@
+body {
+    margin: 0;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 130px auto auto auto 130px;
+    grid-template-rows: 50px 80px auto 50px;
+    grid-template-areas: 
+        "header header header header logout"
+        "title title title title title"
+        "delete experiment experiment experiment experiment"
+        "footer footer footer footer footer"
+    ;
+    grid-gap: 8px;
+}
+
+.logout-button {
+    grid-area: logout;
+    text-align: center;
+    height: fit-content;
+    padding: 12px;
+    background: darkslategray;
+    color: turquoise;
+    font-weight: 600;
+    font-size: 1.35em;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+header {
+    grid-area: header;
+}
+
+.creation-buttons {
+    display: inline-block;
+    width: fit-content;
+    margin: 0 4px;
+    padding: 12px;
+    background: darkslategray;
+    color: turquoise;
+    font-weight: 600;
+    font-size: 1.35em;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.creation-buttons:first-child {
+    margin-left: 0;
+}
+
+h1 {
+    grid-area: title;
+}
+
+.experiment {
+    display: block;
+    height: fit-content;
+    padding: 12px;
+    font-weight: 600;
+    font-size: 1.50em;
+    letter-spacing: 0.05em;
+    margin: 15px 0;
+}
+
+#experiment-delete {
+    grid-area: delete;
+}
+
+#delete-button {
+    text-align: center;
+    background: darkslategray;
+    color: turquoise;
+    font-weight: 600;
+    font-size: 1.35em;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#experiment-title {
+    grid-area: experiment;
+    width: fit-content;
+}
+
+.buttonList {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  margin:-5px 0;
+}
+
+.buttonList>a {
+  position: relative;
+  display: block;
+  margin: 5px 0;
+  width: 50px;
+  height: 50px;
+  right: 0px;
+  bottom: 0px;
+  background: darkslategrey;
+  border-radius: 50%;
+  -webkit-transition: .3s ease-out; transition: .3s ease-out;
+  z-index: 2;
+}
+  
+.buttonList>a>i {
+  display: inline-block;
+  width: 100%;
+  line-height: 50px;
+  text-align: center;
+  vertical-align: middle;
+  color: turquoise;
+}
+    
+.buttonList>a:hover {
+  bottom: 5px;
+}

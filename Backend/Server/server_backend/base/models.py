@@ -1,5 +1,5 @@
 from django.db import models
-from user.models import Watch
+from user.models import Watch, Profile
 
 class Questions(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True)
@@ -40,6 +40,7 @@ class Experiment(models.Model):
     # Define the questions, to be asked 
     questions = models.ManyToManyField(Questions)
     # Add a time to keep track of the experiments
+    created_by = models.ForeignKey(Profile, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
