@@ -2,6 +2,8 @@ package com.plcoding.wearosstopwatch.presentation
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Color.GREEN
+import android.graphics.Color.RED
 import android.graphics.Color.parseColor
 import android.os.Bundle
 import android.util.Log
@@ -213,6 +215,7 @@ class MainActivity : ComponentActivity() {
                         notifications = "0",
                         onStart = {startRoutine(viewModel)},
                         onReset = {resetRoutine(viewModel)},
+                        onEndStudy = {currentView = ViewType.ConfirmActionScreen},
                         isDataCollectionRunning = isDataCollectionRunning1,
                         onStartDataCollection = {startDataCollection()},
                         onStopDataCollection = {stopDataCollection()},
@@ -245,6 +248,12 @@ class MainActivity : ComponentActivity() {
                     FirstScreen(
                         onNavigateToSecondActivity = {currentView = ViewType.SecondActivity},
                         onAccept = {currentView = ViewType.StopWatch}
+                    )
+                }
+                ViewType.ConfirmActionScreen -> {
+                    ConfirmActionScreen(
+                        onCancel = { currentView = ViewType.StopWatch},
+                        onConfirm = { currentView = ViewType.StopWatch; resetRoutine(viewModel) }
                     )
                 }
             }
@@ -414,6 +423,7 @@ private fun StopWatch(
     notifications: String,
     onStart: () -> Unit,
     onReset: () -> Unit,
+    onEndStudy: () -> Unit,
     isDataCollectionRunning: Boolean,
     onStartDataCollection: () -> Unit,
     onStopDataCollection: () -> Unit,
@@ -492,31 +502,41 @@ private fun StopWatch(
                         contentDescription = null
                     )
                 } else {
-                    val clickCount = remember { mutableStateOf(0) }
-                    if (clickCount.value <= 2) {
-                        Chip(
-                            onClick = {clickCount.value++},
-                            enabled = state != TimerState.RESET,
-                            label = {
-                                Text(
-                                    text = "End Study",
-                                    maxLines = 1, overflow = TextOverflow.Ellipsis
-                                )
-                            },
-                            colors = ChipDefaults.primaryChipColors(backgroundColor = Color(0x99FFFFFF))
-                        )
-                    } else{
-                        Chip(
-                            onClick = onReset,
-                            enabled = state != TimerState.RESET,
-                            label = {
-                                Text(
-                                    text = "Sure?",
-                                    maxLines = 1, overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                        )
-                    }
+                    Chip(
+                        onClick = {onEndStudy()},
+                        label = {
+                            Text(text = "End Study",
+                                maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        },
+                        colors = ChipDefaults.primaryChipColors(backgroundColor = Color(0x99FFFFFF))
+                    )
+                    /*else {
+                                        val clickCount = remember { mutableStateOf(0) }
+                                        if (clickCount.value <= 2) {
+                                            Chip(
+                                                onClick = {clickCount.value++},
+                                                enabled = state != TimerState.RESET,
+                                                label = {
+                                                    Text(
+                                                        text = "End Study",
+                                                        maxLines = 1, overflow = TextOverflow.Ellipsis
+                                                    )
+                                                },
+                                                colors = ChipDefaults.primaryChipColors(backgroundColor = Color(0x99FFFFFF))
+                                            )
+                                        } else{
+                                            Chip(
+                                                onClick = onReset,
+                                                enabled = state != TimerState.RESET,
+                                                label = {
+                                                    Text(
+                                                        text = "Sure?",
+                                                        maxLines = 1, overflow = TextOverflow.Ellipsis
+                                                    )
+                                                }
+                                            )
+                                        }
+                                    }*/
                 }
             }
             Spacer(modifier = Modifier.width(15.dp))
@@ -855,6 +875,57 @@ private fun FirstScreen(
                 )
             ) {
                 Text("     Accept     ")
+            }
+        }
+    }
+}
+
+@Composable
+private fun ConfirmActionScreen(
+    onCancel: () -> Unit,
+    onConfirm: () -> Unit
+){
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(30.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "Are You Sure ?",
+                fontSize = 25.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = { onCancel() },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(RED)
+                )
+            ) {
+                Text(" Cancel")
+            }
+
+            Spacer(modifier = Modifier.width(15.dp))
+            Button(
+                onClick = { onConfirm() },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(GREEN)
+                )
+            ) {
+                Text(" Confirm")
             }
         }
     }
