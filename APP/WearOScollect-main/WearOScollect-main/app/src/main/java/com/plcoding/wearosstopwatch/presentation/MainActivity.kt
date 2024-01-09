@@ -78,56 +78,56 @@ class MainActivity : ComponentActivity() {
 
             if (availableTrackers.contains(HealthTrackerType.ACCELEROMETER)) {
                 accelerometerTrackerListener.isDataCollecting = isDataCollectionRunning1
-                accelerometerTrackerListener.trackerActive = trackerActive0
-                if(trackerActive0 ) {
+                accelerometerTrackerListener.trackerActive = activeTrackers[0]
+                if(activeTrackers[0]) {
                     accelerometerTracker = AccelerometerTracker(healthTracking, accelerometerTrackerListener)
                 }
             }
 
             if (availableTrackers.contains(HealthTrackerType.ECG)) {
                 ecgTrackerListener.isDataCollecting = isDataCollectionRunning1
-                ecgTrackerListener.trackerActive = trackerActive1
-                if(trackerActive1) {
+                ecgTrackerListener.trackerActive = activeTrackers[1]
+                if(activeTrackers[1]) {
                     ecgTracker = ECGTracker(healthTracking, ecgTrackerListener)
                 }
             }
 
             if (availableTrackers.contains(HealthTrackerType.HEART_RATE)) {
                 heartRateTrackerListener.isDataCollecting = isDataCollectionRunning1
-                heartRateTrackerListener.trackerActive = trackerActive2
-                if(trackerActive2) {
+                heartRateTrackerListener.trackerActive = activeTrackers[2]
+                if(activeTrackers[2]) {
                     heartRateTracker = HeartRateTracker(healthTracking, heartRateTrackerListener)
                 }
             }
 
             if (availableTrackers.contains(HealthTrackerType.PPG_GREEN)) {
                 ppgPpgGreenTrackerListener.isDataCollecting = isDataCollectionRunning1
-                ppgPpgGreenTrackerListener.trackerActive = trackerActive3
-                if(trackerActive3) {
+                ppgPpgGreenTrackerListener.trackerActive = activeTrackers[3]
+                if(activeTrackers[3]) {
                     ppgGreenTracker = PpgGreenTracker(healthTracking, ppgPpgGreenTrackerListener)
                 }
             }
 
             if (availableTrackers.contains(HealthTrackerType.PPG_IR)) {
                 ppgIRTrackerListener.isDataCollecting = isDataCollectionRunning1
-                ppgIRTrackerListener.trackerActive = trackerActive4
-                if(trackerActive4) {
+                ppgIRTrackerListener.trackerActive = activeTrackers[4]
+                if(activeTrackers[4]) {
                     ppgIRTracker = PpgIRTracker(healthTracking, ppgIRTrackerListener)
                 }
             }
 
             if (availableTrackers.contains(HealthTrackerType.PPG_RED)) {
                 ppgRedTrackerListener.isDataCollecting = isDataCollectionRunning1
-                ppgRedTrackerListener.trackerActive = trackerActive5
-                if(trackerActive5) {
+                ppgRedTrackerListener.trackerActive = activeTrackers[5]
+                if(activeTrackers[5]) {
                     ppgRedTracker = PpgRedTracker(healthTracking, ppgRedTrackerListener)
                 }
             }
 
             if (availableTrackers.contains(HealthTrackerType.SPO2)) {
                 sPO2TrackerListener.isDataCollecting = isDataCollectionRunning1
-                sPO2TrackerListener.trackerActive = trackerActive6
-                if(trackerActive6) {
+                sPO2TrackerListener.trackerActive = activeTrackers[6]
+                if(activeTrackers[6]) {
                     sPO2Tracker = SPO2Tracker(healthTracking, sPO2TrackerListener)
                 }
             }
@@ -178,13 +178,6 @@ class MainActivity : ComponentActivity() {
     //private lateinit var healthTrackingService: HealthTrackingService
 
     private var isDataCollectionRunning1 = false
-    private var trackerActive0 = true
-    private var trackerActive1 = true
-    private var trackerActive2 = true
-    private var trackerActive3 = true
-    private var trackerActive4 = true
-    private var trackerActive5 = true
-    private var trackerActive6 = true
 
     //Accelerometer,ECG,HeartRate,ppgGreen,ppgIR,ppgRed,SPO2
     private var activeTrackers = arrayListOf(true, true, true, true, true, true, true)
@@ -317,99 +310,85 @@ class MainActivity : ComponentActivity() {
 
     private fun accelerometerOff(){
         activeTrackers[0] = false
-        trackerActive0 = activeTrackers[0]
-        accelerometerTrackerListener.trackerActive = trackerActive0
+        accelerometerTrackerListener.trackerActive = activeTrackers[0]
         Log.i("Button", "Acc is " + activeTrackers[0].toString())
     }
 
     private fun accelerometerOn(){
         activeTrackers[0] = true
-        trackerActive0 = activeTrackers[0]
-        accelerometerTrackerListener.trackerActive = trackerActive0
+        accelerometerTrackerListener.trackerActive = activeTrackers[0]
         Log.i("Button", "Acc is " + activeTrackers[0].toString())
     }
 
     private fun ecgOff() {
         activeTrackers[1] = false
-        trackerActive1 = activeTrackers[1]
-        ecgTrackerListener.trackerActive = trackerActive1
+        ecgTrackerListener.trackerActive = activeTrackers[1]
         Log.i("Button", "ECG is " + activeTrackers[1].toString())
     }
 
     private fun ecgOn() {
         activeTrackers[1] = true
-        trackerActive1 = activeTrackers[1]
-        ecgTrackerListener.trackerActive = trackerActive1
+        ecgTrackerListener.trackerActive = activeTrackers[1]
         Log.i("Button", "Ecg is " + activeTrackers[1].toString())
     }
 
     private fun heartRateOff() {
         activeTrackers[2] = false
-        trackerActive2 = activeTrackers[2]
-        heartRateTrackerListener.trackerActive = trackerActive2
+        heartRateTrackerListener.trackerActive = activeTrackers[2]
         Log.i("Button", "HeartRate is " + activeTrackers[2].toString())
     }
 
     private fun heartRateOn() {
         activeTrackers[2] = true
-        trackerActive2 = activeTrackers[2]
-        heartRateTrackerListener.trackerActive = trackerActive2
+        heartRateTrackerListener.trackerActive = activeTrackers[2]
         Log.i("Button", "HeartRate is " + activeTrackers[2].toString())
     }
 
     private fun ppgGreenOff(){
         activeTrackers[3] = false
-        trackerActive3 = activeTrackers[3]
-        ppgPpgGreenTrackerListener.trackerActive = trackerActive3
+        ppgPpgGreenTrackerListener.trackerActive = activeTrackers[3]
         Log.i("Button", "ppgGreen is " + activeTrackers[3].toString())
     }
 
     private fun ppgGreenOn(){
         activeTrackers[3] = true
-        trackerActive3 = activeTrackers[3]
-        ppgPpgGreenTrackerListener.trackerActive = trackerActive3
+        ppgPpgGreenTrackerListener.trackerActive = activeTrackers[3]
         Log.i("Button", "ppgGreen is " + activeTrackers[3].toString())
     }
 
     private fun ppgIROff(){
         activeTrackers[4] = false
-        trackerActive4 = activeTrackers[4]
-        ppgIRTrackerListener.trackerActive = trackerActive4
+        ppgIRTrackerListener.trackerActive = activeTrackers[4]
         Log.i("Button", "ppgIR is " + activeTrackers[4].toString())
     }
 
     private fun ppIROn(){
         activeTrackers[4] = true
-        trackerActive4 = activeTrackers[4]
-        ppgIRTrackerListener.trackerActive = trackerActive4
+        ppgIRTrackerListener.trackerActive = activeTrackers[4]
         Log.i("Button", "ppgIR is " + activeTrackers[4].toString())
     }
 
     private fun ppgRedOff(){
         activeTrackers[5] = false
-        trackerActive5 = activeTrackers[5]
-        ppgRedTrackerListener.trackerActive = trackerActive5
+        ppgRedTrackerListener.trackerActive = activeTrackers[5]
         Log.i("Button", "ppgRed is " + activeTrackers[5].toString())
     }
 
     private fun ppgRedOn(){
         activeTrackers[5] = true
-        trackerActive5 = activeTrackers[5]
-        ppgRedTrackerListener.trackerActive = trackerActive5
+        ppgRedTrackerListener.trackerActive = activeTrackers[5]
         Log.i("Button", "ppgRed is " + activeTrackers[5].toString())
     }
 
     private fun sPO2Off(){
         activeTrackers[6] = false
-        trackerActive6 = activeTrackers[6]
-        sPO2TrackerListener.trackerActive = trackerActive6
+        sPO2TrackerListener.trackerActive = activeTrackers[6]
         Log.i("Button", "SPO2 is " + activeTrackers[6].toString())
     }
 
     private fun sPO2On(){
         activeTrackers[6] = true
-        trackerActive6 = activeTrackers[6]
-        sPO2TrackerListener.trackerActive = trackerActive6
+        sPO2TrackerListener.trackerActive = activeTrackers[6]
         Log.i("Button", "SPO2 is " + activeTrackers[6].toString())
     }
 
