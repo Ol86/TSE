@@ -85,6 +85,7 @@ def createExperiment(request):
             edit = form.save(commit=False)
             edit.created_by = current_profile
             edit.save()
+            form.save_m2m()
             return redirect('home')
 
     context = {'form': form}
