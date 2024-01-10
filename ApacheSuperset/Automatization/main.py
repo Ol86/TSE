@@ -8,9 +8,9 @@ password = 'admin'
 
 # Authenticate
 auth_res = requests.post(f'{url}/api/v1/security/login', json={
-  "password": "admin",
+  "password": password,
   "provider": "db",
-  "username": "admin"
+  "username": username
 })
 auth_token = auth_res.json()['access_token']
 
