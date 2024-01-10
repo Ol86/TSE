@@ -1,3 +1,4 @@
+import json
 import requests
 
 # Replace with your Superset instance URL and credentials
@@ -6,9 +7,10 @@ username = 'admin'
 password = 'admin'
 
 # Authenticate
-auth_res = requests.post(f'{url}/security/login', json={
-  'username': username,
-  'password': password
+auth_res = requests.post(f'{url}/api/v1/security/login', json={
+  "password": "admin",
+  "provider": "db",
+  "username": "admin"
 })
 auth_token = auth_res.json()['access_token']
 
