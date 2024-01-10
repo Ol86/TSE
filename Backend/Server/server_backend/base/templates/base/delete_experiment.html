@@ -1,4 +1,9 @@
 {% extends 'main.html' %}
+{% load static %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'base/delete_experiment.css' %}"/>
+{% endblock %}
 
 {% block title %}
     <title>
@@ -7,15 +12,12 @@
 {% endblock %}
 
 {% block content %}
-    <h1> Delete Experiment</h1>
-
-    <div>
-        <form method="POST" action="" >
-            {% csrf_token %}
-            <p>Are you sure that you want to delete "{{obj.title}}"</p>
-            
-            <a href="{{request.META.HTTP_REFERER}}">Go back</a>
-            <input type="submit" value="Confirm"/>
-        </form>
-    </div>
+    <form method="POST" action="" >
+        <h2>Delete Experiment</h2>
+        {% csrf_token %}
+        <p class="text">Are you sure that you want to delete "{{experiment.title}}"</p>
+                
+        <a class="back" href="{{request.META.HTTP_REFERER}}">Go back</a>
+        <input id="submit" type="submit" value="Confirm"/>
+    </form>
 {% endblock %}

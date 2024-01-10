@@ -111,16 +111,13 @@ class Profile(models.Model):
     Returns:
         profile: The user model of the backend.
     """
-    PROFESSOR = 1
-    STUDENT = 2
-    PHD = 3
     ROLE = [
-        (PROFESSOR, 'Professor'),
-        (STUDENT, 'Student'),
-        (PHD, 'Phd'),
+        ('professor', 'Professor'),
+        ('student', 'Student'),
+        ('phd', 'Phd'),
     ]
     user = models.OneToOneField(BaseUser, on_delete=models.CASCADE, primary_key=True)
-    role = models.PositiveSmallIntegerField(choices=ROLE, default=STUDENT)
+    role = models.CharField(max_length=10, choices=ROLE)
 
     def __str__(self):
         return self.user.username

@@ -11,9 +11,8 @@ from django.shortcuts import render, redirect
 
 from base.serializers import *
 from base.models import *
-from base.forms import ExperimentForm
+from base.forms import ExperimentForm, QuestionForm
 from base.json import returnExperimentInfo
-
 
 def loginPage(request):
     """ This function handle the generation of loginpage.
@@ -55,7 +54,7 @@ def home(request):
     :param request: The request of the page and the user.
     :return: The function returns the resulting webpage.
     """     
-    experiments = Experiment.objects.all()  	        #objects.all() gibt alle Experiment Instanzen zurück als Querryset
+    experiments = Experiment.objects.filter(created_by=request.user.id).order_by('-id')[:10]
     context = {'experiments': experiments}              #gibt unserer home.html die Experimente
     return render(request, 'base/home.html', context)   #siehe templates/base/home.html
 
@@ -79,10 +78,13 @@ def createExperiment(request):
     :return: This function returns the same page if an error occured, or it redirects the user to the homepage if the generation of a new experiment was successful
     """
     form = ExperimentForm()
+    current_profile = Profile.objects.get(user=request.user.id)
     if request.method == 'POST':
         form = ExperimentForm(request.POST)
         if form.is_valid():
-            form.save()
+            edit = form.save(commit=False)
+            edit.created_by = current_profile
+            edit.save()
             return redirect('home')
 
     context = {'form': form}
@@ -100,7 +102,24 @@ def deleteExperiment(request, pk):
     if request.method == 'POST':
         experiment.delete()
         return redirect('home')
-    return render(request, 'base/delete_experiment.html', {'experiments': experiment})
+    return render(request, 'base/delete_experiment.html', {'experiment': experiment})
+
+@login_required(login_url='login')
+def createQuestion(request):
+    form = QuestionForm()
+    if request.method == 'POST':
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            edit = form.save(commit=False)
+            edit.button1 = bool(edit.button1_text)
+            edit.button2 = bool(edit.button2_text)
+            edit.button3 = bool(edit.button3_text)
+            edit.button4 = bool(edit.button4_text)
+            edit.save()
+            return redirect('home')
+
+    context = {'form': form}
+    return render(request, 'base/create_question.html', context)
 
 class TestAPI(APIView):
 
@@ -125,6 +144,7 @@ class WatchAPI(APIView):
             result_list = []
             for i in experiment:
                 result_list.append(returnExperimentInfo(i))
+            result_list.reverse()
             result = {}
             for i in range(0, len(result_list)):
                 result[i + 1] = result_list[i]

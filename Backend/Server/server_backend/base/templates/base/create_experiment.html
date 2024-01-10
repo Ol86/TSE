@@ -1,4 +1,9 @@
 {% extends 'main.html' %}
+{% load static %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'base/create_experiment.css' %}"/>
+{% endblock %}
 
 {% block title %}
     <title>
@@ -7,15 +12,55 @@
 {% endblock %}
 
 {% block content %}
-<div class="createExperiment">
-    <h1> Create Experiment</h1>
-
-    <div class="createExperimentForm">
-        <form method="POST" action="" >
+    <a id="quit" href="{% url 'home' %}">quit</a>
+    <form class="creationForm" method="POST" action="" >
+        <h2> Create Experiment</h2>
+        <div class="formElements">
             {% csrf_token %}
-            {{form.as_p}}
-            <input type="submit" value="Submit"/>
-        </form>
-    </div>
-</div>
+            {{ form.title }}
+            <table>
+                <tr>
+                    <td>{{ form.accelerometer.label }}</td>
+                    <td>{{ form.hearth_rate.label }}</td>
+                    <td>{{ form.bia.label }}</td>
+                </tr>
+                <tr>
+                    <td>{{ form.accelerometer }}</td>
+                    <td>{{ form.hearth_rate }}</td>
+                    <td>{{ form.bia }}</td>
+                </tr>
+                <tr>
+                    <td>{{ form.ppg_green.label }}</td>
+                    <td>{{ form.ppg_ir.label }}</td>
+                    <td>{{ form.ppg_red.label }}</td>
+                </tr>
+                <tr>
+                    <td>{{ form.ppg_green }}</td>
+                    <td>{{ form.ppg_ir }}</td>
+                    <td>{{ form.ppg_red }}</td>
+                </tr>
+                <tr>
+                    <td>{{ form.ecg.label }}</td>
+                    <td>{{ form.spo2.label }}</td>
+                    <td>{{ form.sweat_loss.label }}</td>
+                </tr>
+                <tr>
+                    <td>{{ form.ecg }}</td>
+                    <td>{{ form.spo2 }}</td>
+                    <td>{{ form.sweat_loss }}</td>
+                </tr>
+            </table>
+            <div class="multipleSelect">
+                <span class="headline">{{ form.questions.name }}</span>
+                <hr>
+                {{ form.questions }}
+            </div>
+            <div class="multipleSelect">
+                <span class="headline">{{ form.watches.name }}</span>
+                <hr>
+                {{ form.watches }}
+            </div>
+        </diV>
+        <input id="submit" type="submit" value="Submit"/>
+    </form>
 {% endblock %}
