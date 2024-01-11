@@ -240,7 +240,8 @@ class MainActivity : ComponentActivity() {
                 ViewType.FirstScreen -> {
                     FirstScreen(
                         onNavigateToSecondActivity = {currentView = ViewType.SecondActivity},
-                        onAccept = {currentView = ViewType.StopWatch}
+                        onAccept = {currentView = ViewType.StopWatch},
+                        onNotify = { oneTimeNotification() }
                     )
                 }
                 ViewType.ConfirmActionScreen -> {
@@ -391,7 +392,12 @@ class MainActivity : ComponentActivity() {
         sPO2TrackerListener.trackerActive = activeTrackers[6]
         Log.i("Button", "SPO2 is " + activeTrackers[6].toString())
     }
-
+    private fun oneTimeNotification() {
+        val notificationManager = NotificationManager(applicationContext)
+        //notificationManager.promptNotification(123456789)
+        notificationManager.oneTimeNotification("Hello", "World")
+        Log.i("Notify", "HELOOOOOOOOOOOOOOOO")
+    }
 
 }
 
@@ -796,6 +802,7 @@ private fun FirstScreen(
 
     onNavigateToSecondActivity: () -> Unit,
     onAccept: () -> Unit,
+    onNotify: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -823,7 +830,7 @@ private fun FirstScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
-                onClick = { onNavigateToSecondActivity() },
+                onClick = { onNotify() },
             ) {
                 Icon(
                     imageVector = Icons.Default.Sync,
