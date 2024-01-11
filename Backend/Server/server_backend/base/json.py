@@ -10,7 +10,7 @@ def returnExperimentInfo(experiment):
         questions.append(QuestionsSerializer(Questions.objects.get(id=i), many=False).data)
     
     watches = []
-    for i in experiment["watch_id"]:
+    for i in experiment["watches"]:
         watch = WatchSerializer(Watch.objects.get(user_id=i)).data
         base_user = BaseUserSerializer(BaseUser.objects.get(id=watch["user"])).data
         watches.append({'name': base_user["username"], 'watch': watch["mac_adress"]},)

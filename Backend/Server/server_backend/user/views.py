@@ -25,7 +25,7 @@ def registerWatch(response):
     else:
         form = WatchRegisterForm()
 
-    return render(response, 'user/register.html', {'form': form})
+    return render(response, 'user/register_watch.html', {'form': form})
 
 def registerUser(response):
     if response.method == 'POST':
@@ -50,4 +50,4 @@ def registerUser(response):
     else:
         form = UserRegisterForm()
 
-    return render(response, 'user/register.html', {'form': form})
+    return render(response, 'user/register_user.html', {'form': form})

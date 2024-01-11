@@ -1,0 +1,28 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'base/create_question.css' %}"/>
+{% endblock %}
+
+{% block title %}
+    <title>
+        Create Question
+    </title>
+{% endblock %}
+
+{% block content %}
+    <a id="quit" href="{% url 'home' %}">quit</a>
+    <form class="creationForm" method="POST" action="" >
+        <h2>Create Question</h2>
+        <div class="formElements">
+            {% csrf_token %}
+            {{ form.question }}
+            {{ form.button1_text }}
+            {{ form.button2_text }}
+            {{ form.button3_text }}
+            {{ form.button4_text }}
+        </div>
+        <input id="submit" type="submit" value="Submit"/>
+    </form>
+{% endblock %}
