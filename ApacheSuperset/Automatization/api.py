@@ -1,10 +1,11 @@
 import json
 import requests
-import test
+
 
 def saveToFile(result):
     with open("test.json", "w") as output:
         output.write(result)
+
 
 def getDashboards(url, auth_token):
     headers = {'Authorization': f'Bearer {auth_token}'}
@@ -12,24 +13,25 @@ def getDashboards(url, auth_token):
     dashboards = dashboards_res.json()
     saveToFile(json.dumps(dashboards, indent=4))
 
+
 def getCharts(url, auth_token):
     headers = {'Authorization': f'Bearer {auth_token}'}
-    charts_res = requests.get(f'{url}/api/v1/chart/', headers = headers)
+    charts_res = requests.get(f'{url}/api/v1/chart/', headers=headers)
     charts = charts_res.json()
     saveToFile(json.dumps(charts, indent=4))
 
-def createDashboard(url, auth_token):
 
+def createDashboard(url, csrf_token, auth_token, session):
     headers = {
         'Authorization': f'Bearer {auth_token}',
-        'X-CSRFToken': test.csrf_token,
+        'X-CSRFToken': csrf_token,
     }
 
     body = {
         "certification_details": "string",
         "certified_by": "string",
         "css": "string",
-        "dashboard_title": "test2",
+        "dashboard_title": "david",
         "external_url": "string",
         "is_managed_externally": True,
         "json_metadata": "",
@@ -41,9 +43,8 @@ def createDashboard(url, auth_token):
         "roles": [
             1
         ],
-        "slug": "string2"
+        "slug": "string4"
     }
 
-    dashboards_res = test.session.post(f'{url}/api/v1/dashboard/', headers=headers, json=body)
+    dashboards_res = session.post(f'{url}/api/v1/dashboard/', headers=headers, json=body)
     print(dashboards_res.json())
-
