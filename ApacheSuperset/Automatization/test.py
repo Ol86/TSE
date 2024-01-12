@@ -28,7 +28,7 @@ body = {
     "certification_details": "string",
     "certified_by": "string",
     "css": "string",
-    "dashboard_title": "test",
+    "dashboard_title": "test2",
     "external_url": "string",
     "is_managed_externally": True,
     "json_metadata": "",
@@ -40,7 +40,7 @@ body = {
     "roles": [
         1
     ],
-    "slug": "string"
+    "slug": "string2"
 }
 
 dashboards_res = session.post(f'{url}/api/v1/dashboard/', headers=headers, json=body)

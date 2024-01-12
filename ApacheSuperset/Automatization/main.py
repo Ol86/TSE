@@ -17,10 +17,13 @@ def main():
   auth_token = auth_res.json()['access_token']
 
   csrf_token = requests.get(f'{url}/api/v1/security/csrf_token/', headers={'Authorization': f'Bearer {auth_token}'}).json()['result']
-  print(csrf_token)
+  #print(csrf_token)
 
   # Fetch dashboards
   api.getDashboards(url, auth_token)
+
+  # Fetch Charts
+  api.getCharts(url, auth_token)
 
 if __name__ == '__main__':
   main()
