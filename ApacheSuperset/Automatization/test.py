@@ -1,5 +1,7 @@
 import json
 import requests
+from IPython.core.display import JSON
+
 import api
 
 session = requests.Session()
@@ -23,8 +25,11 @@ csrf_token = \
 
 print(csrf_token)
 
-api.createDashboard(url, csrf_token, auth_token, session)
-
+# api.createDashboard(url, csrf_token, auth_token, session)
+#api.createChart(url, csrf_token, auth_token, session)
+#api.getCharts(url, auth_token)
+new_chart = api.createChart(url, csrf_token, auth_token, session)
+api.saveToFile(json.dumps(new_chart, indent=4))
 
 
 session.close()
