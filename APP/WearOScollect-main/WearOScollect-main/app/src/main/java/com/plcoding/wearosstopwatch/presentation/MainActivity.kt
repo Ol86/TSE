@@ -394,8 +394,8 @@ class MainActivity : ComponentActivity() {
     }
     private fun oneTimeNotification() {
         val notificationManager = NotificationManager(applicationContext)
-        //notificationManager.promptNotification(123456789)
         notificationManager.oneTimeNotification("Hello", "World")
+        notificationManager.promptNotification(123456789)
         Log.i("Notify", "HELOOOOOOOOOOOOOOOO")
     }
 
