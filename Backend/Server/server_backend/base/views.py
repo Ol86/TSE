@@ -3,9 +3,13 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
+
+import json
 
 from django.shortcuts import render, redirect
 
@@ -135,18 +139,29 @@ class WatchAPI(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        if self.request.query_params.get('id'):
-            pk = self.request.query_params.get('id')
-            experiment = ExperimentSerializer(Experiment.objects.get(id=pk), many=False).data
-        
-            result = returnExperimentInfo(experiment)
+        key = request.META['HTTP_AUTHORIZATION'].split(" ")[1]
+        token = Token.objects.get(key=key)
+        experiment = ExperimentSerializer(Experiment.objects.all(), many=True).data
+        is_valid = False
+        last_experiment_index = 0
+        for i in range(len(experiment) - 1, -1, -1):
+            for j in experiment[i]["watches"]:
+                if j == token.user.id:
+                    last_experiment_index = i
+                    is_valid = True
+
+        if is_valid:
+            result = returnExperimentInfo(experiment[last_experiment_index])
         else:
-            experiment = ExperimentSerializer(Experiment.objects.all(), many=True).data
-            result_list = []
-            for i in experiment:
-                result_list.append(returnExperimentInfo(i))
-            result_list.reverse()
-            result = {}
-            for i in range(0, len(result_list)):
-                result[i + 1] = result_list[i]
+            result = {"error": "No experiment with This Watch"}
+
         return Response(result)
+
+    def post(self, request):
+        data = request.data
+        path = "/home/ubuntu/test.json"
+        if data:
+            with open(path, "w") as output:
+                output.write(json.dumps(data, indent=4))
+                return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
