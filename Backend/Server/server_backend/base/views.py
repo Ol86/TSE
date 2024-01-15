@@ -159,7 +159,7 @@ class WatchAPI(APIView):
 
     def post(self, request):
         data = request.data
-        path = "/home/ubuntu/test.json"
+        path = "tse-kit-2023.json"
         if data:
             with open(path, "w") as output:
                 output.write(json.dumps(data, indent=4))
