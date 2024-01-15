@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 
+from os import path
 import json
 
 from django.shortcuts import render, redirect
@@ -159,9 +160,15 @@ class WatchAPI(APIView):
 
     def post(self, request):
         data = request.data
-        path = "tse-kit-2023.json"
+        filename = "tse-kit-2023.json"
         if data:
-            with open(path, "w") as output:
-                output.write(json.dumps(data, indent=4))
+            if path.isfile(filename):
+                with open(filename, "r") as inputfile:
+                    json_data = json.load(inputfile)
+
+            json_data.append(data)
+
+            with open(filename, "w") as output:
+                output.write(json.dumps(json_data, indent=4))
                 return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
