@@ -161,6 +161,7 @@ class WatchAPI(APIView):
     def post(self, request):
         data = request.data
         filename = "tse-kit-2023.json"
+        json_data = {}
         if data:
             if path.isfile(filename):
                 with open(filename, "r") as inputfile:
