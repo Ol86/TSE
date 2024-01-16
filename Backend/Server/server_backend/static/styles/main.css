@@ -6,14 +6,14 @@
 }
 
 @media (prefers-color-scheme: light) {
-    body, a, head {
+    body, a, head, .collapsible {
         background-color: var(--background-main-light);
         color: var(--color-main-light);
     }
 }
 
 @media (prefers-color-scheme: dark) {
-    body, a, head {
+    body, a, head, .collapsible {
         background-color: #23272e;
         color: #abb2bf;
     }
