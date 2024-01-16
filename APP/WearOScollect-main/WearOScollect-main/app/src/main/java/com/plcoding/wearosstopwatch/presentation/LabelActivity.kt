@@ -1,5 +1,6 @@
 package com.plcoding.wearosstopwatch.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -63,6 +64,9 @@ class LabelActivity : ComponentActivity() {
                 AffectData(0, id, affect)
             ) {
                 finish()
+
+                val mainActivityIntent = Intent(this@LabelActivity, MainActivity::class.java)
+                startActivity(mainActivityIntent)
                 Log.v("success", "This actually worked")
             }
     }

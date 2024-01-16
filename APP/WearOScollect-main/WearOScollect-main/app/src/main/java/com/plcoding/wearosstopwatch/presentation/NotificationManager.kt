@@ -33,12 +33,12 @@ class NotificationManager(private val context: Context) {
         createNotificationChannel()
 
         val notificationIntent = Intent(context, LabelActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_TASK_ON_HOME or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            flags = Intent.FLAG_ACTIVITY_TASK_ON_HOME or Intent.FLAG_ACTIVITY_NEW_TASK// or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         notificationIntent.putExtra("NotificationTimeId", notificationTimeId)
 
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context,
-            notificationTimeId.toInt(), notificationIntent, PendingIntent.FLAG_IMMUTABLE)
+            notificationTimeId.toInt(), notificationIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
 
 
         val notification = NotificationCompat.Builder(context, channelId)
