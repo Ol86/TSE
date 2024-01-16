@@ -1,0 +1,38 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'user/watches.css' %}"/>
+{% endblock %}
+
+{% block title %}
+    <title>
+        Watches
+    </title>
+{% endblock %}
+
+{% block content %}
+    <a class="logout-button" href="{% url 'logout' %}">Logout</a>
+    <header>
+        <a class="creation-buttons" href="{% url 'home' %}">Experiments</a>
+        <a class="creation-buttons" href="{% url 'questions' %}">Questions</a>
+        <a class="creation-buttons" href="{% url 'watches' %}">Watches</a>
+    </header>
+    <h1>Watches</h1>
+    <div id="watch-delete">
+    {% for watch in watches %}
+        <a class="watch" id="delete-button" href="{% url 'delete-watch' watch.user_id %}">Delete</a>
+    {% endfor %}
+    </div>
+    <div id="watch-title">
+    {% for watch in watches %}
+        <div class="watch">
+            <span id="text">{{watch.user.username}} - {{watch.mac_adress}}</span>
+        </div>
+    {% endfor %}
+    </div>
+    <nav class="buttonList">
+        <a href="{% url 'create-watch' %}"><i class="fa fa-plus fa-2x" aria-hidden="true"></i></a>
+        <a href="#top"><i class="fa fa-angle-up fa-2x" aria-hidden="true"></i></a>
+    </nav>
+{% endblock %}

@@ -73,7 +73,7 @@ def experiment(request, pk):
     """
     experiment = Experiment.objects.get(id=pk)
     context = {'experiment': experiment}
-    return render(request, 'base/experiment.html', context)
+    return render(request, 'base/experiment/experiment.html', context)
 
 @login_required(login_url='login')
 def createExperiment(request):
@@ -94,7 +94,7 @@ def createExperiment(request):
             return redirect('home')
 
     context = {'form': form}
-    return render(request, 'base/create_experiment.html', context)
+    return render(request, 'base/experiment/create_experiment.html', context)
 
 @login_required(login_url='login')
 def deleteExperiment(request, pk):
@@ -108,7 +108,13 @@ def deleteExperiment(request, pk):
     if request.method == 'POST':
         experiment.delete()
         return redirect('home')
-    return render(request, 'base/delete_experiment.html', {'experiment': experiment})
+    return render(request, 'base/experiment/delete_experiment.html', {'experiment': experiment})
+
+@login_required(login_url='login')
+def questions(request):
+    questions = Questions.objects.all()
+    context = {'questions': questions}
+    return render(request, 'base/question/questions.html', context)
 
 @login_required(login_url='login')
 def createQuestion(request):
@@ -125,7 +131,21 @@ def createQuestion(request):
             return redirect('home')
 
     context = {'form': form}
-    return render(request, 'base/create_question.html', context)
+    return render(request, 'base/question/create_question.html', context)
+
+@login_required(login_url='login')
+def deleteQuestion(request, pk):
+    """ This function handles the deletion of an experiment.
+
+    :param request: It handles the request to delete an experiment and update the database.
+    :return: This function returns the same page before delete was clicked, or it redirects the user to the homepage if the deletion of an experiment was successful
+    """
+
+    question = Questions.objects.get(id=pk)
+    if request.method == 'POST':
+        question.delete()
+        return redirect('home')
+    return render(request, 'base/question/delete_question.html', {'question': question})
 
 class TestAPI(APIView):
 
@@ -161,7 +181,7 @@ class WatchAPI(APIView):
     def post(self, request):
         data = request.data
         filename = "tse-kit-2023.json"
-        json_data = {}
+        json_data = []
         if data:
             if path.isfile(filename):
                 with open(filename, "r") as inputfile:

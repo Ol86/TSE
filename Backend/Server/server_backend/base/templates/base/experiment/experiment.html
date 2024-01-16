@@ -1,0 +1,15 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}"/>
+{% endblock %}
+{% block title %}
+    <title>
+        {{experiment.title}}
+    </title>
+{% endblock %}
+
+{% block content %}
+    <h1>{{experiment.title}}</h1>
+{% endblock %}

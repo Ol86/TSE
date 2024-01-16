@@ -14,9 +14,9 @@
 {% block content %}
     <a class="logout-button" href="{% url 'logout' %}">Logout</a>
     <header>
-        <a class="creation-buttons" href="{% url 'create-experiment' %}">Create experiment</a>
-        <a class="creation-buttons" href="{% url 'create-question' %}">Create question</a>
-        <a class="creation-buttons" href="{% url 'create-watch' %}">Create watch</a>
+        <a class="creation-buttons" href="{% url 'home' %}">Experiments</a>
+        <a class="creation-buttons" href="{% url 'questions' %}">Questions</a>
+        <a class="creation-buttons" href="{% url 'watches' %}">Watches</a>
     </header>
     <h1>Experiments</h1>
     <div id="experiment-delete">
@@ -33,9 +33,7 @@
     {% endfor %}
     </div>
     <nav class="buttonList">
-        <a href="{% url 'create-experiment' %}"><i class="fa fa-book fa-2x" aria-hidden="true"></i></a>
-        <a href="{% url 'create-question' %}"><i class="fa fa-question fa-2x" aria-hidden="true"></i></a>
-        <a href="{% url 'create-watch' %}"><i class="fa fa-clock-o fa-2x" aria-hidden="true"></i></a>
+        <a href="{% url 'create-experiment' %}"><i class="fa fa-plus fa-2x" aria-hidden="true"></i></a>
         <a href="#top"><i class="fa fa-angle-up fa-2x" aria-hidden="true"></i></a>
     </nav>
 {% endblock %}
