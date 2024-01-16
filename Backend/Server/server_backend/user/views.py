@@ -20,7 +20,7 @@ def registerWatch(response):
             user.is_admin = False
             user.save()
 
-            return redirect('home')
+            return redirect('watches')
 
     else:
         form = WatchRegisterForm()
@@ -38,7 +38,7 @@ def deleteWatch(request, pk):
     watch = Watch.objects.get(user_id=pk)
     if request.method == 'POST':
         watch.delete()
-        return redirect('home')
+        return redirect('watches')
     return render(request, 'user/delete_watch.html', {'watch': watch})
 
 def registerUser(response):

@@ -128,7 +128,7 @@ def createQuestion(request):
             edit.button3 = bool(edit.button3_text)
             edit.button4 = bool(edit.button4_text)
             edit.save()
-            return redirect('home')
+            return redirect('questions')
 
     context = {'form': form}
     return render(request, 'base/question/create_question.html', context)
@@ -144,7 +144,7 @@ def deleteQuestion(request, pk):
     question = Questions.objects.get(id=pk)
     if request.method == 'POST':
         question.delete()
-        return redirect('home')
+        return redirect('questions')
     return render(request, 'base/question/delete_question.html', {'question': question})
 
 class TestAPI(APIView):
