@@ -1,6 +1,18 @@
 #!/bin/bash
 # Basic script to restart the docker with new changes.
 
+echo "---------- Get current repository ---------"
+
+# Set the SSH key for authentication
+export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519"
+
+git stash
+
+# Perform git pull
+git pull
+
+sleep 5
+
 # Stop all container
 echo "---------- Stoping all container ----------"
 docker stop bia backend db_config
