@@ -235,23 +235,78 @@ class LabelActivity : ComponentActivity() {
                     first = LabelButton(
                         "Stand anschauen",
                         contextButton,
-                        func = { insertContext(notificationTimeId, "Stand anschauen") }),
+                        func = { navController.navigate("Question_4")
+                            insertAffect(notificationTimeId, "Stand anschauen") }),
                     second = LabelButton(
                         "Unterhaltung",
                         contextButton,
-                        func = { insertContext(notificationTimeId, "Unterhaltung") }),
+                        func = { navController.navigate("Question_4")
+                            insertAffect(notificationTimeId, "Unterhaltung") }),
                     third = LabelButton(
                         "Laufen",
                         contextButton,
-                        func = { insertContext(notificationTimeId, "Laufen") }),
+                        func = { navController.navigate("Question_4")
+                            insertAffect(notificationTimeId, "Laufen") }),
                     fourth = LabelButton(
                         "Sonstiges",
                         contextButton,
-                        func = { insertContext(notificationTimeId, "Sonstiges")}),
-                    question = "AAAAAAAAAAAAAAAAAAAAAAAAAA",
+                        func = { navController.navigate("Question_4")
+                            insertAffect(notificationTimeId, "Sonstiges")}),
+                    question = "Was tust du gerade?",
                     modifier = Modifier.fillMaxSize()
                 )
-
+            }
+            composable("Question_4") {
+                LabelView(
+                    first = LabelButton(
+                        "answer4.1",
+                        yellowButton,
+                        func = {
+                            navController.navigate("Question_5")
+                            insertAffect(notificationTimeId, "QQQQQ") }),
+                    second = LabelButton(
+                        "answer4.2",
+                        yellowButton,
+                        func = {
+                            navController.navigate("Question_5")
+                            insertAffect(notificationTimeId, "WWWWWW") }),
+                    third = LabelButton(
+                        "answer4.3",
+                        yellowButton,
+                        func = {
+                            navController.navigate("Question_5")
+                            insertAffect(notificationTimeId, "EEEEEEE") }),
+                    fourth = LabelButton(
+                        "answer4.4",
+                        yellowButton,
+                        func = {
+                            navController.navigate("Question_5")
+                            insertAffect(notificationTimeId, "RRRRRRR") }),
+                    question = "Question 4",
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+            composable("Question_5") {
+                LabelView(
+                    first = LabelButton(
+                        "answer5.1",
+                        contextButton,
+                        func = { insertContext(notificationTimeId, "mmmmmmmm") }),
+                    second = LabelButton(
+                        "answer5.2",
+                        contextButton,
+                        func = { insertContext(notificationTimeId, "xxxxxxxx") }),
+                    third = LabelButton(
+                        "answer5.3",
+                        contextButton,
+                        func = { insertContext(notificationTimeId, "ccccccccc") }),
+                    fourth = LabelButton(
+                        "answer5.4",
+                        contextButton,
+                        func = { insertContext(notificationTimeId, "vvvvvvvvv")}),
+                    question = "Question 5",
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }
