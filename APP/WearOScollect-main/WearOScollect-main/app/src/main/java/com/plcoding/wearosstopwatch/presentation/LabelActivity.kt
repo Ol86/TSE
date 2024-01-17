@@ -92,7 +92,7 @@ class LabelActivity : ComponentActivity() {
             composable("overview") {
                 LabelView(
                     first = LabelButton(
-                        "Verärgert",
+                        "Stand anschauen",
                         redButton,
                         func = {
                             if (numberOfQuestions > 1) {
@@ -521,9 +521,10 @@ class LabelActivity : ComponentActivity() {
                     label = {
                         Text(
                             text = first.label,
-                            maxLines = 1,
+                            maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
-                            fontSize = 13.sp
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center
                         )
                     },
                     colors = ChipDefaults.primaryChipColors(backgroundColor = Color(first.color)),
@@ -535,9 +536,10 @@ class LabelActivity : ComponentActivity() {
                     label = {
                         Text(
                             text = second.label,
-                            maxLines = 1,
+                            maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
-                            fontSize = 13.sp
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center
                         )
                     },
                     colors = ChipDefaults.primaryChipColors(backgroundColor = Color(second.color)),
@@ -558,9 +560,10 @@ class LabelActivity : ComponentActivity() {
                     label = {
                         Text(
                             text = third.label,
-                            maxLines = 1,
+                            maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
-                            fontSize = 13.sp
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center
                         )
                     },
                     colors = ChipDefaults.primaryChipColors(backgroundColor = Color(third.color)),
@@ -571,9 +574,10 @@ class LabelActivity : ComponentActivity() {
                     label = {
                         Text(
                             text = fourth.label,
-                            maxLines = 1,
+                            maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
-                            fontSize = 13.sp
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center
                         )
                     },
                     colors = ChipDefaults.primaryChipColors(backgroundColor = Color(fourth.color)),
