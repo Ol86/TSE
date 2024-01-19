@@ -1,0 +1,26 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'user/delete_watch.css' %}"/>
+{% endblock %}
+
+{% block title %}
+    <title>
+        Delete Watch
+    </title>
+{% endblock %}
+
+{% block content %}
+    <form method="POST" action="" >
+        <h2>Delete Watch</h2>
+        {% csrf_token %}
+        <div class="text">
+            <p>Are you sure that you want to delete</p>
+            <p>"{{watch.user.username}}"</p>
+        </div>
+                
+        <a class="back" href="{{request.META.HTTP_REFERER}}">Go back</a>
+        <input id="submit" type="submit" value="Confirm"/>
+    </form>
+{% endblock %}

@@ -2,26 +2,26 @@
 {% load static %}
 
 {% block style %}
-    <link rel="stylesheet" href="{% static 'user/register_user.css' %}"/>
+    <link rel="stylesheet" href="{% static 'base/question/create_question.css' %}"/>
 {% endblock %}
 
 {% block title %}
     <title>
-        Register User
+        Create Question
     </title>
 {% endblock %}
 
 {% block content %}
     <a id="quit" href="{{request.META.HTTP_REFERER}}">quit</a>
-    <form class="creationForm" method="POST" action="">
-        <h2>Create new user</h2>
+    <form class="creationForm" method="POST" action="" >
+        <h2>Create Question</h2>
         <div class="formElements">
             {% csrf_token %}
-            {{ form.username }}
-            {{ form.password1 }}
-            {{ form.password1.help_text }}
-            {{ form.password2 }}
-            {{ form.role }}
+            {{ form.question }}
+            {{ form.button1_text }}
+            {{ form.button2_text }}
+            {{ form.button3_text }}
+            {{ form.button4_text }}
         </div>
         <input id="submit" type="submit" value="Submit"/>
     </form>

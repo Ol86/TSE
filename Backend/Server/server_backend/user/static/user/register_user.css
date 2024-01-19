@@ -9,7 +9,7 @@
 
 body {
     margin: 0;
-    padding: 8px;
+    padding: 16px;
     display: grid;
     grid-template-columns: 100px auto 480px auto 100px;
     grid-template-rows: 50px auto 50px;

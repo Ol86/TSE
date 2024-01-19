@@ -20,12 +20,26 @@ def registerWatch(response):
             user.is_admin = False
             user.save()
 
-            return redirect('home')
+            return redirect('watches')
 
     else:
         form = WatchRegisterForm()
 
     return render(response, 'user/register_watch.html', {'form': form})
+
+@login_required(login_url='login')
+def watches(request):
+    watches = Watch.objects.all()
+    context = {'watches': watches}
+    return render(request, 'user/watches.html', context)
+
+@login_required(login_url='login')
+def deleteWatch(request, pk):
+    watch = Watch.objects.get(user_id=pk)
+    if request.method == 'POST':
+        watch.delete()
+        return redirect('watches')
+    return render(request, 'user/delete_watch.html', {'watch': watch})
 
 def registerUser(response):
     if response.method == 'POST':
