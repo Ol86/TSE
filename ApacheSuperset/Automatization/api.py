@@ -23,6 +23,14 @@ def getCharts(url, auth_token):
     return charts
 
 
+def getDatasets(url, auth_token):
+    headers = {'Authorization': f'Bearer {auth_token}'}
+    datasets_res = requests.get(f'{url}/api/v1/dataset/', headers=headers)
+    datasets = datasets_res.json()
+    saveToFile(json.dumps(datasets, indent=4))
+    return datasets
+
+
 def createDashboard(url, csrf_token, auth_token, session):
     headers = {
         'Authorization': f'Bearer {auth_token}',
@@ -50,7 +58,7 @@ def createDashboard(url, csrf_token, auth_token, session):
 
     dashboard_res = session.post(f'{url}/api/v1/dashboard/', headers=headers, json=body)
     dashboard = dashboard_res.json()
-    print(dashboard)
+    saveToFile(json.dumps(dashboard, indent=4))
     return dashboard
 
 
@@ -73,7 +81,7 @@ def createChart(url, csrf_token, auth_token, session):
         "description": None,
         "is_managed_externally": False,
         "owners": [
-           1
+            1
         ],
         "params": "{\"datasource\":\"5__table\",\"viz_type\":\"echarts_timeseries_line\",\"slice_id\":2,"
                   "\"x_axis\":\"timestamp\",\"time_grain_sqla\":\"P1D\",\"x_axis_sort_asc\":true,"
@@ -102,5 +110,30 @@ def createChart(url, csrf_token, auth_token, session):
 
     chart_resp = session.post(f'{url}/api/v1/chart/', headers=headers, json=body)
     chart = chart_resp.json()
-    print(chart)
+    saveToFile(json.dumps(chart, indent=4))
     return chart
+
+
+def createDataset(url, csrf_token, auth_token, session):
+    headers = {
+        'Authorization': f'Bearer {auth_token}',
+        'X-CSRFToken': csrf_token,
+    }
+
+    body = {
+        "always_filter_main_dttm": False,
+        "database": 1,
+        "external_url": "string",
+        "is_managed_externally": True,
+        "normalize_columns": False,
+        "owners": [
+            1
+        ],
+        "schema": "public",
+        "sql": "SELECT hr, TIMESTAMP, watch_id\nFROM session_data\nJOIN heart_rate_measurement ON session_data.id = heart_rate_measurement.session_id\nWHERE session_id = 1 and hr_status= 1",
+        "table_name": "HR by Time Exp1"
+    }
+    dataset_resp = session.post(f'{url}/api/v1/dataset/', headers=headers, json=body)
+    dataset = dataset_resp.json()
+    saveToFile(json.dumps(dataset, indent=4))
+    return dataset

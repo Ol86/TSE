@@ -7,7 +7,6 @@ import com.samsung.android.service.health.tracking.data.HealthTrackerType
 import com.samsung.android.service.health.tracking.data.ValueKey
 
 class AccelerometerTrackerListener(private val trackerType: HealthTrackerType) : HealthTracker.TrackerEventListener {
-
     var isDataCollecting = true
         set(value) {
             field = value

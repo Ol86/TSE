@@ -170,6 +170,15 @@ class MainActivity : ComponentActivity() {
         .addTag("notification")
         .build()
 
+    private val initialDelay2 = 2L
+    private val periodicWorkRequest_Second_Test = PeriodicWorkRequestBuilder<NotificationWorker>(
+        promptFrequency,
+        promptFrequencyTimeUnit
+    )
+        .setInitialDelay(initialDelay2, promptFrequencyTimeUnit)
+        .addTag("notification")
+        .build()
+
     /*private var _healthTrackingService: HealthTrackingService? = null
     private val healthTrackingService: HealthTrackingService
         get() = _healthTrackingService ?: HealthTrackingService(connectionListener,
@@ -257,12 +266,13 @@ class MainActivity : ComponentActivity() {
         viewModel.start()
         WorkManager.getInstance(this).cancelAllWork()
         WorkManager.getInstance(this).enqueue(periodicWorkRequest)
+        WorkManager.getInstance(this).enqueue(periodicWorkRequest_Second_Test)
         startDataCollection()
     }
     private fun resetRoutine(viewModel: StopWatchViewModel) {
         stopDataCollection()
-        viewModel.resetTimer()
         WorkManager.getInstance(this).cancelAllWork()
+        viewModel.resetTimer()
     }
 
     private fun startDataCollection() {
@@ -394,7 +404,7 @@ class MainActivity : ComponentActivity() {
     }
     private fun oneTimeNotification() {
         val notificationManager = NotificationManager(applicationContext)
-        notificationManager.oneTimeNotification("Hello", "World")
+        //notificationManager.oneTimeNotification("Hello", "World")
         notificationManager.promptNotification(123456789)
         Log.i("Notify", "HELOOOOOOOOOOOOOOOO")
     }
