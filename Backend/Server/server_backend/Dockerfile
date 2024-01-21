@@ -14,4 +14,4 @@ EXPOSE 9000
 
 # start the app
 ENTRYPOINT [ "python", "manage.py" ]
-CMD [ "runserver", "0.0.0.0:9000"]
+CMD [ "runserver_plus", "0.0.0.0:9000", "cert-file /etc/letsencrypt/live/d76dbc03-b635-4ea0-9821-500006f7a618.ka.bw-cloud-instance.org/fullchain.pem", "key-file /etc/letsencrypt/live/d76dbc03-b635-4ea0-9821-500006f7a618.ka.bw-cloud-instance.org/privkey.pem"]
