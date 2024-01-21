@@ -47,33 +47,12 @@ services:
     container_name: backend
     restart: always
     build: ./Backend/Server/server_backend/
-    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn --config gunicorn_config.py aurigaone.wsgi:application"
     env_file:
       - .env
     ports:
-      - 80:80
+      - 9000:9000
     depends_on:
       - postgres_db
-
-  nginx:
-    image: nginx:alpine
-    restart: unless-stopped
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - /var/www/static/:/var/www/static
-      - -/nginx/conf.d/:/etc/nginx/conf.d/
-    depends_on:
-      - server-backend
-
-  certbot:
-    image: certbot/certbot:latest
-    volumes:
-      - /var/certbot/conf:/etc/letsencrypt/:rw
-      - /var/certbot/www/:/var/www/certbot/:rw
-    depends_on:
-      - nginx
 
 # This specifies the place where the data is stored of the database.
 volumes:
