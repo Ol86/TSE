@@ -15,7 +15,6 @@
     <a id="quit" href="{{request.META.HTTP_REFERER}}">quit</a>
     <form class="creationForm" method="POST" action="">
         <h2>Create new user</h2>
-        {{ form.error }}
         <div class="formElements">
             {% csrf_token %}
             {{ form.username }}
