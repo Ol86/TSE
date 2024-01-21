@@ -32,6 +32,8 @@ SECRET_KEY = 'django-insecure-mom7)4h7o!pq^8bgxu96yrpw17pr#9ja-=-8*553xfhm*xln4i
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    'd76dbc03-b635-4ea0-9821-500006f7a618.ka.bw-cloud-instance.org:9000',
+    'd76dbc03-b635-4ea0-9821-500006f7a618.ka.bw-cloud-instance.org'
     '193.196.36.62:9000',
     '193.196.36.62',
     '127.0.0.1:9000',
