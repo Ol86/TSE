@@ -5,6 +5,7 @@ FROM session_data
 LIMIT 50000;
 
 
+
 -- Chart: HRByTime
 
 
