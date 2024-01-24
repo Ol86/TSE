@@ -9,7 +9,5 @@ class SecondActivity(text: Unit) : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(View(this))
-
-        // Hier können Sie Logik für die SecondActivity hinzufügen
     }
 }

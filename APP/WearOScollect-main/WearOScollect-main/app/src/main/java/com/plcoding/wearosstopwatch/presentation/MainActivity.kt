@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material.icons.filled.UploadFile
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -500,85 +501,34 @@ private fun StopWatch(
                     Chip(
                         onClick = {onEndStudy()},
                         label = {
-                            Text(text = "End Study",
+                            Text(text = "End Study", color = Color.White,
                                 maxLines = 1, overflow = TextOverflow.Ellipsis)
                         },
-                        colors = ChipDefaults.primaryChipColors(backgroundColor = Color(0x99FFFFFF))
+                        colors = ChipDefaults.chipColors(
+                            backgroundColor = Color.DarkGray
+                        )
+                        //colors = ChipDefaults.primaryChipColors(backgroundColor = Color(0x99FFFFFF))
                     )
-                    /*else {
-                                        val clickCount = remember { mutableStateOf(0) }
-                                        if (clickCount.value <= 2) {
-                                            Chip(
-                                                onClick = {clickCount.value++},
-                                                enabled = state != TimerState.RESET,
-                                                label = {
-                                                    Text(
-                                                        text = "End Study",
-                                                        maxLines = 1, overflow = TextOverflow.Ellipsis
-                                                    )
-                                                },
-                                                colors = ChipDefaults.primaryChipColors(backgroundColor = Color(0x99FFFFFF))
-                                            )
-                                        } else{
-                                            Chip(
-                                                onClick = onReset,
-                                                enabled = state != TimerState.RESET,
-                                                label = {
-                                                    Text(
-                                                        text = "Sure?",
-                                                        maxLines = 1, overflow = TextOverflow.Ellipsis
-                                                    )
-                                                }
-                                            )
-                                        }
-                                    }*/
                 }
             }
             Spacer(modifier = Modifier.width(15.dp))
             Button(
                 onClick = { onBackToSettings() },
+
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(parseColor("#ED9620"))
+                    backgroundColor = if (state == TimerState.RUNNING) {
+                        Color(parseColor("#ED9620"))
+                    } else {
+                        Color(parseColor("#f4c079"))
+                    },
                 )
                 ) {
                 Icon(
-                    imageVector = Icons.Default.Send,
+                    imageVector = Icons.Default.UploadFile,
                     contentDescription = "Send Data"
                 )
             }
         }
-        /*Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            if (isDataCollectionRunning) {
-                Button(
-                    onClick = {
-                        onStopDataCollection()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.Red
-                    )
-                    /*colors = ButtonDefaults.buttonColors(
-                        MaterialTheme.colors.surface
-                    )*/
-                ) {
-                    Text("STOP")
-                }
-            } else {
-                Button(
-                    onClick = {
-                        onStartDataCollection()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        MaterialTheme.colors.surface
-                    )
-                ) {
-                    Text("Datenaufnahme")
-                }
-            }
-        }*/
 
         if (state != TimerState.RUNNING) {
             Spacer(modifier = Modifier.height(15.dp))
@@ -628,6 +578,7 @@ private fun SecondActivity(
     var localEnabled4 by remember { mutableStateOf(trackers[4]) }
     var localEnabled5 by remember { mutableStateOf(trackers[5]) }
     var localEnabled6 by remember { mutableStateOf(trackers[6]) }
+
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
@@ -636,15 +587,17 @@ private fun SecondActivity(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(vertical = 16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
                 onClick = onBack,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.DarkGray
                 )
-                // ...
             ) {
                 Text("      Back      ")
             }
@@ -663,6 +616,9 @@ private fun SecondActivity(
                         onAccOff()
                     }
                 },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (localEnabled0) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
@@ -685,6 +641,9 @@ private fun SecondActivity(
                         onEcgOff()
                     }
                 },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (localEnabled1) Color(parseColor("#0FADF0"))
                         else Color(parseColor("#AC3123"))
@@ -707,6 +666,9 @@ private fun SecondActivity(
                         onHeartRateOff()
                     }
                 },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (localEnabled2) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
@@ -729,6 +691,9 @@ private fun SecondActivity(
                         onPPGGreenOff()
                     }
                 },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (localEnabled3) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
@@ -751,6 +716,9 @@ private fun SecondActivity(
                         onPPGIROff()
                     }
                 },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (localEnabled4) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
@@ -773,6 +741,9 @@ private fun SecondActivity(
                         onPPGRedOff()
                     }
                 },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (localEnabled5) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
@@ -783,7 +754,9 @@ private fun SecondActivity(
         }
         Spacer(modifier = Modifier.height(10.dp))
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
@@ -795,6 +768,9 @@ private fun SecondActivity(
                         onSPO2Off()
                     }
                 },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (localEnabled6) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
@@ -804,7 +780,6 @@ private fun SecondActivity(
             }
         }
     }
-    // ...
 }
 
 @Composable
@@ -883,22 +858,20 @@ private fun ConfirmActionScreen(
 ){
     Column(
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize()
     ) {
         Spacer(modifier = Modifier.height(30.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Are You Sure ?",
-                fontSize = 25.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-        }
+
+        Text(
+            text = "Are You Sure?",
+            fontSize = 25.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
 
         Spacer(modifier = Modifier.height(10.dp))
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -908,20 +881,25 @@ private fun ConfirmActionScreen(
             Button(
                 onClick = { onCancel() },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(RED)
-                )
+                    backgroundColor = Color(0xFFAC3123)
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 7.dp)
             ) {
-                Text(" Cancel")
+                Text("Cancel")
             }
 
-            Spacer(modifier = Modifier.width(15.dp))
             Button(
                 onClick = { onConfirm() },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(GREEN)
-                )
+                    backgroundColor = Color(0xFF32CD32)
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 7.dp)
             ) {
-                Text(" Confirm")
+                Text("Confirm")
             }
         }
     }
