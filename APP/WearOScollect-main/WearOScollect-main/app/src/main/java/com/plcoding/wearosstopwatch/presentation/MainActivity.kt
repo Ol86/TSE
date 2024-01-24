@@ -540,11 +540,14 @@ private fun StopWatch(
                     onClick = {
                         onBackToSettings()
                     },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 35.dp),
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color.DarkGray
                     )
                 ) {
-                    Text("  Back to Settings  ")
+                    Text("Back to Settings")
                 }
             }
         }
@@ -624,7 +627,7 @@ private fun SecondActivity(
                     else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("  Accelerometer  ")
+                Text("Accelerometer")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -674,7 +677,7 @@ private fun SecondActivity(
                     else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("  HeartRate  ")
+                Text("HeartRate")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -699,7 +702,7 @@ private fun SecondActivity(
                     else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("  PPGGreen  ")
+                Text("PPGGreen")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -724,7 +727,7 @@ private fun SecondActivity(
                     else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("  PPGIR  ")
+                Text("PPGIR")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -749,7 +752,7 @@ private fun SecondActivity(
                     else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("  PPGRed  ")
+                Text("PPGRed")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -776,7 +779,7 @@ private fun SecondActivity(
                     else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("  SPO2  ")
+                Text("SPO2")
             }
         }
     }
@@ -811,7 +814,7 @@ private fun FirstScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(16.dp, 12.dp, 16.dp, 12.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
@@ -841,11 +844,14 @@ private fun FirstScreen(
         ) {
             Button(
                 onClick = onAccept,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 50.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(parseColor("#32CD32"))
                 )
             ) {
-                Text("     Accept     ")
+                Text("Accept")
             }
         }
     }
