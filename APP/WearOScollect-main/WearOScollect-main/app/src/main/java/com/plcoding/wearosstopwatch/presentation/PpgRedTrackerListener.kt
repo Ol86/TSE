@@ -6,7 +6,7 @@ import com.samsung.android.service.health.tracking.data.DataPoint
 import com.samsung.android.service.health.tracking.data.HealthTrackerType
 import com.samsung.android.service.health.tracking.data.ValueKey
 
-class PpgRedTrackerListener(private val trackerType: HealthTrackerType) : HealthTracker.TrackerEventListener {
+class PpgRedTrackerListener(private val trackerType: HealthTrackerType,private val json: JSON) : HealthTracker.TrackerEventListener {
 
     var isDataCollecting = true
         set(value) {
@@ -22,7 +22,6 @@ class PpgRedTrackerListener(private val trackerType: HealthTrackerType) : Health
         if (trackerActive) {
             for (dataPoint in list) {
                 if (trackerActive) {
-                    val json = JSON()
                     val allValues = ArrayList<String>()
                     allValues.add(dataPoint.timestamp.toString())
 

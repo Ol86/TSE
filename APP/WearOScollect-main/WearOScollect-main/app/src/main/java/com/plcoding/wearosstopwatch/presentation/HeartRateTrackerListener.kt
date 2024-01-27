@@ -8,7 +8,7 @@ import com.samsung.android.service.health.tracking.data.ValueKey
 import java.sql.DriverManager.println
 import java.util.ArrayList
 
-class HeartRateTrackerListener(private val trackerType: HealthTrackerType) : HealthTracker.TrackerEventListener {
+class HeartRateTrackerListener(private val trackerType: HealthTrackerType,private val json: JSON) : HealthTracker.TrackerEventListener {
 
     var isDataCollecting = true
         set(value) {
@@ -24,7 +24,6 @@ class HeartRateTrackerListener(private val trackerType: HealthTrackerType) : Hea
         if (trackerActive) {
             for (dataPoint in list) {
                 if (trackerActive) {
-                    val json = JSON()
                     val allValues = ArrayList<String>()
                     allValues.add(dataPoint.timestamp.toString())
 

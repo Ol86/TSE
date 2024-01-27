@@ -48,9 +48,14 @@ import com.samsung.android.service.health.tracking.data.HealthTrackerType
 import java.util.concurrent.TimeUnit
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.google.gson.JsonObject
+import com.plcoding.wearosstopwatch.presentation.api.ApiService
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
 
+    private val json = JSON()
     lateinit var healthTracking : HealthTrackingService
     private lateinit var heartRateTracker: HeartRateTracker
     private lateinit var ppgGreenTracker: PpgGreenTracker
@@ -59,13 +64,13 @@ class MainActivity : ComponentActivity() {
     private lateinit var sPO2Tracker: SPO2Tracker
     private lateinit var ppgIRTracker: PpgIRTracker
     private lateinit var ppgRedTracker: PpgRedTracker
-    private val ppgPpgGreenTrackerListener = PpgGreenTrackerListener(HealthTrackerType.PPG_GREEN)
-    private val heartRateTrackerListener = HeartRateTrackerListener(HealthTrackerType.HEART_RATE)
-    private val ecgTrackerListener = ECGTrackerListener(HealthTrackerType.ECG)
-    private val accelerometerTrackerListener = AccelerometerTrackerListener(HealthTrackerType.ACCELEROMETER)
-    private val sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2)
-    private val ppgIRTrackerListener = PpgIRTrackerListener(HealthTrackerType.PPG_IR)
-    private val ppgRedTrackerListener = PpgRedTrackerListener(HealthTrackerType.PPG_RED)
+    private val ppgPpgGreenTrackerListener = PpgGreenTrackerListener(HealthTrackerType.PPG_GREEN, json)
+    private val heartRateTrackerListener = HeartRateTrackerListener(HealthTrackerType.HEART_RATE, json)
+    private val ecgTrackerListener = ECGTrackerListener(HealthTrackerType.ECG, json)
+    private val accelerometerTrackerListener = AccelerometerTrackerListener(HealthTrackerType.ACCELEROMETER, json)
+    private val sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2, json)
+    private val ppgIRTrackerListener = PpgIRTrackerListener(HealthTrackerType.PPG_IR, json)
+    private val ppgRedTrackerListener = PpgRedTrackerListener(HealthTrackerType.PPG_RED, json)
 
     private val connectionListener = object : ConnectionListener {
         override fun onConnectionSuccess() {
@@ -223,6 +228,7 @@ class MainActivity : ComponentActivity() {
                         onStartDataCollection = {startDataCollection()},
                         onStopDataCollection = {stopDataCollection()},
                         onBackToSettings = {currentView = ViewType.FirstScreen},
+                        onConnectApi = {connectApi()},
                         activeTrackers,
                         modifier = Modifier.fillMaxSize()
                     )
@@ -314,6 +320,61 @@ class MainActivity : ComponentActivity() {
             Log.e(TAG, "Error stopping data collection: ${e.message}")
             // Handle the error appropriately (e.g., show a message to the user)
         }
+    }
+
+    private fun connectApi(){
+        val thread = Thread {
+            try {
+                Log.i("APImessage", "Connect")
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("http://193.196.36.62:9000/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+
+                val apiService: ApiService = retrofit.create(ApiService::class.java)
+
+                try {
+                    val tokenResponse = apiService.getToken(
+
+
+                        JsonObject().apply {
+                            addProperty("username", "Watch1")
+                            addProperty("password", "tse-KIT-2023")
+                        }
+                    ).execute()
+
+                    if (tokenResponse.isSuccessful) {
+                        val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
+                        println(token)
+
+                        val postResponse = apiService.testPost(
+                            json.getStoredDataAsJsonObject(),
+                            /*JsonObject().apply {
+                                addProperty("test1", "Hello World")
+                            },*/
+                            token
+                        ).execute()
+
+                        if (postResponse.isSuccessful) {
+                            //println(postResponse.body())
+                            Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
+                        } else {
+                            println("Error: ${postResponse.code()}")
+                        }
+                    } else {
+                        println("Error: ${tokenResponse.code()}")
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        thread.start()
+
     }
 
     companion object {
@@ -424,6 +485,7 @@ private fun StopWatch(
     onStartDataCollection: () -> Unit,
     onStopDataCollection: () -> Unit,
     onBackToSettings: () -> Unit,
+    onConnectApi: () -> Unit,
     trackers: ArrayList<Boolean>,    //Accelerometer,ECG,HeartRate,ppgGreen,ppgIR,ppgRed,SPO2
     modifier: Modifier = Modifier
 ) {
@@ -513,8 +575,7 @@ private fun StopWatch(
             }
             Spacer(modifier = Modifier.width(15.dp))
             Button(
-                onClick = { onBackToSettings() },
-
+                onClick = { onConnectApi() },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (state == TimerState.RUNNING) {
                         Color(parseColor("#ED9620"))
