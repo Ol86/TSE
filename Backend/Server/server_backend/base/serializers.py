@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from base.models import *
-from user.models import *
+from base.models import Experiment, Questions
+from user.models import BaseUser, Watch
 
 class ExperimentSerializer(serializers.ModelSerializer):
     class Meta:

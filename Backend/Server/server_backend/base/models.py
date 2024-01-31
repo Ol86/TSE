@@ -102,3 +102,28 @@ class Session(models.Model):
         return result
 
 # --------------------------------------------------------------------------------------------------- #
+class ECG(models.Model):
+    """This class defines the ecg model.
+
+    :param models: The base Structure for a model.
+    :return The ECG as a model.
+    """
+    id = models.AutoField(auto_created=True, primary_key=True)
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    ecg = models.IntegerField(default=0)
+    ppg_green = models.IntegerField(default=0)
+    lead_off = models.IntegerField(default=0)
+    max_threshold = models.IntegerField(default=0)
+    sequence = models.IntegerField(default=0)
+    min_threshold = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        """This class defines the ordering of the database table.
+        """
+        ordering = ['id']
+
+    def __str__(self):
+        return self.ecg
+
+# --------------------------------------------------------------------------------------------------- #
