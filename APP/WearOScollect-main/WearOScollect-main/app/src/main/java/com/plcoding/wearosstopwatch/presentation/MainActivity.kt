@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material.icons.filled.UploadFile
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,9 +48,14 @@ import com.samsung.android.service.health.tracking.data.HealthTrackerType
 import java.util.concurrent.TimeUnit
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.google.gson.JsonObject
+import com.plcoding.wearosstopwatch.presentation.api.ApiService
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
 
+    private val json = JSON()
     lateinit var healthTracking : HealthTrackingService
     private lateinit var heartRateTracker: HeartRateTracker
     private lateinit var ppgGreenTracker: PpgGreenTracker
@@ -58,13 +64,13 @@ class MainActivity : ComponentActivity() {
     private lateinit var sPO2Tracker: SPO2Tracker
     private lateinit var ppgIRTracker: PpgIRTracker
     private lateinit var ppgRedTracker: PpgRedTracker
-    private val ppgPpgGreenTrackerListener = PpgGreenTrackerListener(HealthTrackerType.PPG_GREEN)
-    private val heartRateTrackerListener = HeartRateTrackerListener(HealthTrackerType.HEART_RATE)
-    private val ecgTrackerListener = ECGTrackerListener(HealthTrackerType.ECG)
-    private val accelerometerTrackerListener = AccelerometerTrackerListener(HealthTrackerType.ACCELEROMETER)
-    private val sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2)
-    private val ppgIRTrackerListener = PpgIRTrackerListener(HealthTrackerType.PPG_IR)
-    private val ppgRedTrackerListener = PpgRedTrackerListener(HealthTrackerType.PPG_RED)
+    private val ppgPpgGreenTrackerListener = PpgGreenTrackerListener(HealthTrackerType.PPG_GREEN, json)
+    private val heartRateTrackerListener = HeartRateTrackerListener(HealthTrackerType.HEART_RATE, json)
+    private val ecgTrackerListener = ECGTrackerListener(HealthTrackerType.ECG, json)
+    private val accelerometerTrackerListener = AccelerometerTrackerListener(HealthTrackerType.ACCELEROMETER, json)
+    private val sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2, json)
+    private val ppgIRTrackerListener = PpgIRTrackerListener(HealthTrackerType.PPG_IR, json)
+    private val ppgRedTrackerListener = PpgRedTrackerListener(HealthTrackerType.PPG_RED, json)
 
     private val connectionListener = object : ConnectionListener {
         override fun onConnectionSuccess() {
@@ -222,6 +228,7 @@ class MainActivity : ComponentActivity() {
                         onStartDataCollection = {startDataCollection()},
                         onStopDataCollection = {stopDataCollection()},
                         onBackToSettings = {currentView = ViewType.FirstScreen},
+                        onConnectApi = {connectApi()},
                         activeTrackers,
                         modifier = Modifier.fillMaxSize()
                     )
@@ -313,6 +320,61 @@ class MainActivity : ComponentActivity() {
             Log.e(TAG, "Error stopping data collection: ${e.message}")
             // Handle the error appropriately (e.g., show a message to the user)
         }
+    }
+
+    private fun connectApi(){
+        val thread = Thread {
+            try {
+                Log.i("APImessage", "Connect")
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("http://193.196.36.62:9000/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+
+                val apiService: ApiService = retrofit.create(ApiService::class.java)
+
+                try {
+                    val tokenResponse = apiService.getToken(
+
+
+                        JsonObject().apply {
+                            addProperty("username", "Watch1")
+                            addProperty("password", "tse-KIT-2023")
+                        }
+                    ).execute()
+
+                    if (tokenResponse.isSuccessful) {
+                        val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
+                        println(token)
+
+                        val postResponse = apiService.testPost(
+                            json.getStoredDataAsJsonObject(),
+                            /*JsonObject().apply {
+                                addProperty("test1", "Hello World")
+                            },*/
+                            token
+                        ).execute()
+
+                        if (postResponse.isSuccessful) {
+                            //println(postResponse.body())
+                            Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
+                        } else {
+                            println("Error: ${postResponse.code()}")
+                        }
+                    } else {
+                        println("Error: ${tokenResponse.code()}")
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        thread.start()
+
     }
 
     companion object {
@@ -423,6 +485,7 @@ private fun StopWatch(
     onStartDataCollection: () -> Unit,
     onStopDataCollection: () -> Unit,
     onBackToSettings: () -> Unit,
+    onConnectApi: () -> Unit,
     trackers: ArrayList<Boolean>,    //Accelerometer,ECG,HeartRate,ppgGreen,ppgIR,ppgRed,SPO2
     modifier: Modifier = Modifier
 ) {
@@ -500,85 +563,33 @@ private fun StopWatch(
                     Chip(
                         onClick = {onEndStudy()},
                         label = {
-                            Text(text = "End Study",
+                            Text(text = "End Study", color = Color.White,
                                 maxLines = 1, overflow = TextOverflow.Ellipsis)
                         },
-                        colors = ChipDefaults.primaryChipColors(backgroundColor = Color(0x99FFFFFF))
+                        colors = ChipDefaults.chipColors(
+                            backgroundColor = Color.DarkGray
+                        )
+                        //colors = ChipDefaults.primaryChipColors(backgroundColor = Color(0x99FFFFFF))
                     )
-                    /*else {
-                                        val clickCount = remember { mutableStateOf(0) }
-                                        if (clickCount.value <= 2) {
-                                            Chip(
-                                                onClick = {clickCount.value++},
-                                                enabled = state != TimerState.RESET,
-                                                label = {
-                                                    Text(
-                                                        text = "End Study",
-                                                        maxLines = 1, overflow = TextOverflow.Ellipsis
-                                                    )
-                                                },
-                                                colors = ChipDefaults.primaryChipColors(backgroundColor = Color(0x99FFFFFF))
-                                            )
-                                        } else{
-                                            Chip(
-                                                onClick = onReset,
-                                                enabled = state != TimerState.RESET,
-                                                label = {
-                                                    Text(
-                                                        text = "Sure?",
-                                                        maxLines = 1, overflow = TextOverflow.Ellipsis
-                                                    )
-                                                }
-                                            )
-                                        }
-                                    }*/
                 }
             }
             Spacer(modifier = Modifier.width(15.dp))
             Button(
-                onClick = { onBackToSettings() },
+                onClick = { onConnectApi() },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(parseColor("#ED9620"))
+                    backgroundColor = if (state == TimerState.RUNNING) {
+                        Color(parseColor("#ED9620"))
+                    } else {
+                        Color(parseColor("#f4c079"))
+                    },
                 )
                 ) {
                 Icon(
-                    imageVector = Icons.Default.Send,
+                    imageVector = Icons.Default.UploadFile,
                     contentDescription = "Send Data"
                 )
             }
         }
-        /*Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            if (isDataCollectionRunning) {
-                Button(
-                    onClick = {
-                        onStopDataCollection()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.Red
-                    )
-                    /*colors = ButtonDefaults.buttonColors(
-                        MaterialTheme.colors.surface
-                    )*/
-                ) {
-                    Text("STOP")
-                }
-            } else {
-                Button(
-                    onClick = {
-                        onStartDataCollection()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        MaterialTheme.colors.surface
-                    )
-                ) {
-                    Text("Datenaufnahme")
-                }
-            }
-        }*/
 
         if (state != TimerState.RUNNING) {
             Spacer(modifier = Modifier.height(15.dp))
@@ -590,11 +601,14 @@ private fun StopWatch(
                     onClick = {
                         onBackToSettings()
                     },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 35.dp),
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color.DarkGray
                     )
                 ) {
-                    Text("  Back to Settings  ")
+                    Text("Back to Settings")
                 }
             }
         }
@@ -628,6 +642,7 @@ private fun SecondActivity(
     var localEnabled4 by remember { mutableStateOf(trackers[4]) }
     var localEnabled5 by remember { mutableStateOf(trackers[5]) }
     var localEnabled6 by remember { mutableStateOf(trackers[6]) }
+
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
@@ -636,15 +651,17 @@ private fun SecondActivity(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(vertical = 16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
                 onClick = onBack,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.DarkGray
                 )
-                // ...
             ) {
                 Text("      Back      ")
             }
@@ -663,12 +680,15 @@ private fun SecondActivity(
                         onAccOff()
                     }
                 },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (localEnabled0) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("  Accelerometer  ")
+                Text("Accelerometer")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -685,6 +705,9 @@ private fun SecondActivity(
                         onEcgOff()
                     }
                 },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (localEnabled1) Color(parseColor("#0FADF0"))
                         else Color(parseColor("#AC3123"))
@@ -707,12 +730,15 @@ private fun SecondActivity(
                         onHeartRateOff()
                     }
                 },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (localEnabled2) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("  HeartRate  ")
+                Text("HeartRate")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -729,12 +755,15 @@ private fun SecondActivity(
                         onPPGGreenOff()
                     }
                 },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (localEnabled3) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("  PPGGreen  ")
+                Text("PPGGreen")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -751,12 +780,15 @@ private fun SecondActivity(
                         onPPGIROff()
                     }
                 },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (localEnabled4) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("  PPGIR  ")
+                Text("PPGIR")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -773,17 +805,22 @@ private fun SecondActivity(
                         onPPGRedOff()
                     }
                 },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (localEnabled5) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("  PPGRed  ")
+                Text("PPGRed")
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
@@ -795,16 +832,18 @@ private fun SecondActivity(
                         onSPO2Off()
                     }
                 },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (localEnabled6) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
                 )
             ) {
-                Text("  SPO2  ")
+                Text("SPO2")
             }
         }
     }
-    // ...
 }
 
 @Composable
@@ -836,7 +875,7 @@ private fun FirstScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(16.dp, 12.dp, 16.dp, 12.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
@@ -866,11 +905,14 @@ private fun FirstScreen(
         ) {
             Button(
                 onClick = onAccept,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 50.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(parseColor("#32CD32"))
                 )
             ) {
-                Text("     Accept     ")
+                Text("Accept")
             }
         }
     }
@@ -883,22 +925,20 @@ private fun ConfirmActionScreen(
 ){
     Column(
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize()
     ) {
         Spacer(modifier = Modifier.height(30.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Are You Sure ?",
-                fontSize = 25.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-        }
+
+        Text(
+            text = "Are You Sure?",
+            fontSize = 25.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
 
         Spacer(modifier = Modifier.height(10.dp))
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -908,20 +948,25 @@ private fun ConfirmActionScreen(
             Button(
                 onClick = { onCancel() },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(RED)
-                )
+                    backgroundColor = Color(0xFFAC3123)
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 7.dp)
             ) {
-                Text(" Cancel")
+                Text("Cancel")
             }
 
-            Spacer(modifier = Modifier.width(15.dp))
             Button(
                 onClick = { onConfirm() },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(GREEN)
-                )
+                    backgroundColor = Color(0xFF32CD32)
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 7.dp)
             ) {
-                Text(" Confirm")
+                Text("Confirm")
             }
         }
     }

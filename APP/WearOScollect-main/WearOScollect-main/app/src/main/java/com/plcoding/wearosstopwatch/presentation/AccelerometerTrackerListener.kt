@@ -6,7 +6,7 @@ import com.samsung.android.service.health.tracking.data.DataPoint
 import com.samsung.android.service.health.tracking.data.HealthTrackerType
 import com.samsung.android.service.health.tracking.data.ValueKey
 
-class AccelerometerTrackerListener(private val trackerType: HealthTrackerType) : HealthTracker.TrackerEventListener {
+class AccelerometerTrackerListener(private val trackerType: HealthTrackerType,private val json: JSON) : HealthTracker.TrackerEventListener {
     var isDataCollecting = true
         set(value) {
             field = value
@@ -29,7 +29,6 @@ class AccelerometerTrackerListener(private val trackerType: HealthTrackerType) :
 //                    Log.d("Button trackerActive Acc", "b: ${dataPoint.b}")
 //                    Log.d("Button trackerActive Acc", "time: ${dataPoint.timestamp}")
 
-                    val json = JSON()
                     val allValues = ArrayList<String>()
                     allValues.add(dataPoint.timestamp.toString())
 

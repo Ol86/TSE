@@ -6,7 +6,7 @@ import com.samsung.android.service.health.tracking.data.DataPoint
 import com.samsung.android.service.health.tracking.data.HealthTrackerType
 import com.samsung.android.service.health.tracking.data.ValueKey
 
-class SPO2TrackerListener(private val trackerType: HealthTrackerType) : HealthTracker.TrackerEventListener {
+class SPO2TrackerListener(private val trackerType: HealthTrackerType,private val json: JSON) : HealthTracker.TrackerEventListener {
 
     var isDataCollecting = true
         set(value) {
@@ -22,7 +22,6 @@ class SPO2TrackerListener(private val trackerType: HealthTrackerType) : HealthTr
         if (trackerActive) {
             for (dataPoint in list) {
                 if (trackerActive) {
-                    val json = JSON()
                     val allValues = ArrayList<String>()
                     allValues.add(dataPoint.timestamp.toString())
 

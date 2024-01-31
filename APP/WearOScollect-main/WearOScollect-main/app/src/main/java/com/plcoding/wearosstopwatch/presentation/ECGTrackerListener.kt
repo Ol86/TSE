@@ -10,7 +10,7 @@ import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
 
-class ECGTrackerListener(private val trackerType: HealthTrackerType) : HealthTracker.TrackerEventListener {
+class ECGTrackerListener(private val trackerType: HealthTrackerType,private val json: JSON) : HealthTracker.TrackerEventListener {
 
 
     var isDataCollecting = true
@@ -27,7 +27,6 @@ class ECGTrackerListener(private val trackerType: HealthTrackerType) : HealthTra
         if (trackerActive) {
             for (dataPoint in list) {
                 if (trackerActive) {
-                    val json = JSON()
                     val allValues = ArrayList<String>()
                     allValues.add(dataPoint.timestamp.toString())
 
