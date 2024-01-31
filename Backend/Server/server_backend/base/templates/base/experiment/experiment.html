@@ -4,17 +4,12 @@
 {% block style %}
     <link rel="stylesheet" href="{% static 'styles/styles.css' %}"/>
 {% endblock %}
-
 {% block title %}
     <title>
-        Register
+        {{experiment.title}}
     </title>
 {% endblock %}
 
 {% block content %}
-    <form method="POST" class="form-group">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Register</button>
-    </form>
+    <h1>{{experiment.title}}</h1>
 {% endblock %}

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block style %}
-    <link rel="stylesheet" href="{% static 'base/create_question.css' %}"/>
+    <link rel="stylesheet" href="{% static 'base/question/create_question.css' %}"/>
 {% endblock %}
 
 {% block title %}
@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block content %}
-    <a id="quit" href="{% url 'home' %}">quit</a>
+    <a id="quit" href="{{request.META.HTTP_REFERER}}">quit</a>
     <form class="creationForm" method="POST" action="" >
         <h2>Create Question</h2>
         <div class="formElements">

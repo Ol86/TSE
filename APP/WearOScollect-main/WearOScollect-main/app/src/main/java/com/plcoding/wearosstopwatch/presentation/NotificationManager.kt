@@ -10,6 +10,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Sync
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -31,12 +33,12 @@ class NotificationManager(private val context: Context) {
         createNotificationChannel()
 
         val notificationIntent = Intent(context, LabelActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_TASK_ON_HOME or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            flags = Intent.FLAG_ACTIVITY_TASK_ON_HOME or Intent.FLAG_ACTIVITY_NEW_TASK// or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         notificationIntent.putExtra("NotificationTimeId", notificationTimeId)
 
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context,
-            notificationTimeId.toInt(), notificationIntent, PendingIntent.FLAG_IMMUTABLE)
+            notificationTimeId.toInt(), notificationIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
 
 
         val notification = NotificationCompat.Builder(context, channelId)
@@ -50,7 +52,32 @@ class NotificationManager(private val context: Context) {
 
         with(NotificationManagerCompat.from(context)) {
             notify(notificationTimeId.toInt(), notification.build())
+            Log.i("Notify", "in brackets")
         }
+        Log.i("Notify", "manager")
+    }
+
+    fun oneTimeNotification(title: String, text: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
+        }
+
+        createNotificationChannel()
+
+        val notification = NotificationCompat.Builder(context, channelId)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setSmallIcon(1)
+            //.setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .setTimeoutAfter(60000) // will remove the notification after 3 Minutes
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+
+        with(NotificationManagerCompat.from(context)) {
+            notify(123, notification.build())
+            Log.i("Notify", "onetime")
+        }
+        Log.i("Notify", "manager")
     }
 
     private fun createNotificationChannel() {

@@ -7,7 +7,7 @@ body {
     grid-template-areas: 
         "header header header header logout"
         "title title title title title"
-        "delete experiment experiment experiment ."
+        "question question question question ."
         "footer footer footer footer footer"
     ;
     grid-gap: 8px;
@@ -53,39 +53,58 @@ h1 {
     grid-area: title;
 }
 
-.experiment {
+#question-title {
+    grid-area: question;
+    width: 100%;
+}
+
+.question {
     display: block;
     height: fit-content;
-    padding: 12px;
+    margin: 15px 0;
+}
+
+.collapsible {
+    display: contents;
+    cursor: pointer;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
     line-height: 24px;
     font-weight: 600;
     font-size: 1.40em;
     letter-spacing: 0.05em;
-    margin: 15px 0;
 }
 
-.date {
-    float: inline-end;
+ol {
+    margin: 12px 0 0 120px;
 }
 
-#experiment-delete {
-    grid-area: delete;
+.content {
+    padding: 0 18px;
+    display: none;
+    overflow: hidden;
+    line-height: 24px;
+    font-weight: 600;
+    font-size: 1.40em;
+    letter-spacing: 0.05em;
 }
 
-#delete-button {
+.delete-button {
+    display: inline-block;
+    width: 106px;
+    margin-right: 10px;
+    padding: 12px;
     text-align: center;
     background: darkslategray;
     color: turquoise;
-    font-weight: 600;
-    font-size: 1.35em;
-    letter-spacing: 0.05em;
     cursor: pointer;
     border-radius: 4px;
-}
-
-#experiment-title {
-    grid-area: experiment;
-    width: 100%;
+    line-height: 24px;
+    font-weight: 600;
+    font-size: 1.40em;
+    letter-spacing: 0.05em;
 }
 
 .buttonList {

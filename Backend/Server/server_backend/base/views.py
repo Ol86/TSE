@@ -3,9 +3,14 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
+
+from os import path
+import json
 
 from django.shortcuts import render, redirect
 
@@ -54,7 +59,7 @@ def home(request):
     :param request: The request of the page and the user.
     :return: The function returns the resulting webpage.
     """     
-    experiments = Experiment.objects.filter(created_by=request.user.id)  	        #objects.all() gibt alle Experiment Instanzen zurück als Querryset
+    experiments = Experiment.objects.filter(created_by=request.user.id).order_by('-id')[:10]
     context = {'experiments': experiments}              #gibt unserer home.html die Experimente
     return render(request, 'base/home.html', context)   #siehe templates/base/home.html
 
@@ -68,7 +73,7 @@ def experiment(request, pk):
     """
     experiment = Experiment.objects.get(id=pk)
     context = {'experiment': experiment}
-    return render(request, 'base/experiment.html', context)
+    return render(request, 'base/experiment/experiment.html', context)
 
 @login_required(login_url='login')
 def createExperiment(request):
@@ -78,14 +83,18 @@ def createExperiment(request):
     :return: This function returns the same page if an error occured, or it redirects the user to the homepage if the generation of a new experiment was successful
     """
     form = ExperimentForm()
+    current_profile = Profile.objects.get(user=request.user.id)
     if request.method == 'POST':
         form = ExperimentForm(request.POST)
         if form.is_valid():
-            form.save()
+            edit = form.save(commit=False)
+            edit.created_by = current_profile
+            edit.save()
+            form.save_m2m()
             return redirect('home')
 
     context = {'form': form}
-    return render(request, 'base/create_experiment.html', context)
+    return render(request, 'base/experiment/create_experiment.html', context)
 
 @login_required(login_url='login')
 def deleteExperiment(request, pk):
@@ -99,7 +108,13 @@ def deleteExperiment(request, pk):
     if request.method == 'POST':
         experiment.delete()
         return redirect('home')
-    return render(request, 'base/delete_experiment.html', {'experiment': experiment})
+    return render(request, 'base/experiment/delete_experiment.html', {'experiment': experiment})
+
+@login_required(login_url='login')
+def questions(request):
+    questions = Questions.objects.all()
+    context = {'questions': questions}
+    return render(request, 'base/question/questions.html', context)
 
 @login_required(login_url='login')
 def createQuestion(request):
@@ -107,11 +122,30 @@ def createQuestion(request):
     if request.method == 'POST':
         form = QuestionForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('home')
+            edit = form.save(commit=False)
+            edit.button1 = bool(edit.button1_text)
+            edit.button2 = bool(edit.button2_text)
+            edit.button3 = bool(edit.button3_text)
+            edit.button4 = bool(edit.button4_text)
+            edit.save()
+            return redirect('questions')
 
     context = {'form': form}
-    return render(request, 'base/create_question.html', context)
+    return render(request, 'base/question/create_question.html', context)
+
+@login_required(login_url='login')
+def deleteQuestion(request, pk):
+    """ This function handles the deletion of an experiment.
+
+    :param request: It handles the request to delete an experiment and update the database.
+    :return: This function returns the same page before delete was clicked, or it redirects the user to the homepage if the deletion of an experiment was successful
+    """
+
+    question = Questions.objects.get(id=pk)
+    if request.method == 'POST':
+        question.delete()
+        return redirect('questions')
+    return render(request, 'base/question/delete_question.html', {'question': question})
 
 class TestAPI(APIView):
 
@@ -126,18 +160,36 @@ class WatchAPI(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        if self.request.query_params.get('id'):
-            pk = self.request.query_params.get('id')
-            experiment = ExperimentSerializer(Experiment.objects.get(id=pk), many=False).data
-        
-            result = returnExperimentInfo(experiment)
+        key = request.META['HTTP_AUTHORIZATION'].split(" ")[1]
+        token = Token.objects.get(key=key)
+        experiment = ExperimentSerializer(Experiment.objects.all(), many=True).data
+        is_valid = False
+        last_experiment_index = 0
+        for i in range(len(experiment) - 1, -1, -1):
+            for j in experiment[i]["watches"]:
+                if j == token.user.id:
+                    last_experiment_index = i
+                    is_valid = True
+
+        if is_valid:
+            result = returnExperimentInfo(experiment[last_experiment_index])
         else:
-            experiment = ExperimentSerializer(Experiment.objects.all(), many=True).data
-            result_list = []
-            for i in experiment:
-                result_list.append(returnExperimentInfo(i))
-            result_list.reverse()
-            result = {}
-            for i in range(0, len(result_list)):
-                result[i + 1] = result_list[i]
+            result = {"error": "No experiment with This Watch"}
+
         return Response(result)
+
+    def post(self, request):
+        data = request.data
+        filename = "tse-kit-2023.json"
+        json_data = []
+        if data:
+            if path.isfile(filename):
+                with open(filename, "r") as inputfile:
+                    json_data = json.load(inputfile)
+
+            json_data.append(data)
+
+            with open(filename, "w") as output:
+                output.write(json.dumps(json_data, indent=4))
+                return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)

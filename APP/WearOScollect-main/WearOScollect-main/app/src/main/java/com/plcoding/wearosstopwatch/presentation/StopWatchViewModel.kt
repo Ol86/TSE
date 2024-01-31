@@ -25,6 +25,26 @@ class StopWatchViewModel(application: Application) : AndroidViewModel(applicatio
     val timerState = _timerState.asStateFlow()
 
     private val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+
+    /*val stopWatchText = _elapsedTime
+        .map { millis ->
+            val seconds = millis / 1000
+            val formattedTime = String.format(
+                "%02d:%02d:%02d",
+                seconds / 3600,
+                (seconds % 3600) / 60,
+                seconds % 60
+            )
+            formattedTime
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            "00:00:00"
+        )*/
+
+    // and comment out this line: _elapsedTime.update { 5000L }
+
     val stopWatchText = _elapsedTime
         .map { millis ->
             LocalTime.ofNanoOfDay(millis * 1_000_000).format(formatter)
@@ -50,13 +70,13 @@ class StopWatchViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     private fun initialize() {
-        _elapsedTime.update { 50000L }
+        _elapsedTime.update { 5000L }
         viewModelScope.launch {
             userRepository.getActiveSession(CoroutineScope(GlobalScope.coroutineContext),
                 {
                     val millis: Long = System.currentTimeMillis() - it.startTimeMillis
                     _session = it
-                    if(millis>=0) {
+                    if(millis >= 0) {
                         _elapsedTime.update { millis }
                         _timerState.update { TimerState.RUNNING }
                     }

@@ -1,0 +1,27 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'user/register_watch.css' %}"/>
+{% endblock %}
+
+{% block title %}
+    <title>
+        Create Watch
+    </title>
+{% endblock %}
+
+{% block content %}
+    <a id="quit" href="{{request.META.HTTP_REFERER}}">quit</a>
+    <form class="creationForm" method="POST" action="">
+        <h2>Create Watch</h2>
+        <div class="formElements">
+            {% csrf_token %}
+            {{ form.username }}
+            {{ form.password1 }}
+            {{ form.password2 }}
+            {{ form.mac_adress }}
+        </div>
+        <input id="submit" type="submit" value="Submit"/>
+    </form>
+{% endblock %}

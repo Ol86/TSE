@@ -7,7 +7,7 @@ body {
     grid-template-areas: 
         "header header header header logout"
         "title title title title title"
-        "delete experiment experiment experiment ."
+        "delete watch watch watch ."
         "footer footer footer footer footer"
     ;
     grid-gap: 8px;
@@ -53,7 +53,7 @@ h1 {
     grid-area: title;
 }
 
-.experiment {
+.watch {
     display: block;
     height: fit-content;
     padding: 12px;
@@ -68,7 +68,7 @@ h1 {
     float: inline-end;
 }
 
-#experiment-delete {
+#watch-delete {
     grid-area: delete;
 }
 
@@ -83,8 +83,8 @@ h1 {
     border-radius: 4px;
 }
 
-#experiment-title {
-    grid-area: experiment;
+#watch-title {
+    grid-area: watch;
     width: 100%;
 }
 
