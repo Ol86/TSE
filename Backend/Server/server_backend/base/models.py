@@ -184,3 +184,83 @@ class SPO2(models.Model):
         return result
 
 # --------------------------------------------------------------------------------------------------- #
+class Accelerometer(models.Model):
+    id = models.AutoField(auto_created=True, primary_key=True)
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    x = models.IntegerField(default=0)
+    y = models.IntegerField(default=0)
+    z = models.IntegerField(default=0)
+    time = DateTimeField(default=0)
+
+    class Meta:
+        """This class defines the ordering of the database table.
+        """
+        ordering = ['id']
+
+    def __str__(self):
+        """This method defines the desplay name.
+
+        :return: The session id and the x,y,z values.
+        """
+        result = self.session.id + ": x" + self.x + "; y" + self.y + "; z" + self.z
+        return result
+
+# --------------------------------------------------------------------------------------------------- #
+class PPG_Green(models.Model):
+    id = models.AutoField(auto_created=True, primary_key=True)
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    ppg_green = models.IntegerField(default=0)
+    time = models.DateTimeField(default=0)
+
+    class Meta:
+        """This class defines the ordering of the database table.
+        """
+        ordering = ['id']
+
+    def __str__(self):
+        """This method defines the desplay name.
+
+        :return: The session id and the ppg value.
+        """
+        result = self.session.id + ": " + self.ppg_green
+        return result
+
+# --------------------------------------------------------------------------------------------------- #
+class PPG_IR(models.Model):
+    id = models.AutoField(auto_created=True, primary_key=True)
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    ppg_ir = models.IntegerField(default=0)
+    time = models.DateTimeField(default=0)
+
+    class Meta:
+        """This class defines the ordering of the database table.
+        """
+        ordering = ['id']
+
+    def __str__(self):
+        """This method defines the desplay name.
+
+        :return: The session id and the ppg value.
+        """
+        result = self.session.id + ": " + self.ppg_ir
+        return result
+
+# --------------------------------------------------------------------------------------------------- #
+class PPG_Red(models.Model):
+    id = models.AutoField(auto_created=True, primary_key=True)
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    ppg_red = models.IntegerField(default=0)
+    time = models.DateTimeField(default=0)
+
+    class Meta:
+        """This class defines the ordering of the database table.
+        """
+        ordering = ['id']
+
+    def __str__(self):
+        """This method defines the desplay name.
+
+        :return: The session id and the ppg value.
+        """
+        result = self.session.id + ": " + self.ppg_red
+        return result
