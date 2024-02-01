@@ -190,7 +190,7 @@ class Accelerometer(models.Model):
     x = models.IntegerField(default=0)
     y = models.IntegerField(default=0)
     z = models.IntegerField(default=0)
-    time = DateTimeField(default=0)
+    time = models.DateTimeField(default=0)
 
     class Meta:
         """This class defines the ordering of the database table.
