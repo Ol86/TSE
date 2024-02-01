@@ -50,7 +50,7 @@ class Experiment(models.Model):
     watch_id = models.ManyToManyField(Watch)
     # Enable the different sensors.
     accelerometer = models.BooleanField(default=False)
-    hearth_rate = models.BooleanField(default=False)
+    heart_rate = models.BooleanField(default=False)
     ppg_green = models.BooleanField(default=False)
     ppg_ir = models.BooleanField(default=False)
     ppg_red = models.BooleanField(default=False)
@@ -105,7 +105,7 @@ class Session(models.Model):
 class ECG(models.Model):
     """This class defines the ecg model.
 
-    :param models: The base Structure for a model.
+    :param models: The base structure for a model.
     :return The ECG as a model.
     """
     id = models.AutoField(auto_created=True, primary_key=True)
@@ -116,7 +116,7 @@ class ECG(models.Model):
     max_threshold = models.IntegerField(default=0)
     sequence = models.IntegerField(default=0)
     min_threshold = models.IntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
+    time = models.DateTimeField(default=0)
 
     class Meta:
         """This class defines the ordering of the database table.
@@ -124,6 +124,63 @@ class ECG(models.Model):
         ordering = ['id']
 
     def __str__(self):
-        return self.ecg
+        """This method defines the desplay name.
+
+        :return: The session id and the ecg value.
+        """
+        result = self.session.id + ": " + self.ecg
+        return result
+
+# --------------------------------------------------------------------------------------------------- #
+class Heart_Rate(models.Model):
+    """This class defines the heart rate model.
+
+    :param models: The base structure for a model.
+    :return: The heart rate as a model.
+    """
+    id = models.AutoField(auto_created=True, primary_key=True)
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    status = models.IntegerField(default=0)
+    time = models.DateTimeField(default=0)
+
+    class Meta:
+        """This class defines the ordering of the database table.
+        """
+        ordering = ['id']
+
+    def __str__(self):
+        """This method defines the desplay name.
+
+        :return: The session id and the status value.
+        """
+        result = self.session.id + ": " + self.status
+        return result
+
+# --------------------------------------------------------------------------------------------------- #
+class SPO2(models.Model):
+    """This class defines the spo2 model.
+
+    :param models: The base structure for a model.
+    :return: The spo2 as a model.
+    """
+    id = models.AutoField(auto_created=True, primary_key=True)
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    spo2 = models.IntegerField(default=0)
+    heartrate = models.IntegerField(default=0)
+    status = models.IntegerField(default=0)
+    time = models.DateTimeField(default=0)
+
+    class Meta:
+        """This class defines the ordering of the database table.
+        """
+        ordering = ['id']
+
+    def __str__(self):
+        """This method defines the desplay name.
+
+        :return: The session id and the spo2 value.
+        """
+        result = self.session.id + ": " + self.spo2
+        return result
 
 # --------------------------------------------------------------------------------------------------- #
