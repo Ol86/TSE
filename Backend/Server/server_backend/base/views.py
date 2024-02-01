@@ -180,16 +180,6 @@ class WatchAPI(APIView):
 
     def post(self, request):
         data = request.data
-        filename = "tse-kit-2023.json"
-        json_data = []
         if data:
-            if path.isfile(filename):
-                with open(filename, "r") as inputfile:
-                    json_data = json.load(inputfile)
-
-            json_data.append(data)
-
-            with open(filename, "w") as output:
-                output.write(json.dumps(json_data, indent=4))
-                return Response(status=status.HTTP_201_CREATED)
+            return Response(data ,status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
