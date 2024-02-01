@@ -180,6 +180,7 @@ class WatchAPI(APIView):
 
     def post(self, request):
         data = request.data
+        result = {'result': data}
         if data:
-            return Response(data ,status=status.HTTP_201_CREATED)
+            return Response(result ,status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
