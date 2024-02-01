@@ -136,20 +136,20 @@ input[type="checkbox"] {
     vertical-align: middle;
 }
 
-#id_watches>div {
+#id_watch_id>div {
     height: 20px;
     margin: 10px 0;
 }
 
-#id_watches>div:first-child {
+#id_watch_id>div:first-child {
     margin-top: 0;
 }
 
-#id_watches>div:last-child {
+#id_watch_id>div:last-child {
     margin-bottom: 0;
 }
 
-#id_watches>div>label>input{
+#id_watch_id>div>label>input{
     width: 30px;
     vertical-align: middle;
 }

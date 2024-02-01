@@ -1,12 +1,13 @@
 from django import forms
 from django.forms import ModelForm
 from base.models import Experiment, Questions
-from user.models import Watch
+from user.models import Watch, Profile
 
 class ExperimentForm(ModelForm):
     title = forms.CharField(required=True, max_length=200, widget=forms.TextInput(attrs={'placeholder': 'Title'}))
     questions = forms.ModelMultipleChoiceField(queryset=Questions.objects.all(), widget=forms.CheckboxSelectMultiple)
     watch_id = forms.ModelMultipleChoiceField(queryset=Watch.objects.all(), widget=forms.CheckboxSelectMultiple)
+    created_by = forms.ModelChoiceField(queryset=Profile.objects.all(), required=False)
     class Meta:
         model = Experiment
         fields = '__all__'
