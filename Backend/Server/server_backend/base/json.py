@@ -19,7 +19,7 @@ def returnExperimentInfo(experiment):
         'title': experiment["title"],
         'watches': watches,
         'acc': experiment["accelerometer"],
-        'hr': experiment["hearth_rate"],
+        'hr': experiment["heart_rate"],
         'ppg_g': experiment["ppg_green"],
         'ppg_i': experiment["ppg_ir"],
         'ppg_r': experiment["ppg_red"],
