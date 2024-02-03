@@ -20,4 +20,9 @@ urlpatterns = [
     path('create/question/', views.createQuestion, name="create-question"),
     # This url sends the user to the deletion page of a question.
     path('delete/question/<str:pk>/', views.deleteQuestion, name="delete-question"),
+    # The following urls are required for the api
+    path('test-api/', views.testApi, name="test-api"),
+    path('api/watch/template/', views.getExperimentTemplate, name="template"),
+    path('api/watch/data/', views.sendWatchData, name="data"),
+    path('api/watch/session/', views.createSession, name="session"),
 ]

@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 
@@ -17,7 +18,7 @@ from django.shortcuts import render, redirect
 from base.serializers import *
 from base.models import *
 from base.forms import ExperimentForm, QuestionForm
-from base.json import returnExperimentInfo
+from base.json import *
 
 def loginPage(request):
     """ This function handle the generation of loginpage.
@@ -147,26 +148,24 @@ def deleteQuestion(request, pk):
         return redirect('questions')
     return render(request, 'base/question/delete_question.html', {'question': question})
 
-class TestAPI(APIView):
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def testApi(request):
+    if request.method == 'GET':
+        return Response({'message': 'Hello, World!'})
+    return Response({'error': 'Wrong rest method'})
 
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        content = {'message': 'Hello, World!'}
-        return Response(content)
-
-class WatchAPI(APIView):
-
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getExperimentTemplate(request):
+    if request.method == 'GET':
         key = request.META['HTTP_AUTHORIZATION'].split(" ")[1]
         token = Token.objects.get(key=key)
         experiment = ExperimentSerializer(Experiment.objects.all(), many=True).data
         is_valid = False
         last_experiment_index = 0
         for i in range(len(experiment) - 1, -1, -1):
-            for j in experiment[i]["watches"]:
+            for j in experiment[i]["watch_id"]:
                 if j == token.user.id:
                     last_experiment_index = i
                     is_valid = True
@@ -174,13 +173,57 @@ class WatchAPI(APIView):
         if is_valid:
             result = returnExperimentInfo(experiment[last_experiment_index])
         else:
-            result = {"error": "No experiment with This Watch"}
+            result = {"error": "No experiment with this watch"}
 
         return Response(result)
+    return Response({'error': 'Wrong rest method'})
 
-    def post(self, request):
+# TODO: Verarbeiten und abspeichern der Daten
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def sendWatchData(request):
+    if request.method == 'POST':
         data = request.data
-        result = {'result': data}
+
         if data:
-            return Response(result ,status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+            key = request.META['HTTP_AUTHORIZATION'].split(" ")[1]
+            token = Token.objects.get(key=key)
+            experiment = ExperimentSerializer(Experiment.objects.all(), many=True).data
+            last_experiment_index = 0
+            for i in range(len(experiment) - 1, -1, -1):
+                for j in experiment[i]["watch_id"]:
+                    if j == token.user.id:
+                        last_experiment_index = i
+            
+            insertEcgData(data)
+            insertHeartrateData(data)
+            insertSPO2Data(data)
+            insertAccelerometerData(data)
+            insertPPGIRData(data)
+            insertPPGRedData(data)
+            insertPPGGreenData(data)
+
+            return Response({'message': 'Data transfer was successful'} ,status=status.HTTP_201_CREATED)
+        return Response({'error': 'No data was send by the watch'}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'error': 'Wrong rest method'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def createSession(request):
+    if request.method == 'POST':
+        key = request.META['HTTP_AUTHORIZATION'].split(" ")[1]
+        token = Token.objects.get(key=key)
+        experiment = ExperimentSerializer(Experiment.objects.all(), many=True).data
+        last_experiment_index = 0
+        for i in range(len(experiment) - 1, -1, -1):
+            for j in experiment[i]["watch_id"]:
+                if j == token.user.id:
+                    last_experiment_index = i
+        
+        session = Session(experiment=Experiment.objects.get(id=experiment[last_experiment_index]["id"]), watch=Watch.objects.get(user=token.user.id))
+        session.save()
+
+        result = {"session": session.id}
+
+        return Response(result ,status=status.HTTP_201_CREATED)
+    return Response({'error': 'Wrong rest method'}, status=status.HTTP_400_BAD_REQUEST)

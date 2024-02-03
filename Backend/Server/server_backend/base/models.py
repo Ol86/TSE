@@ -140,7 +140,10 @@ class Heart_Rate(models.Model):
     """
     id = models.AutoField(auto_created=True, primary_key=True)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
-    status = models.IntegerField(default=0)
+    hr = models.IntegerField(default=0)
+    hr_status = models.IntegerField(default=0)
+    ibi = models.IntegerField(default=0)
+    ibi_status = models.IntegerField(default=0)
     time = models.DateTimeField(default=0)
 
     class Meta:
@@ -151,9 +154,9 @@ class Heart_Rate(models.Model):
     def __str__(self):
         """This method defines the desplay name.
 
-        :return: The session id and the status value.
+        :return: The session id and the status values.
         """
-        result = self.session.id + ": " + self.status
+        result = self.session.id + ": hr-status " + self.hr_status + "; ibi-status " + self.ibi_status
         return result
 
 # --------------------------------------------------------------------------------------------------- #
