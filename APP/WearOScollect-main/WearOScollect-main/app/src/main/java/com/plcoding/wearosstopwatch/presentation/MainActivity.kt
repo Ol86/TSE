@@ -49,9 +49,11 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.plcoding.wearosstopwatch.presentation.api.ApiService
 import com.plcoding.wearosstopwatch.presentation.database.SensorDataDatabase
+import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -285,7 +287,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                     FirstScreen(
                         onNavigateToSecondActivity = {currentView = ViewType.SecondActivity},
                         onAccept = {currentView = ViewType.StopWatch},
-                        onNotify = { oneTimeNotification() }
+                        onSyncTemplates = { getTemplate() }
                     )
                 }
                 ViewType.ConfirmActionScreen -> {
@@ -364,7 +366,6 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                 try {
                     val tokenResponse = apiService.getToken(
 
-
                         JsonObject().apply {
                             addProperty("username", "Watch1")
                             addProperty("password", "tse-KIT-2023")
@@ -376,7 +377,16 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                         println(token)
 
                         val postResponse = apiService.testPost(
-                            json.getStoredDataAsJsonObject(),
+                            JSONObject().apply {
+                                db.accelerometerDao.getBySyncOrdered()
+                                db.ecgDao.getBySyncOrdered()
+                                db.heartrateDao.getBySyncOrdered()
+                                db.ppgGreenDao.getBySyncOrdered()
+                                db.ppgIRDao.getBySyncOrdered()
+                                db.ppgRedDao.getBySyncOrdered()
+                                db.spo2Dao.getBySyncOrdered()
+                            },
+                            //json.getStoredDataAsJsonObject(),
                             /*JsonObject().apply {
                                 addProperty("test1", "Hello World")
                             },*/
@@ -403,6 +413,62 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
 
         thread.start()
 
+    }
+
+    private fun getTemplate() {
+        val thread = Thread {
+            try {
+                Log.i("APImessage", "Connect")
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("http://193.196.36.62:9000/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+
+                val apiService: ApiService = retrofit.create(ApiService::class.java)
+
+                try {
+                    val tokenResponse = apiService.getToken(
+
+                        JsonObject().apply {
+                            addProperty("username", "Watch1")
+                            addProperty("password", "tse-KIT-2023")
+                        }
+                    ).execute()
+
+                    if (tokenResponse.isSuccessful) {
+                        val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
+                        println(token)
+
+                        val template = apiService.getTemplate(token).execute()
+
+                        val jsonString = template.body().toString().trimIndent()
+
+                        // Parse the JSON
+                        val gson = Gson()
+                        val templateDataInstance: TemplateInfos = gson.fromJson(jsonString, TemplateInfos::class.java)
+
+                        // Access the parsed data
+                        println("Title: ${templateDataInstance.}")
+                        println("Questions: ${templateDataInstance.questions}")
+
+                        if (template.isSuccessful) {
+                            Log.i("GetTemplate", template.body().toString())
+                        } else {
+                            println("Error: ${template.code()}")
+                        }
+                    } else {
+                        println("Error: ${tokenResponse.code()}")
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        thread.start()
     }
 
     companion object {
@@ -879,7 +945,7 @@ private fun FirstScreen(
 
     onNavigateToSecondActivity: () -> Unit,
     onAccept: () -> Unit,
-    onNotify: () -> Unit,
+    onSyncTemplates: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -907,7 +973,7 @@ private fun FirstScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
-                onClick = { onNotify() },
+                onClick = { onSyncTemplates() },
             ) {
                 Icon(
                     imageVector = Icons.Default.Sync,

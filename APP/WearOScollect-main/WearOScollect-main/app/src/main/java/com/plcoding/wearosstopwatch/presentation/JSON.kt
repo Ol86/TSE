@@ -71,6 +71,7 @@ class JSON {
                     put("spo2-heartRate", values[2])
                     put("spo2-status", values[3])
                 }
+                else -> null
             }
         }
         //Log.d("StoredData", storedData.toString())
