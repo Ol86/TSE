@@ -448,7 +448,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                         val templateDataInstance: TemplateInfos = gson.fromJson(jsonString, TemplateInfos::class.java)
 
                         // Access the parsed data
-                        println("Title: ${templateDataInstance.}")
+                        println("Title: ${templateDataInstance.title}")
                         println("Questions: ${templateDataInstance.questions}")
 
                         if (template.isSuccessful) {
