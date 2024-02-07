@@ -1,0 +1,12 @@
+{
+  "tables": {
+    "heritage": {
+      "columns": ["name", "age", "city"],
+      "primary_key": "name"
+    },
+    "city_info": {
+      "columns": ["number_of_inhabitants", "city", "postal_code"],
+      "primary_key": "city"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}
+    <title>
+        SQL Laboratory
+    </title>
+{% endblock %}
+
+{% block content %}
+    <h2>Text eingeben</h2>
+    <form method="post" action="{% url 'sql_lab' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Translate</button>
+    </form>
+    <br><br>
+    <div>
+        {% include 'sql_lab/database.html' %}
+    </div>
+{% endblock %}

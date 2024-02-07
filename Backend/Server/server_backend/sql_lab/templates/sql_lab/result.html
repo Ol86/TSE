@@ -1,0 +1,39 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}
+    <title>
+        SQL Laboratory
+    </title>    
+{% endblock %}
+
+{% block content %}
+    <h2>Text eingeben</h2>
+    <form method="post" action="{% url 'sql_lab' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Translate</button>
+    </form>
+    <br><br>
+    <h2>Verarbeiteter Text</h2>
+    <p>Input: {{ original_text }}</p>
+    <div id="processed_text">{{ processed_text }}</div>
+    <button onclick="CopyToClipboard('processed_text');return false;">Copy Text</button>
+
+    <br><br>
+    {% include 'sql_lab/database.html' %}
+{% endblock %}
+
+{% block script %}
+    <script>
+        function CopyToClipboard(id)
+        {
+        var r = document.createRange();
+        r.selectNode(document.getElementById(id));
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(r);
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+        }
+    </script>
+{% endblock %}
