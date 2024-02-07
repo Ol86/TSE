@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-    <h2>Text eingeben</h2>
+    <h2>SQL Laboratory</h2>
     <form method="post" action="{% url 'sql_lab' %}">
         {% csrf_token %}
         {{ form.as_p }}
