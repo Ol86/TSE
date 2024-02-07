@@ -1,12 +1,18 @@
 package com.plcoding.wearosstopwatch.presentation
 
 import android.util.Log
+import androidx.lifecycle.LifecycleCoroutineScope
+import com.plcoding.wearosstopwatch.presentation.database.SensorDataDatabase
+import com.plcoding.wearosstopwatch.presentation.database.entities.AccelerometerData
+import com.plcoding.wearosstopwatch.presentation.database.entities.PpgGreenData
 import com.samsung.android.service.health.tracking.HealthTracker
 import com.samsung.android.service.health.tracking.data.DataPoint
 import com.samsung.android.service.health.tracking.data.HealthTrackerType
 import com.samsung.android.service.health.tracking.data.ValueKey
+import kotlinx.coroutines.launch
 
-class AccelerometerTrackerListener(private val trackerType: HealthTrackerType,private val json: JSON) : HealthTracker.TrackerEventListener {
+class AccelerometerTrackerListener(private val trackerType: HealthTrackerType, private val json: JSON, private val db: SensorDataDatabase, coroutineScope: LifecycleCoroutineScope) : HealthTracker.TrackerEventListener {
+    private val scope = coroutineScope
     var isDataCollecting = true
         set(value) {
             field = value
@@ -44,7 +50,13 @@ class AccelerometerTrackerListener(private val trackerType: HealthTrackerType,pr
 
                     json.dataToJSON("accelerometer", allValues)
 
-                    println("json accelerometer")
+                    val accelerometerData = AccelerometerData(dataPoint.timestamp.toString(), dataPoint.getValue(ValueKey.AccelerometerSet.ACCELEROMETER_X).toString(),
+                        dataPoint.getValue(ValueKey.AccelerometerSet.ACCELEROMETER_Y).toString(), dataPoint.getValue(ValueKey.AccelerometerSet.ACCELEROMETER_Z).toString(), "0")
+                    scope.launch {
+                        db.accelerometerDao.upsertAccelerometerData(accelerometerData)
+                    }
+
+                    //println("json accelerometer")
                 }
             }
         }

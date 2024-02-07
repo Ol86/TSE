@@ -2,8 +2,6 @@ package com.plcoding.wearosstopwatch.presentation
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Color.GREEN
-import android.graphics.Color.RED
 import android.graphics.Color.parseColor
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +13,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.filled.UploadFile
@@ -48,14 +45,29 @@ import com.samsung.android.service.health.tracking.data.HealthTrackerType
 import java.util.concurrent.TimeUnit
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.plcoding.wearosstopwatch.presentation.api.ApiService
+import com.plcoding.wearosstopwatch.presentation.database.SensorDataDatabase
+import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), LifecycleOwner {
 
     private val json = JSON()
+    private val db by lazy {
+        Room.databaseBuilder(
+            applicationContext,
+            SensorDataDatabase::class.java,
+            "sensorData.db"
+        ).build()
+    }
+
     lateinit var healthTracking : HealthTrackingService
     private lateinit var heartRateTracker: HeartRateTracker
     private lateinit var ppgGreenTracker: PpgGreenTracker
@@ -64,13 +76,22 @@ class MainActivity : ComponentActivity() {
     private lateinit var sPO2Tracker: SPO2Tracker
     private lateinit var ppgIRTracker: PpgIRTracker
     private lateinit var ppgRedTracker: PpgRedTracker
-    private val ppgPpgGreenTrackerListener = PpgGreenTrackerListener(HealthTrackerType.PPG_GREEN, json)
-    private val heartRateTrackerListener = HeartRateTrackerListener(HealthTrackerType.HEART_RATE, json)
-    private val ecgTrackerListener = ECGTrackerListener(HealthTrackerType.ECG, json)
-    private val accelerometerTrackerListener = AccelerometerTrackerListener(HealthTrackerType.ACCELEROMETER, json)
-    private val sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2, json)
-    private val ppgIRTrackerListener = PpgIRTrackerListener(HealthTrackerType.PPG_IR, json)
-    private val ppgRedTrackerListener = PpgRedTrackerListener(HealthTrackerType.PPG_RED, json)
+    private lateinit var ppgGreenTrackerListener: PpgGreenTrackerListener
+    private lateinit var heartRateTrackerListener: HeartRateTrackerListener
+    private lateinit var ecgTrackerListener: ECGTrackerListener
+    private lateinit var accelerometerTrackerListener: AccelerometerTrackerListener
+    private lateinit var sPO2TrackerListener: SPO2TrackerListener
+    private lateinit var ppgIRTrackerListener: PpgIRTrackerListener
+    private lateinit var ppgRedTrackerListener: PpgRedTrackerListener
+//    private val ppgGreenTrackerListener = PpgGreenTrackerListener(HealthTrackerType.PPG_GREEN, json, db)
+//    private val heartRateTrackerListener = HeartRateTrackerListener(HealthTrackerType.HEART_RATE, json, db)
+//    private val ecgTrackerListener = ECGTrackerListener(HealthTrackerType.ECG, json, db)
+//    private val accelerometerTrackerListener = AccelerometerTrackerListener(HealthTrackerType.ACCELEROMETER, json, db)
+//    private val sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2, json, db)
+//    private val ppgIRTrackerListener = PpgIRTrackerListener(HealthTrackerType.PPG_IR, json, db)
+//    private val ppgRedTrackerListener = PpgRedTrackerListener(HealthTrackerType.PPG_RED, json, db)
+
+
 
     private val connectionListener = object : ConnectionListener {
         override fun onConnectionSuccess() {
@@ -107,10 +128,10 @@ class MainActivity : ComponentActivity() {
             }
 
             if (availableTrackers.contains(HealthTrackerType.PPG_GREEN)) {
-                ppgPpgGreenTrackerListener.isDataCollecting = isDataCollectionRunning1
-                ppgPpgGreenTrackerListener.trackerActive = activeTrackers[3]
+                ppgGreenTrackerListener.isDataCollecting = isDataCollectionRunning1
+                ppgGreenTrackerListener.trackerActive = activeTrackers[3]
                 if(activeTrackers[3]) {
-                    ppgGreenTracker = PpgGreenTracker(healthTracking, ppgPpgGreenTrackerListener)
+                    ppgGreenTracker = PpgGreenTracker(healthTracking, ppgGreenTrackerListener)
                 }
             }
 
@@ -197,10 +218,19 @@ class MainActivity : ComponentActivity() {
     //Accelerometer,ECG,HeartRate,ppgGreen,ppgIR,ppgRed,SPO2
     private var activeTrackers = arrayListOf(true, true, true, true, true, true, true)
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val lifecycleScope = lifecycleScope
+        ppgGreenTrackerListener = PpgGreenTrackerListener(HealthTrackerType.PPG_GREEN, json, db, lifecycleScope)
+        heartRateTrackerListener = HeartRateTrackerListener(HealthTrackerType.HEART_RATE, json, db, lifecycleScope)
+        ecgTrackerListener = ECGTrackerListener(HealthTrackerType.ECG, json, db, lifecycleScope)
+        accelerometerTrackerListener = AccelerometerTrackerListener(HealthTrackerType.ACCELEROMETER, json, db, lifecycleScope)
+        sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2, json, db, lifecycleScope)
+        ppgIRTrackerListener = PpgIRTrackerListener(HealthTrackerType.PPG_IR, json, db, lifecycleScope)
+        ppgRedTrackerListener = PpgRedTrackerListener(HealthTrackerType.PPG_RED, json, db, lifecycleScope)
         requestPermissions(requestedPermissions, 0)
-
         /*healthTracking = HealthTrackingService(connectionListener, this@MainActivity)*/
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.BODY_SENSORS) != PackageManager.PERMISSION_GRANTED) {
@@ -257,7 +287,7 @@ class MainActivity : ComponentActivity() {
                     FirstScreen(
                         onNavigateToSecondActivity = {currentView = ViewType.SecondActivity},
                         onAccept = {currentView = ViewType.StopWatch},
-                        onNotify = { oneTimeNotification() }
+                        onSyncTemplates = { getTemplate() }
                     )
                 }
                 ViewType.ConfirmActionScreen -> {
@@ -336,7 +366,6 @@ class MainActivity : ComponentActivity() {
                 try {
                     val tokenResponse = apiService.getToken(
 
-
                         JsonObject().apply {
                             addProperty("username", "Watch1")
                             addProperty("password", "tse-KIT-2023")
@@ -348,7 +377,16 @@ class MainActivity : ComponentActivity() {
                         println(token)
 
                         val postResponse = apiService.testPost(
-                            json.getStoredDataAsJsonObject(),
+                            JSONObject().apply {
+                                db.accelerometerDao.getBySyncOrdered()
+                                db.ecgDao.getBySyncOrdered()
+                                db.heartrateDao.getBySyncOrdered()
+                                db.ppgGreenDao.getBySyncOrdered()
+                                db.ppgIRDao.getBySyncOrdered()
+                                db.ppgRedDao.getBySyncOrdered()
+                                db.spo2Dao.getBySyncOrdered()
+                            },
+                            //json.getStoredDataAsJsonObject(),
                             /*JsonObject().apply {
                                 addProperty("test1", "Hello World")
                             },*/
@@ -375,6 +413,62 @@ class MainActivity : ComponentActivity() {
 
         thread.start()
 
+    }
+
+    private fun getTemplate() {
+        val thread = Thread {
+            try {
+                Log.i("APImessage", "Connect")
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("http://193.196.36.62:9000/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+
+                val apiService: ApiService = retrofit.create(ApiService::class.java)
+
+                try {
+                    val tokenResponse = apiService.getToken(
+
+                        JsonObject().apply {
+                            addProperty("username", "Watch1")
+                            addProperty("password", "tse-KIT-2023")
+                        }
+                    ).execute()
+
+                    if (tokenResponse.isSuccessful) {
+                        val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
+                        println(token)
+
+                        val template = apiService.getTemplate(token).execute()
+
+                        val jsonString = template.body().toString().trimIndent()
+
+                        // Parse the JSON
+                        val gson = Gson()
+                        val templateDataInstance: TemplateInfos = gson.fromJson(jsonString, TemplateInfos::class.java)
+
+                        // Access the parsed data
+                        println("Title: ${templateDataInstance.title}")
+                        println("Questions: ${templateDataInstance.questions}")
+
+                        if (template.isSuccessful) {
+                            Log.i("GetTemplate", template.body().toString())
+                        } else {
+                            println("Error: ${template.code()}")
+                        }
+                    } else {
+                        println("Error: ${tokenResponse.code()}")
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        thread.start()
     }
 
     companion object {
@@ -419,13 +513,13 @@ class MainActivity : ComponentActivity() {
 
     private fun ppgGreenOff(){
         activeTrackers[3] = false
-        ppgPpgGreenTrackerListener.trackerActive = activeTrackers[3]
+        ppgGreenTrackerListener.trackerActive = activeTrackers[3]
         Log.i("Button", "ppgGreen is " + activeTrackers[3].toString())
     }
 
     private fun ppgGreenOn(){
         activeTrackers[3] = true
-        ppgPpgGreenTrackerListener.trackerActive = activeTrackers[3]
+        ppgGreenTrackerListener.trackerActive = activeTrackers[3]
         Log.i("Button", "ppgGreen is " + activeTrackers[3].toString())
     }
 
@@ -851,7 +945,7 @@ private fun FirstScreen(
 
     onNavigateToSecondActivity: () -> Unit,
     onAccept: () -> Unit,
-    onNotify: () -> Unit,
+    onSyncTemplates: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -879,7 +973,7 @@ private fun FirstScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
-                onClick = { onNotify() },
+                onClick = { onSyncTemplates() },
             ) {
                 Icon(
                     imageVector = Icons.Default.Sync,
