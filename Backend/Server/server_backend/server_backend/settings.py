@@ -53,7 +53,6 @@ INSTALLED_APPS = [
 
     'user',
     'base',
-    'sql_lab',
 
     'rest_framework',
     'rest_framework.authtoken',
