@@ -1,5 +1,6 @@
 package com.plcoding.wearosstopwatch.presentation
 
+import DataSender
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Color.parseColor
@@ -83,6 +84,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
     private lateinit var sPO2TrackerListener: SPO2TrackerListener
     private lateinit var ppgIRTrackerListener: PpgIRTrackerListener
     private lateinit var ppgRedTrackerListener: PpgRedTrackerListener
+    private lateinit var dataSender: DataSender
 //    private val ppgGreenTrackerListener = PpgGreenTrackerListener(HealthTrackerType.PPG_GREEN, json, db)
 //    private val heartRateTrackerListener = HeartRateTrackerListener(HealthTrackerType.HEART_RATE, json, db)
 //    private val ecgTrackerListener = ECGTrackerListener(HealthTrackerType.ECG, json, db)
@@ -230,6 +232,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2, json, db, lifecycleScope)
         ppgIRTrackerListener = PpgIRTrackerListener(HealthTrackerType.PPG_IR, json, db, lifecycleScope)
         ppgRedTrackerListener = PpgRedTrackerListener(HealthTrackerType.PPG_RED, json, db, lifecycleScope)
+        dataSender = DataSender(db, lifecycleScope)
         requestPermissions(requestedPermissions, 0)
         /*healthTracking = HealthTrackingService(connectionListener, this@MainActivity)*/
 
@@ -305,6 +308,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         WorkManager.getInstance(this).enqueue(periodicWorkRequest)
         WorkManager.getInstance(this).enqueue(periodicWorkRequest_Second_Test)
         startDataCollection()
+        startDataSending()
     }
     private fun resetRoutine(viewModel: StopWatchViewModel) {
         stopDataCollection()
@@ -350,6 +354,10 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             Log.e(TAG, "Error stopping data collection: ${e.message}")
             // Handle the error appropriately (e.g., show a message to the user)
         }
+    }
+
+    private fun startDataSending() {
+        dataSender.startSending()
     }
 
     private fun connectApi(){
@@ -398,6 +406,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                             Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
                         } else {
                             println("Error: ${postResponse.code()}")
+                            Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
                         }
                     } else {
                         println("Error: ${tokenResponse.code()}")

@@ -34,13 +34,13 @@ class PpgGreenTrackerListener(private val trackerType: HealthTrackerType,private
                     allValues.add(dataPoint.getValue(ValueKey.PpgGreenSet.PPG_GREEN).toString())
 
                     json.dataToJSON("ppggreen", allValues)
-                    Log.d("Json Green", allValues.toString())
+                   // Log.d("Json Green", allValues.toString())
                     val ppgGreenData = PpgGreenData(dataPoint.timestamp.toString(), dataPoint.getValue(ValueKey.PpgGreenSet.PPG_GREEN).toString(), "0")
                     scope.launch {
                         db.ppgGreenDao.upsertPpgGreenData(ppgGreenData)
                     }
 
-                    println("json pggGreen")
+                   // println("json pggGreen")
                 }
             }
         }
