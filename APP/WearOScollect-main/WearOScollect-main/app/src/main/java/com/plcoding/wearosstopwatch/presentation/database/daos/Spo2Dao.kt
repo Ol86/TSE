@@ -20,4 +20,7 @@ interface Spo2Dao {
 
     @Query("SELECT * FROM spo2Data ORDER BY sync ASC")
     fun getBySyncOrdered(): Flow<List<Spo2Data>>
+
+    @Query("SELECT * FROM spo2Data ORDER BY time DESC LIMIT 1")
+    suspend fun getLatestSpo2Data(): List<Spo2Data>
 }

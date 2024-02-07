@@ -20,4 +20,7 @@ interface PpgIRDao {
 
     @Query("SELECT * FROM ppgIRData ORDER BY sync ASC")
     fun getBySyncOrdered(): Flow<List<PpgIRData>>
+
+    @Query("SELECT * FROM ppgIRData ORDER BY time DESC LIMIT 1")
+    suspend fun getLatestPpgIRData(): List<PpgIRData>
 }

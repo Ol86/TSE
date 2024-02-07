@@ -10,4 +10,12 @@ data class PpgRedData (
     val sync: String,
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0
-)
+){
+    fun toJsonMap(): Map<String, String> {
+        return mapOf(
+//            "id" to id.toString(),
+            "time" to time,
+            "ppgred" to ppgred
+        )
+    }
+}

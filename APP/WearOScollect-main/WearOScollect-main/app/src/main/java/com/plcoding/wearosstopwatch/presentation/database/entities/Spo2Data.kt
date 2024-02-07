@@ -12,4 +12,13 @@ data class Spo2Data (
     val sync: String,
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0
-)
+){
+    fun toJsonMap(): Map<String, String> {
+        return mapOf(
+            "time" to time,
+            "spo2" to spo2,
+            "heartRate" to heartRate,
+            "status" to status
+        )
+    }
+}

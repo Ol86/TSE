@@ -20,4 +20,7 @@ interface EcgDao {
 
     @Query("SELECT * FROM ecgData ORDER BY sync ASC")
     fun getBySyncOrdered(): Flow<List<EcgData>>
+
+    @Query("SELECT * FROM ecgData ORDER BY time DESC LIMIT 1")
+    suspend fun getLatestEcgData(): List<EcgData>
 }

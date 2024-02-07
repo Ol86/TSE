@@ -16,4 +16,16 @@ data class EcgData (
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0
 
-)
+) {
+    fun toJsonMap(): Map<String, String> {
+        return mapOf(
+            "time" to time,
+            "ecg" to ecg,
+            "ppgGreen" to ppgGreen,
+            "leadOff" to leadOff,
+            "maxThreshold" to maxThreshold,
+            "minThreshold" to minThreshold,
+            "sequence" to sequence
+        )
+    }
+}

@@ -10,4 +10,11 @@ data  class PpgIRData (
     val sync: String,
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0
-)
+){
+    fun toJsonMap(): Map<String, String> {
+        return mapOf(
+            "time" to time,
+            "ppgir" to ppgir
+        )
+    }
+}
