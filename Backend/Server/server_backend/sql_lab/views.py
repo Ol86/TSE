@@ -10,12 +10,12 @@ def text_input_view(request):
         if form.is_valid():
             text = form.save()
             processed_text = labratory.translating(text)
-            # return render(request, 'sql_lab/result.html', {'processed_text': processed_text})
-            return render(request, 'sql_lab/result.html', {'form': form,
-                                                           'original_text': text.content,
-                                                           'processed_text': processed_text.content})
+            # return render(request, 'myapp/result.html', {'processed_text': processed_text})
+            return render(request, 'myapp/result.html', {'form': form,
+                                                         'original_text': text.content,
+                                                         'processed_text': processed_text.content})
     else:
         form = TextInputForm()
-    return render(request, 'sql_lab/input.html', {'form': form})
+    return render(request, 'myapp/input.html', {'form': form})
 
-# todo Ausgabe wirklich nur auf SQL Befehl beschränken durch suchen der '''
+#todo Ausgabe wirklich nur auf SQL Befehl beschränken durch suchen der '''
