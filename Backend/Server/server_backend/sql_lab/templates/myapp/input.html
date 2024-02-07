@@ -1,0 +1,17 @@
+<html>
+<head>
+    <title>Textverarbeitung</title>
+</head>
+<body>
+    <h2>Text eingeben</h2>
+    <form method="post" action="{% url 'text_input' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Translate</button>
+    </form>
+    <br><br>
+    <div>
+        {% include 'myapp/database.html' %}
+    </div>
+</body>
+</html>
