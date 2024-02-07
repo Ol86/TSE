@@ -1,6 +1,10 @@
+# The path method to rout the user.
 from django.urls import path
+
+# The views of the base app.
 from . import views
 
+# --------------------------------------------------------------------------------------------------- #
 urlpatterns = [
     # This url sends the user to the homepage.
     path('', views.home, name="home"),

@@ -1,8 +1,10 @@
+# All the required packages to handle django authentication.
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
+# All the required packages to handle django rest api.
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -10,18 +12,24 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 
-from os import path
+# Json to encrypt and decrypt json into dictionarys to work with.
 import json
 
+# Methods to guid the user.
 from django.shortcuts import render, redirect
 
+# The seializer to get the required informations.
 from base.serializers import *
+# The models to store to the database.
 from base.models import *
+# The forms to be rendered.
 from base.forms import ExperimentForm, QuestionForm
+# The handling methods to save the given data to the database.
 from base.json import *
 
+# --------------------------------------------------------------------------------------------------- #
 def loginPage(request):
-    """ This function handle the generation of loginpage.
+    """ This function handle the generation of the loginpage.
     The function will check the POST request submitted from the html <form>
     variable user will be None if username and password does not match any user in the
     database.
@@ -44,6 +52,7 @@ def loginPage(request):
     context = {}
     return render(request, 'base/login.html', context)
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 def logoutUser(request):
     """ This function handle the logout of the user.
 
@@ -53,6 +62,7 @@ def logoutUser(request):
     logout(request)
     return redirect('home')
 
+# --------------------------------------------------------------------------------------------------- #
 @login_required(login_url='login')
 def home(request):
     """ This function handle the generation of the homepage to display the latest experiments.
@@ -64,6 +74,7 @@ def home(request):
     context = {'experiments': experiments}              #gibt unserer home.html die Experimente
     return render(request, 'base/home.html', context)   #siehe templates/base/home.html
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 @login_required(login_url='login')
 def experiment(request, pk):
     """ This funtion handles the specific experiments and their display type.
@@ -76,12 +87,14 @@ def experiment(request, pk):
     context = {'experiment': experiment}
     return render(request, 'base/experiment/experiment.html', context)
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 @login_required(login_url='login')
 def createExperiment(request):
     """ This function handles the creation of a new experiment.
 
-    :param request: It handles the request to create a new experiment and transfer the specifications to the database.
-    :return: This function returns the same page if an error occured, or it redirects the user to the homepage if the generation of a new experiment was successful
+    :param request: It handles the request to create a new experiment.
+    :return: This function returns the same page if an error occured, 
+    or it redirects the user to the homepage if the generation of a new experiment was successful.
     """
     form = ExperimentForm()
     current_profile = Profile.objects.get(user=request.user.id)
@@ -97,12 +110,14 @@ def createExperiment(request):
     context = {'form': form}
     return render(request, 'base/experiment/create_experiment.html', context)
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 @login_required(login_url='login')
 def deleteExperiment(request, pk):
     """ This function handles the deletion of an experiment.
 
     :param request: It handles the request to delete an experiment and update the database.
-    :return: This function returns the same page before delete was clicked, or it redirects the user to the homepage if the deletion of an experiment was successful
+    :return: This function returns the same page before delete was clicked, 
+    or it redirects the user to the homepage if the deletion of an experiment was successful.
     """
 
     experiment = Experiment.objects.get(id=pk)
@@ -111,12 +126,14 @@ def deleteExperiment(request, pk):
         return redirect('home')
     return render(request, 'base/experiment/delete_experiment.html', {'experiment': experiment})
 
+# --------------------------------------------------------------------------------------------------- #
 @login_required(login_url='login')
 def questions(request):
     questions = Questions.objects.all()
     context = {'questions': questions}
     return render(request, 'base/question/questions.html', context)
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 @login_required(login_url='login')
 def createQuestion(request):
     form = QuestionForm()
@@ -134,12 +151,14 @@ def createQuestion(request):
     context = {'form': form}
     return render(request, 'base/question/create_question.html', context)
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 @login_required(login_url='login')
 def deleteQuestion(request, pk):
-    """ This function handles the deletion of an experiment.
+    """ This function handles the deletion of an question.
 
-    :param request: It handles the request to delete an experiment and update the database.
-    :return: This function returns the same page before delete was clicked, or it redirects the user to the homepage if the deletion of an experiment was successful
+    :param request: It handles the request to delete aquestion.
+    :return: This function returns the same page before delete was clicked, 
+    or it redirects the user to the homepage if the deletion of a question was successful.
     """
 
     question = Questions.objects.get(id=pk)
@@ -148,6 +167,7 @@ def deleteQuestion(request, pk):
         return redirect('questions')
     return render(request, 'base/question/delete_question.html', {'question': question})
 
+# --------------------------------------------------------------------------------------------------- #
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def testApi(request):
@@ -155,6 +175,7 @@ def testApi(request):
         return Response({'message': 'Hello, World!'})
     return Response({'error': 'Wrong rest method'})
 
+# --------------------------------------------------------------------------------------------------- #
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getExperimentTemplate(request):
@@ -178,7 +199,8 @@ def getExperimentTemplate(request):
         return Response(result)
     return Response({'error': 'Wrong rest method'})
 
-# TODO: Verarbeiten und abspeichern der Daten
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
+# TODO: Handle and save the answers.
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def sendWatchData(request):
@@ -207,6 +229,7 @@ def sendWatchData(request):
         return Response({'error': 'No data was send by the watch'}, status=status.HTTP_400_BAD_REQUEST)
     return Response({'error': 'Wrong rest method'}, status=status.HTTP_400_BAD_REQUEST)
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def createSession(request):
@@ -220,7 +243,10 @@ def createSession(request):
                 if j == token.user.id:
                     last_experiment_index = i
         
-        session = Session(experiment=Experiment.objects.get(id=experiment[last_experiment_index]["id"]), watch=Watch.objects.get(user=token.user.id))
+        session = Session(
+            experiment=Experiment.objects.get(id=experiment[last_experiment_index]["id"]), 
+            watch=Watch.objects.get(user=token.user.id)
+        )
         session.save()
 
         result = {"session": session.id}

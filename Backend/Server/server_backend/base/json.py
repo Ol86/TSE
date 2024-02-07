@@ -1,12 +1,23 @@
+# Datetime to convert a timestamp into datetime-format
 from datetime import datetime
 
+# Json to handle json opperations.
+import json
+
+# The seriallizer to get all the required informations of the Models.
 from base.serializers import *
+# All models to get and store the required informations.
 from base.models import *
 from user.models import *
 
-import json
-
+# --------------------------------------------------------------------------------------------------- #
 def returnExperimentInfo(experiment):
+    """This method takes all the required informations of the template and fits it into a
+    specified pattern.
+
+    :param experiment: The information of the required experiment.
+    :return: The resulting dictionary, that ich converted into a json.
+    """
     questions = []
     for i in experiment["questions"]:
         questions.append(QuestionsSerializer(Questions.objects.get(id=i), many=False).data)
@@ -34,7 +45,12 @@ def returnExperimentInfo(experiment):
     }
     return result
 
+# --------------------------------------------------------------------------------------------------- #
 def insertEcgData(data):
+    """This method handles and inserts the ecg data into the database.
+
+    :param data: The send data of the watch.
+    """
     session = Session.objects.get(id=data["session"])
     for ecg in data["data"]["ecg"]:
         line = ECG(
@@ -49,7 +65,12 @@ def insertEcgData(data):
         )
         line.save()
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 def insertHeartrateData(data):
+    """This method handles and inserts the heart rate data into the database.
+
+    :param data: The send data of the watch.
+    """
     session = Session.objects.get(id=data["session"])
     for hr in data["data"]["heartrate"]:
         line = Heart_Rate(
@@ -62,7 +83,12 @@ def insertHeartrateData(data):
         )
         line.save()
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 def insertSPO2Data(data):
+    """This method handles and inserts the spo2 data into the database.
+
+    :param data: The send data of the watch.
+    """
     session = Session.objects.get(id=data["session"])
     for spo2 in data["data"]["spo2"]:
         line = SPO2(
@@ -74,7 +100,12 @@ def insertSPO2Data(data):
         )
         line.save()
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 def insertAccelerometerData(data):
+    """This method handles and inserts the accelerometer data into the database.
+
+    :param data: The send data of the watch.
+    """
     session = Session.objects.get(id=data["session"])
     for accelerometer in data["data"]["accelerometer"]:
         line = Accelerometer(
@@ -85,7 +116,12 @@ def insertAccelerometerData(data):
             z=accelerometer["z"]
         )
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 def insertPPGIRData(data):
+    """This method handles and inserts the ppg-ir data into the database.
+
+    :param data: The send data of the watch.
+    """
     session = Session.objects.get(id=data["session"])
     for ppgir in data["data"]["ppgir"]:
         line = PPG_IR(
@@ -95,7 +131,12 @@ def insertPPGIRData(data):
         )
         line.save()
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 def insertPPGRedData(data):
+    """This method handles and inserts the ppg-red data into the database.
+
+    :param data: The send data of the watch.
+    """
     session = Session.objects.get(id=data["session"])
     for ppgred in data["data"]["ppgred"]:
         line = PPG_Red(
@@ -105,7 +146,12 @@ def insertPPGRedData(data):
         )
         line.save()
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 def insertPPGGreenData(data):
+    """This method handles and inserts the ppg-green data into the database.
+
+    :param data: The send data of the watch.
+    """
     session = Session.objects.get(id=data["session"])
     for ppggreen in data["data"]["ppggreen"]:
         line = PPG_Green(

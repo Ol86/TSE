@@ -1,5 +1,8 @@
+# The model template from django and some validators.
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
+# The user models for cross connections between tables inside the database.
 from user.models import Watch, Profile
 
 # --------------------------------------------------------------------------------------------------- #
@@ -81,7 +84,7 @@ class Session(models.Model):
     """This class defines the session model.
 
     :param models: The base structure for a model.
-    :return: The Session as a model.
+    :return: The session as a model.
     """
     id = models.AutoField(auto_created=True, primary_key=True)
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
@@ -99,6 +102,32 @@ class Session(models.Model):
         :return: The session id and experiment title as a display.
         """
         result = self.id + ": " + self.experiment.title
+        return result
+
+# --------------------------------------------------------------------------------------------------- #
+class Answers(models.Model):
+    """This class defines the answer model.
+
+    :param models: The base structure for a model.
+    :return: The answer as a model.
+    """
+    id = models.AutoField(auto_created=True, primary_key=True)
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    question = models.ForeignKey(Questions, on_delete=models.CASCADE)
+    answer = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(4)])
+
+    class Meta:
+        """This class defines the ordering of the database table.
+        """
+        ordering = ['id']
+
+    def __str__(self):
+        """This method defines the display name.
+
+        :return: The answer id and the answer with the given answer.
+        """
+        result = self.id + ": " + self.question.question + " => " + self.answer
         return result
 
 # --------------------------------------------------------------------------------------------------- #
