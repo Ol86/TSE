@@ -1,6 +1,10 @@
 {% extends 'main.html' %}
 {% load static %}
 
+{% block style %}
+    <link rel="stylesheet" href="{% static 'base/question/questions.css' %}"/>
+{% endblock %}
+
 {% block title %}
     <title>
         SQL Laboratory
@@ -8,6 +12,14 @@
 {% endblock %}
 
 {% block content %}
+    <a class="logout-button" href="{% url 'logout' %}">Logout</a>
+    <header>
+        <a class="creation-buttons" href="{% url 'home' %}">Experiments</a>
+        <a class="creation-buttons" href="{% url 'questions' %}">Questions</a>
+        <a class="creation-buttons" href="{% url 'watches' %}">Watches</a>
+        <a class="creation-buttons" href="{% url 'sql_lab' %}">SQL Laboratory</a>
+    </header>
+
     <h2>SQL Laboratory</h2>
     <form method="post" action="{% url 'sql_lab' %}">
         {% csrf_token %}
