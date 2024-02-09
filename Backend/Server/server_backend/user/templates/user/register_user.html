@@ -12,15 +12,18 @@
 {% endblock %}
 
 {% block content %}
-    <a id="quit" href="{{request.META.HTTP_REFERER}}">quit</a>
+    <a id="quit" href="{% url 'login' %}">quit</a>
     <form class="creationForm" method="POST" action="">
         <h2>Create new user</h2>
         <div class="formElements">
             {% csrf_token %}
-            {{ form.username }}
-            {{ form.password1 }}
+            <input type="text" name="{{form.username.html_name}}" id="{{form.username.id_for_label}}" placeholder="Username" class="{% if form.username.errors %}invalid-input{% endif %}" required>
+            <span class="errorMessage">{{ form.username.errors }}</span>
+            <input type="password" name="{{form.password1.html_name}}" id="{{form.password1.id_for_label}}" placeholder="Enter password" class="{% if form.password1.errors or form.password2.errors %}invalid-input{% endif %}" required aria-describedby="id_password1_helptext" autocomplete="new-password">
+            <span class="errorMessage">{{ form.password1.errors }}</span>
             {{ form.password1.help_text }}
-            {{ form.password2 }}
+            <input type="password" name="{{form.password2.html_name}}" id="{{form.password2.id_for_label}}" placeholder="Confirm password" class="{% if form.password1.errors or form.password2.errors %}invalid-input{% endif %}" required aria-describedby="id_password2_helptext" autocomplete="new-password">
+            <span class="errorMessage">{{ form.password2.errors }}</span>
             {{ form.role }}
         </div>
         <input id="submit" type="submit" value="Submit"/>
