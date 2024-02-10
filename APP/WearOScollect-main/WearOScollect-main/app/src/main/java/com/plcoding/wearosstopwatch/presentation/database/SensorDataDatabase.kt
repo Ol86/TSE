@@ -2,6 +2,8 @@ package com.plcoding.wearosstopwatch.presentation.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.plcoding.wearosstopwatch.presentation.database.daos.AccelerometerDao
 import com.plcoding.wearosstopwatch.presentation.database.daos.EcgDao
 import com.plcoding.wearosstopwatch.presentation.database.daos.HeartrateDao
@@ -21,16 +23,17 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 
-@Database(entities = [AccelerometerData::class, EcgData::class, HeartrateData::class, PpgGreenData::class, PpgIRData::class, PpgRedData::class, Spo2Data::class],
+@Database(entities = [EcgData::class, HeartrateData::class, Spo2Data::class, AccelerometerData::class, PpgIRData::class, PpgRedData::class, PpgGreenData::class],
     version = 1)
 abstract class SensorDataDatabase: RoomDatabase() {
     abstract val ecgDao: EcgDao
-    abstract val accelerometerDao: AccelerometerDao
     abstract val heartrateDao: HeartrateDao
-    abstract val ppgGreenDao: PpgGreenDao
+    abstract val spo2Dao: Spo2Dao
+    abstract val accelerometerDao: AccelerometerDao
     abstract val ppgIRDao: PpgIRDao
     abstract val ppgRedDao: PpgRedDao
-    abstract val spo2Dao: Spo2Dao
+    abstract val ppgGreenDao: PpgGreenDao
+    private var sessionid = 1
 
     fun convertToJsonObject(map: Map<String, Any>): JSONObject {
         val jsonObject = JSONObject()
@@ -61,25 +64,28 @@ abstract class SensorDataDatabase: RoomDatabase() {
     suspend fun getLatestDataAsJson(): String {
         return withContext(Dispatchers.IO) {
             val ecgData = ecgDao.getLatestEcgData()
-            val accelerometerData = accelerometerDao.getLatestAccelerometerData()
             val heartrateData = heartrateDao.getLatestHeartrateData()
-            val ppgGreenData = ppgGreenDao.getLatestPpgGreenData()
+            val spo2Data = spo2Dao.getLatestSpo2Data()
+            val accelerometerData = accelerometerDao.getLatestAccelerometerData()
             val ppgIRData = ppgIRDao.getLatestPpgIRData()
             val ppgRedData = ppgRedDao.getLatestPpgRedData()
-            val spo2Data = spo2Dao.getLatestSpo2Data()
+            val ppgGreenData = ppgGreenDao.getLatestPpgGreenData()
 
             val jsonMap = mutableMapOf<String, List<Map<String, String>>>()
 
             jsonMap["ecg"] = ecgData.map { it.toJsonMap() }
-            jsonMap["accelerometer"] = accelerometerData.map { it.toJsonMap() }
             jsonMap["heartrate"] = heartrateData.map { it.toJsonMap() }
-            jsonMap["ppggreen"] = ppgGreenData.map { it.toJsonMap() }
+            jsonMap["accelerometer"] = accelerometerData.map { it.toJsonMap() }
+            jsonMap["spo2"] = spo2Data.map { it.toJsonMap() }
             jsonMap["ppgir"] = ppgIRData.map { it.toJsonMap() }
             jsonMap["ppgred"] = ppgRedData.map { it.toJsonMap() }
-            jsonMap["spo2"] = spo2Data.map { it.toJsonMap() }
+            jsonMap["ppggreen"] = ppgGreenData.map { it.toJsonMap() }
 
             val jsonObject = convertToJsonObject(jsonMap)
-            jsonObject.toString()
+            val sessionJsonObject = JSONObject()
+            sessionJsonObject.put("session", sessionid)
+            sessionJsonObject.put("data", jsonObject)
+            sessionJsonObject.toString()
         }
     }
 }
