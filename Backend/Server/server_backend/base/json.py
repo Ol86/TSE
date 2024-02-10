@@ -161,3 +161,15 @@ def insertPPGGreenData(data):
             time=datetime.utcfromtimestamp(int(ppggreen["time"]) / 1000)
         )
         line.save()
+
+# --------------------------------------------------------------------------------------------------- #
+def insertAnswers(data):
+    session = Session.objects.get(id=data["session"])
+    for answer in data["questions"]:
+        line = Answers(
+            question=answer["question"],
+            experiment=session.experiment,
+            session=session,
+            answer=answer["answer"]
+        )
+        line.save()

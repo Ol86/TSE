@@ -224,16 +224,17 @@ def sendWatchData(request):
             insertPPGIRData(data)
             insertPPGRedData(data)
             insertPPGGreenData(data)
+            insertAnswers(data)
 
             return Response({'message': 'Data transfer was successful'} ,status=status.HTTP_201_CREATED)
         return Response({'error': 'No data was send by the watch'}, status=status.HTTP_400_BAD_REQUEST)
     return Response({'error': 'Wrong rest method'}, status=status.HTTP_400_BAD_REQUEST)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
-@api_view(['POST'])
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def createSession(request):
-    if request.method == 'POST':
+    if request.method == 'GET':
         key = request.META['HTTP_AUTHORIZATION'].split(" ")[1]
         token = Token.objects.get(key=key)
         experiment = ExperimentSerializer(Experiment.objects.all(), many=True).data
