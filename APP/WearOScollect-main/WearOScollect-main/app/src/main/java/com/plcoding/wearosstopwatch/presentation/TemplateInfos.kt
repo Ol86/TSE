@@ -18,7 +18,7 @@ data class TemplateInfos(
     @SerializedName("created_at") val createdAt: String,
     val questions: List<TemplateQuestion>
 ) {
-    fun getTrackerBooleans(): Array<Boolean> {
-        return arrayOf(acc, ecg, hr, ppgG, ppgI, ppgR, spo2)
+    fun getTrackerBooleans(): ArrayList<Boolean> {
+        return arrayListOf(acc, ecg, hr, ppgG, ppgI, ppgR, spo2)
     }
 }

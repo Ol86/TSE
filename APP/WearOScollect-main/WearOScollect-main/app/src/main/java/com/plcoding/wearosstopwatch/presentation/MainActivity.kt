@@ -218,8 +218,77 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
 
     private var isDataCollectionRunning1 = false
 
+    val gson = Gson()
+    private val lock = ReentrantLock()
+    private val defaultTemplate: String = """
+    {
+        "id": 1,
+        "title": "{Default}",
+        "watches": [
+            {
+                "name": "Watch1",
+                "watch": "11:22:33:44:55:66"
+            }
+        ],
+        "acc": true,
+        "hr": true,
+        "ppg_g": true,
+        "ppg_i": true,
+        "ppg_r": true,
+        "bia": true,
+        "ecg": true,
+        "spo2": true,
+        "swl": true,
+        "created_at": "2024-02-10T16:37:04.512963+01:00",
+        "questions": [
+            {
+                "id": 1,
+                "question": "Wie sind deine aktuellen Emotionen?",
+                "button1": true,
+                "button1_text": "Positiv",
+                "button2": true,
+                "button2_text": "Negativ",
+                "button3": true,
+                "button3_text": "Neutral",
+                "button4": false,
+                "button4_text": "",
+                "created_at": "2024-02-10T16:36:00.218111+01:00"
+            },
+            {
+                "id": 2,
+                "question": "Wie fühlen sie sich?",
+                "button1": true,
+                "button1_text": "Gut",
+                "button2": true,
+                "button2_text": "Schlecht",
+                "button3": true,
+                "button3_text": "Gestresst",
+                "button4": true,
+                "button4_text": "Entspannt",
+                "created_at": "2024-02-10T16:36:20.549078+01:00"
+            },
+            {
+                "id": 3,
+                "question": "Sind sie verärgert?",
+                "button1": true,
+                "button1_text": "Ja",
+                "button2": true,
+                "button2_text": "Nein",
+                "button3": false,
+                "button3_text": "",
+                "button4": false,
+                "button4_text": "",
+                "created_at": "2024-02-10T16:36:31.426244+01:00"
+            }
+        ]
+    }
+""".trimIndent()
+
+    private var templateData: TemplateInfos = gson.fromJson(defaultTemplate, TemplateInfos::class.java)
+
     //Accelerometer,ECG,HeartRate,ppgGreen,ppgIR,ppgRed,SPO2
-    private var activeTrackers = arrayListOf(true, true, true, true, true, true, true)
+    //private var activeTrackers = arrayListOf(true, true, true, true, true, true, true)
+    private var activeTrackers = templateData.getTrackerBooleans()
 
 
 
@@ -288,10 +357,12 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                     )
                 }
                 ViewType.FirstScreen -> {
+                    val templateDataState = remember { mutableStateOf(templateData) }
                     FirstScreen(
-                        onNavigateToSecondActivity = {currentView = ViewType.SecondActivity},
-                        onAccept = {currentView = ViewType.StopWatch},
-                        onSyncTemplates = { getTemplate() }
+                        onNavigateToSecondActivity = { currentView = ViewType.SecondActivity },
+                        onAccept = { currentView = ViewType.StopWatch },
+                        onSyncTemplates = { templateDataState.value = getTemplate() },
+                        templateData = templateDataState
                     )
                 }
                 ViewType.ConfirmActionScreen -> {
@@ -426,9 +497,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         thread.start()
 
     }
-
-    private val lock = ReentrantLock()
-    private fun getTemplate() {
+    private fun getTemplate(): TemplateInfos{
         var templateAsJsonString: String? = null
 
         val thread = Thread {
@@ -456,25 +525,23 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
 
                         val template = apiService.getTemplate(token).execute()
 
-                        val jsonString = template.body().toString().trimIndent()
-
                         lock.lock()
                         try {
-                            templateAsJsonString = jsonString
+                            templateAsJsonString = template.body().toString().trimIndent()
                         } finally {
                             lock.unlock()
                         }
 
                         // Parse the JSON
                         val gson = Gson()
-                        val templateDataInstance: TemplateInfos = gson.fromJson(jsonString, TemplateInfos::class.java)
+                        val templateDataInstance: TemplateInfos = gson.fromJson(templateAsJsonString, TemplateInfos::class.java)
 
                         // Access the parsed data
                         println("Title: ${templateDataInstance.title}")
                         println("Questions: ${templateDataInstance.questions}")
 
                         if (template.isSuccessful) {
-                            Log.i("GetTemplateApi1", template.body().toString())
+                            Log.i("GetTemplateApi1", template.body().toString().trimIndent())
                         } else {
                             Log.i("GetTemplateApi2", "${template.code()}")
                         }
@@ -500,8 +567,9 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         } finally {
             lock.unlock()
         }
-    }
 
+        return gson.fromJson(templateAsJsonString, TemplateInfos::class.java)
+    }
     companion object {
         private const val TAG = "MainActivity DataCollection"
     }
@@ -973,11 +1041,11 @@ private fun SecondActivity(
 
 @Composable
 private fun FirstScreen(
-
     onNavigateToSecondActivity: () -> Unit,
     onAccept: () -> Unit,
     onSyncTemplates: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    templateData: MutableState<TemplateInfos>
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
@@ -989,7 +1057,7 @@ private fun FirstScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Experiment 1",
+                text = templateData.component1().title,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
