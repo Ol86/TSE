@@ -2,9 +2,13 @@ package com.plcoding.wearosstopwatch.presentation
 
 import DataSender
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.graphics.Color.parseColor
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -46,7 +50,6 @@ import com.samsung.android.service.health.tracking.data.HealthTrackerType
 import java.util.concurrent.TimeUnit
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
@@ -222,7 +225,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
     private val lock = ReentrantLock()
     private val defaultTemplate: String = """
     {
-        "id": 1,
+        "id": 31415,
         "title": "{Default}",
         "watches": [
             {
@@ -231,7 +234,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             }
         ],
         "acc": true,
-        "hr": true,
+        "hr": false,
         "ppg_g": true,
         "ppg_i": true,
         "ppg_r": true,
@@ -292,6 +295,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
 
 
 
+    @SuppressLint("MutableCollectionMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val lifecycleScope = lifecycleScope
@@ -317,6 +321,8 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             val viewModel = viewModel<StopWatchViewModel>()
             val timerState by viewModel.timerState.collectAsStateWithLifecycle()
             val stopWatchText by viewModel.stopWatchText.collectAsStateWithLifecycle()
+            val templateDataState = remember { mutableStateOf(templateData) }
+            val activeTrackersState = remember { mutableStateOf(activeTrackers) }
             var currentView by remember { mutableStateOf(ViewType.FirstScreen) }
             when (currentView) {
                 ViewType.StopWatch -> {
@@ -338,7 +344,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                 }
                 ViewType.SecondActivity -> {
                     SecondActivity(
-                        trackers = activeTrackers,
+                        trackers = activeTrackersState,
                         onBack = { currentView = ViewType.FirstScreen },
                         onAccOff = {accelerometerOff()},
                         onAccOn = {accelerometerOn()},
@@ -357,11 +363,11 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                     )
                 }
                 ViewType.FirstScreen -> {
-                    val templateDataState = remember { mutableStateOf(templateData) }
                     FirstScreen(
                         onNavigateToSecondActivity = { currentView = ViewType.SecondActivity },
                         onAccept = { currentView = ViewType.StopWatch },
-                        onSyncTemplates = { templateDataState.value = getTemplate() },
+                        onSyncTemplates = { templateDataState.value = getTemplate()
+                            activeTrackersState.value = templateDataState.value.getTrackerBooleans() },
                         templateData = templateDataState
                     )
                 }
@@ -663,7 +669,6 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         notificationManager.promptNotification(123456789)
         Log.i("Notify", "HELOOOOOOOOOOOOOOOO")
     }
-
 }
 
 @Composable
@@ -810,7 +815,7 @@ private fun StopWatch(
 
 @Composable
 private fun SecondActivity(
-    trackers: ArrayList<Boolean>,
+    trackers: MutableState<ArrayList<Boolean>>,
     onAccOff: () -> Unit,
     onAccOn: () -> Unit,
     onEcgOff: () -> Unit,
@@ -828,13 +833,13 @@ private fun SecondActivity(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var localEnabled0 by remember { mutableStateOf(trackers[0]) }
+    /*var localEnabled0 by remember { mutableStateOf(trackers[0]) }
     var localEnabled1 by remember { mutableStateOf(trackers[1]) }
     var localEnabled2 by remember { mutableStateOf(trackers[2]) }
     var localEnabled3 by remember { mutableStateOf(trackers[3]) }
     var localEnabled4 by remember { mutableStateOf(trackers[4]) }
     var localEnabled5 by remember { mutableStateOf(trackers[5]) }
-    var localEnabled6 by remember { mutableStateOf(trackers[6]) }
+    var localEnabled6 by remember { mutableStateOf(trackers[6]) }*/
 
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
@@ -866,18 +871,18 @@ private fun SecondActivity(
         ) {
             Button(
                 onClick = {
-                    localEnabled0 = !localEnabled0 // Umkehrung des Werts von enabled
-                    if (localEnabled0) {
-                        onAccOn()
-                    } else {
+                    if (trackers.value[0]) {
                         onAccOff()
+                    }
+                    else {
+                        onAccOn()
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled0) Color(parseColor("#0FADF0"))
+                    backgroundColor = if (trackers.value[0]) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
                 )
             ) {
@@ -891,18 +896,24 @@ private fun SecondActivity(
         ) {
             Button(
                 onClick = {
-                    localEnabled1 = !localEnabled1
+                    if (trackers.value[1]) {
+                        onEcgOff()
+                    }
+                    else {
+                        onEcgOn()
+                    }
+                    /*localEnabled1 = !localEnabled1
                     if (localEnabled1) {
                         onEcgOn()
                     } else {
                         onEcgOff()
-                    }
+                    }*/
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled1) Color(parseColor("#0FADF0"))
+                    backgroundColor = if (trackers.value[1]) Color(parseColor("#0FADF0"))
                         else Color(parseColor("#AC3123"))
                 )
             ) {
@@ -916,18 +927,22 @@ private fun SecondActivity(
         ) {
             Button(
                 onClick = {
-                    localEnabled2 = !localEnabled2
-                    if (localEnabled2) {
-                        onHeartRateOn()
-                    } else {
+                    if (trackers.value[2]) {
                         onHeartRateOff()
                     }
+                    else {
+                        onHeartRateOn()
+                    }
+                    /*val currentTrackers = trackers().value.toMutableList()
+
+                    currentTrackers[2] = !currentTrackers[2]
+                    trackers().value = currentTrackers as ArrayList<Boolean>*/
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled2) Color(parseColor("#0FADF0"))
+                    backgroundColor = if (trackers.value[2]) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
                 )
             ) {
@@ -941,18 +956,18 @@ private fun SecondActivity(
         ) {
             Button(
                 onClick = {
-                    localEnabled3 = !localEnabled3
-                    if (localEnabled3) {
-                        onPPGGreenOn()
-                    } else {
+                    if (trackers.value[3]) {
                         onPPGGreenOff()
+                    }
+                    else {
+                        onPPGGreenOn()
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled3) Color(parseColor("#0FADF0"))
+                    backgroundColor = if (trackers.value[3]) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
                 )
             ) {
@@ -966,18 +981,18 @@ private fun SecondActivity(
         ) {
             Button(
                 onClick = {
-                    localEnabled4 = !localEnabled4
-                    if (localEnabled4) {
-                        onPPGIROn()
-                    } else {
+                    if (trackers.value[4]) {
                         onPPGIROff()
+                    }
+                    else {
+                        onPPGIROn()
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled4) Color(parseColor("#0FADF0"))
+                    backgroundColor = if (trackers.value[4]) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
                 )
             ) {
@@ -991,18 +1006,18 @@ private fun SecondActivity(
         ) {
             Button(
                 onClick = {
-                    localEnabled5 = !localEnabled5
-                    if (localEnabled5) {
-                        onPPGRedOn()
-                    } else {
+                    if (trackers.value[5]) {
                         onPPGRedOff()
+                    }
+                    else {
+                        onPPGRedOn()
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled5) Color(parseColor("#0FADF0"))
+                    backgroundColor = if (trackers.value[5]) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
                 )
             ) {
@@ -1018,18 +1033,18 @@ private fun SecondActivity(
         ) {
             Button(
                 onClick = {
-                    localEnabled6 = !localEnabled6
-                    if (localEnabled6) {
-                        onSPO2On()
-                    } else {
+                    if (trackers.value[6]) {
                         onSPO2Off()
+                    }
+                    else {
+                        onSPO2On()
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (localEnabled6) Color(parseColor("#0FADF0"))
+                    backgroundColor = if (trackers.value[6]) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
                 )
             ) {
@@ -1057,7 +1072,7 @@ private fun FirstScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = templateData.component1().title,
+                text = templateData.value.title,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
@@ -1097,12 +1112,19 @@ private fun FirstScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
-                onClick = onAccept,
+                onClick = {
+                    if (templateData.value.id != 31415 && templateData.value.title != "{Default}") {
+                        onAccept()
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 50.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(parseColor("#32CD32"))
+                    backgroundColor = if (templateData.value.id != 31415
+                        && templateData.value.title != "{Default}") Color(parseColor("#32CD32"))
+                    else Color(parseColor("#AC3123"))
+                    //backgroundColor = Color(parseColor("#32CD32"))
                 )
             ) {
                 Text("Accept")
