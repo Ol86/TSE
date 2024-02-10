@@ -115,6 +115,7 @@ def insertAccelerometerData(data):
             y=accelerometer["y"],
             z=accelerometer["z"]
         )
+        line.save()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 def insertPPGIRData(data):
