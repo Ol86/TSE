@@ -380,20 +380,19 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                         }
                     ).execute()
 
+                    val a = JSONObject(
+                            """
+    {"session":1,"data":{"ecg":[{"time":"1707495249035","ecg":"-513617","ppgGreen":"378765","leadOff":"5","maxThreshold":"2794390","minThreshold":"-2804168","sequence":"4"}],"heartrate":[],"accelerometer":[{"time":"1707491100355","x":"309","y":"-249","z":"4076"}],"spo2":[{"time":"1707495256099","spo2":"0","heartRate":"0","status":"0"}],"ppgir":[{"time":"1707495255273","ppgir":"1707495255273"}],"ppgred":[{"time":"1707495255412","ppgred":"9432968"}],"ppggreen":[{"time":"1707493797898","ppgGreen":"1942357"}]}}
+    """
+                            )
+                    Log.i("DebuggingA2", a.toString())
+
                     if (tokenResponse.isSuccessful) {
                         val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
-                        println(token)
+                        Log.i("StoredDataApi1", token)
 
                         val postResponse = apiService.testPost(
-                            JSONObject().apply {
-                                db.accelerometerDao.getBySyncOrdered()
-                                db.ecgDao.getBySyncOrdered()
-                                db.heartrateDao.getBySyncOrdered()
-                                db.ppgGreenDao.getBySyncOrdered()
-                                db.ppgIRDao.getBySyncOrdered()
-                                db.ppgRedDao.getBySyncOrdered()
-                                db.spo2Dao.getBySyncOrdered()
-                            },
+                            a,
                             //json.getStoredDataAsJsonObject(),
                             /*JsonObject().apply {
                                 addProperty("test1", "Hello World")
@@ -403,10 +402,13 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
 
                         if (postResponse.isSuccessful) {
                             //println(postResponse.body())
-                            Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
+                            //Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
+                            Log.i("StoredDataApi2", postResponse.toString())
+                            Log.i("StoredDataApi3", "${postResponse.code()}")
                         } else {
                             println("Error: ${postResponse.code()}")
-                            Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
+                            Log.i("StoredDataApi4", postResponse.toString())
+                            Log.i("StoredDataApi5", "${postResponse.code()}")
                         }
                     } else {
                         println("Error: ${tokenResponse.code()}")
@@ -461,12 +463,12 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                         println("Questions: ${templateDataInstance.questions}")
 
                         if (template.isSuccessful) {
-                            Log.i("GetTemplate", template.body().toString())
+                            Log.i("GetTemplateApi1", template.body().toString())
                         } else {
-                            println("Error: ${template.code()}")
+                            Log.i("GetTemplateApi2", "${template.code()}")
                         }
                     } else {
-                        println("Error: ${tokenResponse.code()}")
+                        Log.i("GetTemplateApi3", "${tokenResponse.code()}")
                     }
 
                 } catch (e: Exception) {

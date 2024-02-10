@@ -22,5 +22,5 @@ interface HeartrateDao {
     fun getBySyncOrdered(): Flow<List<HeartrateData>>
 
     @Query("SELECT * FROM heartrateData ORDER BY time DESC LIMIT 1")
-    suspend fun getLatestHeartrateData(): List<HeartrateData>
+    fun getLatestHeartrateData(): List<HeartrateData>
 }
