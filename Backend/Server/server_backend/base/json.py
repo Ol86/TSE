@@ -115,6 +115,7 @@ def insertAccelerometerData(data):
             y=accelerometer["y"],
             z=accelerometer["z"]
         )
+        line.save()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 def insertPPGIRData(data):
@@ -158,5 +159,17 @@ def insertPPGGreenData(data):
             ppg_green=ppggreen["ppggreen"],
             session=session,
             time=datetime.utcfromtimestamp(int(ppggreen["time"]) / 1000)
+        )
+        line.save()
+
+# --------------------------------------------------------------------------------------------------- #
+def insertAnswers(data):
+    session = Session.objects.get(id=data["session"])
+    for answer in data["questions"]:
+        line = Answers(
+            question=answer["question"],
+            experiment=session.experiment,
+            session=session,
+            answer=answer["answer"]
         )
         line.save()
