@@ -57,6 +57,7 @@ import com.plcoding.wearosstopwatch.presentation.database.SensorDataDatabase
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.locks.ReentrantLock
 
 class MainActivity : ComponentActivity(), LifecycleOwner {
 
@@ -426,7 +427,10 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
 
     }
 
+    private val lock = ReentrantLock()
     private fun getTemplate() {
+        var templateAsJsonString: String? = null
+
         val thread = Thread {
             try {
                 Log.i("APImessage", "Connect")
@@ -454,6 +458,13 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
 
                         val jsonString = template.body().toString().trimIndent()
 
+                        lock.lock()
+                        try {
+                            templateAsJsonString = jsonString
+                        } finally {
+                            lock.unlock()
+                        }
+
                         // Parse the JSON
                         val gson = Gson()
                         val templateDataInstance: TemplateInfos = gson.fromJson(jsonString, TemplateInfos::class.java)
@@ -480,6 +491,15 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         }
 
         thread.start()
+        thread.join()
+
+        lock.lock()
+        try {
+            val valueFromThread = templateAsJsonString
+            println("Value from thread: $valueFromThread")
+        } finally {
+            lock.unlock()
+        }
     }
 
     companion object {
