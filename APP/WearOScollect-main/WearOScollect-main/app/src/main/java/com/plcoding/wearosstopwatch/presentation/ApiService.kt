@@ -10,11 +10,11 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface ApiService {
-    @POST("/api-token-auth/")
+    @POST("api-token-auth/")
     @Headers("Content-Type: application/json")
     fun getToken(@Body body: JsonObject): Call<JsonObject>
 
-    @POST("/post")
+    @POST("api/watch/")
     @Headers("Content-Type: application/json")
     fun testPost(@Body body: JSONObject, @Header("Authorization") token: String): Call<Unit>
 
@@ -22,9 +22,4 @@ interface ApiService {
     @Headers("Content-Type: application/json")
     fun getTemplate(@Header("Authorization") token: String): Call<JsonObject>
 
-}
-interface PostApiService {
-    @POST("/post")
-    @Headers("Content-Type: application/json")
-    fun postData(@Body body: JSONObject, @Header("Authorization") token: String): Call<Unit>
 }

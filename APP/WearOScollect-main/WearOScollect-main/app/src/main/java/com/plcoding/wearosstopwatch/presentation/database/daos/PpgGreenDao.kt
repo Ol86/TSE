@@ -22,5 +22,5 @@ interface PpgGreenDao {
     fun getBySyncOrdered(): Flow<List<PpgGreenData>>
 
     @Query("SELECT * FROM ppgGreenData ORDER BY time DESC LIMIT 1")
-    fun getLatestPpgGreenData(): List<PpgGreenData>
+    suspend fun getLatestPpgGreenData(): List<PpgGreenData>
 }

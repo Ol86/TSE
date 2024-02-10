@@ -22,5 +22,5 @@ interface AccelerometerDao {
     fun getBySyncOrdered(): Flow<List<AccelerometerData>>
 
     @Query("SELECT * FROM accelerometerData ORDER BY time DESC LIMIT 1")
-    fun getLatestAccelerometerData(): List<AccelerometerData>
+    suspend fun getLatestAccelerometerData(): List<AccelerometerData>
 }
