@@ -74,6 +74,29 @@ input, select {
     font-size: 1em;
 }
 
+.invalid-input {
+    border: solid 1px #9c2f2f;
+}
+
+.invalid-input::placeholder {
+    color: #9c2f2f;
+}
+
+.invalid-input::-ms-input-placeholder {
+    color: #9c2f2f;
+}
+
+.errorMessage {
+    font-size: 0.90em;
+    font-weight: 200;
+}
+
+.errorMessage>ul {
+    padding-left: 10px;
+    list-style-type: none;
+    color: #9c2f2f;
+}
+
 ul {
     margin: 0 0 10px;
     color: #888888;
