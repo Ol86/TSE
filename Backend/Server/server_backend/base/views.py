@@ -200,7 +200,6 @@ def getExperimentTemplate(request):
     return Response({'error': 'Wrong rest method'})
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
-# TODO: Handle and save the answers.
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def sendWatchData(request):
