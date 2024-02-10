@@ -23,8 +23,3 @@ interface ApiService {
     fun getTemplate(@Header("Authorization") token: String): Call<JsonObject>
 
 }
-interface PostApiService {
-    @POST("/post")
-    @Headers("Content-Type: application/json")
-    fun postData(@Body body: JSONObject, @Header("Authorization") token: String): Call<Unit>
-}
