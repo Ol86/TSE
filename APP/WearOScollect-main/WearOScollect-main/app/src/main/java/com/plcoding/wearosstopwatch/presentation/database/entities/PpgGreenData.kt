@@ -14,7 +14,7 @@ data class PpgGreenData (
     fun toJsonMap(): Map<String, String> {
         return mapOf(
             "time" to time,
-            "ppgGreen" to ppgGreen
+            "ppggreen" to ppgGreen
         )
     }
 }

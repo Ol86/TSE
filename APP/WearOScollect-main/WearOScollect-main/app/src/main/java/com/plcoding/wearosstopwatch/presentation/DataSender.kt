@@ -1,15 +1,14 @@
 import android.util.Log
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.google.gson.JsonObject
+import com.google.gson.JsonParser
+import com.plcoding.wearosstopwatch.presentation.PostApiService
 import com.plcoding.wearosstopwatch.presentation.api.ApiService
-import com.plcoding.wearosstopwatch.presentation.api.PostApiService
 import com.plcoding.wearosstopwatch.presentation.database.SensorDataDatabase
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.File
-import java.io.IOException
 import java.util.*
 import kotlin.concurrent.timerTask
 
@@ -64,13 +63,15 @@ class DataSender(private val db: SensorDataDatabase, coroutineScope: LifecycleCo
         thread.start()
     }*/
 
-    private fun dbDataTOJSON(): JSONObject {
+    private fun dbDataTOJSON(): JsonObject {
         scope.launch {
             dbData = db.getLatestDataAsJson()
         }
         Log.i("DebuggingA1", dbData)
-        val json = this.stringTOJSON(dbData)
-        return json
+        val jsonObject: JsonObject = JsonParser().parse(dbData)
+            .getAsJsonObject()
+        Log.i("DebuggingA1", jsonObject.toString())
+        return jsonObject
     }
 
 /*    private fun getToken(): String {
@@ -118,7 +119,11 @@ class DataSender(private val db: SensorDataDatabase, coroutineScope: LifecycleCo
                         }
                     ).execute()
 
-                    val a = JSONObject(
+
+
+
+
+                    val a =
                         """
      {
         "data": {
@@ -170,13 +175,15 @@ class DataSender(private val db: SensorDataDatabase, coroutineScope: LifecycleCo
         "session": 1
     }
     """
-                    )
+                    Log.i("sendDataApi0", "Test")
 
+                    val jsonObject: JsonObject = JsonParser().parse(a)
+                        .getAsJsonObject()
                     if (tokenResponse.isSuccessful) {
                         val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
                         //Log.i("sendDataApi1", token)
 
-                        val postResponse = postApiService.postData(
+                        val postResponse = apiService.testPost(
                             this.dbDataTOJSON(),
                             //json.getStoredDataAsJsonObject(),
                             /*JsonObject().apply {
@@ -190,6 +197,7 @@ class DataSender(private val db: SensorDataDatabase, coroutineScope: LifecycleCo
                             //Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
                             Log.i("sendDataApi2", postResponse.toString())
                             Log.i("sendDataApi3", "${postResponse.code()}")
+                            Log.i("sendDataApi3.5", postResponse.body().toString())
 
                         } else {
                             Log.i("sendDataApi4", postResponse.toString())

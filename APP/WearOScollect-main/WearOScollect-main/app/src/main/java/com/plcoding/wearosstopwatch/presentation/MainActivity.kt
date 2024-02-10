@@ -391,7 +391,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                         val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
                         Log.i("StoredDataApi1", token)
 
-                        val postResponse = apiService.testPost(
+                        /*val postResponse = apiService.testPost(
                             a,
                             //json.getStoredDataAsJsonObject(),
                             /*JsonObject().apply {
@@ -409,7 +409,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                             println("Error: ${postResponse.code()}")
                             Log.i("StoredDataApi4", postResponse.toString())
                             Log.i("StoredDataApi5", "${postResponse.code()}")
-                        }
+                        }*/
                     } else {
                         println("Error: ${tokenResponse.code()}")
                     }
