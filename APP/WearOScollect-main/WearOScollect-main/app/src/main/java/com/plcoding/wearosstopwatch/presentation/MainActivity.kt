@@ -338,7 +338,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                         onStopDataCollection = {stopDataCollection()},
                         onBackToSettings = {currentView = ViewType.FirstScreen},
                         onConnectApi = {connectApi()},
-                        activeTrackers,
+                        activeTrackersState.value,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -374,7 +374,8 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                 ViewType.ConfirmActionScreen -> {
                     ConfirmActionScreen(
                         onCancel = { currentView = ViewType.StopWatch},
-                        onConfirm = { currentView = ViewType.StopWatch; resetRoutine(viewModel) }
+                        onConfirm = { currentView = ViewType.StopWatch
+                            resetRoutine(viewModel) }
                     )
                 }
             }
