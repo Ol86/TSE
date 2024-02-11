@@ -16,6 +16,8 @@ data class HeartrateData (
     fun toJsonMap(): Map<String, String> {
         return mapOf(
             "time" to time,
+            "interbeat" to interbeat,
+            "heartrate" to heartrate,
             "status" to status
         )
     }
