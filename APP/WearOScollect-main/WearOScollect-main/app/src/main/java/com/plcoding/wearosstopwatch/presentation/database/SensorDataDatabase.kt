@@ -75,22 +75,38 @@ abstract class SensorDataDatabase: RoomDatabase() {
             val ppgRedData = ppgRedDao.getLatestPpgRedData()
             val ppgGreenData = ppgGreenDao.getLatestPpgGreenData()
 
-            val jsonMap = mutableMapOf<String, List<Map<String, String>>>()
 
-            jsonMap["questions"] = questionData.map { it.toJsonMap() }
-            jsonMap["ecg"] = ecgData.map { it.toJsonMap() }
-            jsonMap["heartrate"] = heartrateData.map { it.toJsonMap() }
-            jsonMap["accelerometer"] = accelerometerData.map { it.toJsonMap() }
-            jsonMap["spo2"] = spo2Data.map { it.toJsonMap() }
-            jsonMap["ppgir"] = ppgIRData.map { it.toJsonMap() }
-            jsonMap["ppgred"] = ppgRedData.map { it.toJsonMap() }
-            jsonMap["ppggreen"] = ppgGreenData.map { it.toJsonMap() }
 
-            val jsonObject = convertToJsonObject(jsonMap)
+            val dataMap = mutableMapOf<String, List<Map<String, String>>>()
+            dataMap["ecg"] = ecgData.map { it.toJsonMap() }
+            dataMap["heartrate"] = heartrateData.map { it.toJsonMap() }
+            dataMap["accelerometer"] = accelerometerData.map { it.toJsonMap() }
+            dataMap["spo2"] = spo2Data.map { it.toJsonMap() }
+            dataMap["ppgir"] = ppgIRData.map { it.toJsonMap() }
+            dataMap["ppgred"] = ppgRedData.map { it.toJsonMap() }
+            dataMap["ppggreen"] = ppgGreenData.map { it.toJsonMap() }
+
+            /*val jsonObject = convertToJsonObject(jsonMap)
             val sessionJsonObject = JSONObject()
             sessionJsonObject.put("session", sessionid)
             sessionJsonObject.put("data", jsonObject)
-            sessionJsonObject.toString()
+            sessionJsonObject.toString()*/
+            /*jsonMap["data"] = sensorDataMap
+
+            // Convert the map to JSON object
+            val jsonObject = JSONObject(jsonMap as Map<*, *>)
+            jsonObject.toString()*/
+
+            val jsonMap = mutableMapOf<String, Any>()
+            jsonMap["session"] = sessionid
+            jsonMap["questions"] = questionData.map { it.toJsonMap() }
+
+            // Add the 'data' object with other data types if necessary
+            if (dataMap.isNotEmpty()) {
+                jsonMap["data"] = dataMap
+            }
+
+            JSONObject(jsonMap as Map<*, *>).toString()
         }
     }
 }
