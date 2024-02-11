@@ -36,12 +36,13 @@ class HeartRateTrackerListener(private val trackerType: HealthTrackerType, priva
                     allValues.add(dataPoint.getValue(ValueKey.HeartRateSet.HEART_RATE).toString())
 
                     json.dataToJSON("heartrate", allValues)
+
                     val heartrateData = HeartrateData(dataPoint.timestamp.toString(), dataPoint.getValue(ValueKey.HeartRateSet.HEART_RATE).toString(),"0")
                     scope.launch {
                         db.heartrateDao.upsertHeartrateData(heartrateData)
                     }
 
-                    Log.i("HRS",dataPoint.getValue(ValueKey.HeartRateSet.HEART_RATE).toString())
+                    Log.i("HRS", dataPoint.getValue(ValueKey.HeartRateSet.HEART_RATE).toString())
                     //println("json heartRate")
                 }
             }

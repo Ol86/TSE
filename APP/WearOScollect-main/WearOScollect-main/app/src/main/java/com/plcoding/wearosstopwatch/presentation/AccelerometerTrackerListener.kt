@@ -56,7 +56,7 @@ class AccelerometerTrackerListener(private val trackerType: HealthTrackerType, p
                         db.accelerometerDao.upsertAccelerometerData(accelerometerData)
                     }
 
-                    Log.i("Accelerometer", dataPoint.getValue(ValueKey.AccelerometerSet.ACCELEROMETER_X).toString())
+                    //Log.i("Accelerometer", dataPoint.getValue(ValueKey.AccelerometerSet.ACCELEROMETER_X).toString())
                     //println("json accelerometer")
                 }
             }
