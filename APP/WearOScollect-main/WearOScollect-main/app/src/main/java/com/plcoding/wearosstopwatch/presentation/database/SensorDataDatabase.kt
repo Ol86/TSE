@@ -26,7 +26,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 @Database(entities = [EcgData::class, HeartrateData::class, Spo2Data::class, AccelerometerData::class, PpgIRData::class, PpgRedData::class, PpgGreenData::class, QuestionData::class],
-    version = 2)
+    version = 3)
 abstract class SensorDataDatabase: RoomDatabase() {
     abstract val ecgDao: EcgDao
     abstract val heartrateDao: HeartrateDao

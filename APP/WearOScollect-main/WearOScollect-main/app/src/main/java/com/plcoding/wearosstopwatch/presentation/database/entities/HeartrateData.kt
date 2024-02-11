@@ -6,6 +6,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class HeartrateData (
     val time: String,
+    val interbeat: String,
+    val heartrate: String,
     val status: String,
     val sync: String,
     @PrimaryKey(autoGenerate = true)
