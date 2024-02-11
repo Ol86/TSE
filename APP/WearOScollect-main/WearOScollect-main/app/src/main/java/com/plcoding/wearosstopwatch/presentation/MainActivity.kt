@@ -55,8 +55,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.plcoding.wearosstopwatch.presentation.api.ApiService
 import com.plcoding.wearosstopwatch.presentation.database.SensorDataDatabase
+import com.plcoding.wearosstopwatch.presentation.database.UserDataStore
+import com.plcoding.wearosstopwatch.presentation.database.entities.QuestionData
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -70,7 +74,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             applicationContext,
             SensorDataDatabase::class.java,
             "sensorData.db"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     lateinit var healthTracking : HealthTrackingService
@@ -306,7 +310,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2, json, db, lifecycleScope)
         ppgIRTrackerListener = PpgIRTrackerListener(HealthTrackerType.PPG_IR, json, db, lifecycleScope)
         ppgRedTrackerListener = PpgRedTrackerListener(HealthTrackerType.PPG_RED, json, db, lifecycleScope)
-        dataSender = DataSender(db, lifecycleScope)
+        dataSender = DataSender(db, lifecycleScope, applicationContext)
         requestPermissions(requestedPermissions, 0)
         /*healthTracking = HealthTrackingService(connectionListener, this@MainActivity)*/
 
@@ -439,6 +443,24 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         dataSender.startSending()
     }
 
+    private fun dbDataTOJSON(): JsonObject {
+        val scope = lifecycleScope
+        var dbData: String = ""
+        val affect = UserDataStore.getUserRepository(applicationContext).affectDao.getAffectData().affect
+        val time = UserDataStore.getUserRepository(applicationContext).notificationDao.getNotificationData().time
+        val questionID = UserDataStore.getUserRepository(applicationContext).affectDao.getAffectData().notification_id.toString()
+        val questionData = QuestionData(time, affect, questionID,"0")
+        scope.launch {
+            db.questionDao.upsertQuestionData(questionData)
+            dbData = db.getLatestDataAsJson()
+        }
+        Log.i("DebuggingA1", dbData)
+        val jsonObject: JsonObject = JsonParser().parse(dbData)
+            .getAsJsonObject()
+        Log.i("DebuggingA1", jsonObject.toString())
+        return jsonObject
+    }
+
     private fun connectApi(){
         val thread = Thread {
             try {
@@ -459,19 +481,13 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                         }
                     ).execute()
 
-                    val a = JSONObject(
-                            """
-    {"session":1,"data":{"ecg":[{"time":"1707495249035","ecg":"-513617","ppgGreen":"378765","leadOff":"5","maxThreshold":"2794390","minThreshold":"-2804168","sequence":"4"}],"heartrate":[],"accelerometer":[{"time":"1707491100355","x":"309","y":"-249","z":"4076"}],"spo2":[{"time":"1707495256099","spo2":"0","heartRate":"0","status":"0"}],"ppgir":[{"time":"1707495255273","ppgir":"1707495255273"}],"ppgred":[{"time":"1707495255412","ppgred":"9432968"}],"ppggreen":[{"time":"1707493797898","ppgGreen":"1942357"}]}}
-    """
-                            )
-                    Log.i("DebuggingA2", a.toString())
 
                     if (tokenResponse.isSuccessful) {
                         val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
                         Log.i("StoredDataApi1", token)
 
-                        /*val postResponse = apiService.testPost(
-                            a,
+                        val postResponse = apiService.testPost(
+                            this.dbDataTOJSON(),
                             //json.getStoredDataAsJsonObject(),
                             /*JsonObject().apply {
                                 addProperty("test1", "Hello World")
@@ -488,7 +504,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                             println("Error: ${postResponse.code()}")
                             Log.i("StoredDataApi4", postResponse.toString())
                             Log.i("StoredDataApi5", "${postResponse.code()}")
-                        }*/
+                        }
                     } else {
                         println("Error: ${tokenResponse.code()}")
                     }

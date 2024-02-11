@@ -1,3 +1,4 @@
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.google.gson.JsonObject
@@ -5,6 +6,8 @@ import com.google.gson.JsonParser
 import com.plcoding.wearosstopwatch.presentation.PostApiService
 import com.plcoding.wearosstopwatch.presentation.api.ApiService
 import com.plcoding.wearosstopwatch.presentation.database.SensorDataDatabase
+import com.plcoding.wearosstopwatch.presentation.database.UserDataStore
+import com.plcoding.wearosstopwatch.presentation.database.entities.QuestionData
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Retrofit
@@ -12,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 import kotlin.concurrent.timerTask
 
-class DataSender(private val db: SensorDataDatabase, coroutineScope: LifecycleCoroutineScope) {
+class DataSender(private val db: SensorDataDatabase, coroutineScope: LifecycleCoroutineScope,private val context: Context) {
 
 
 
@@ -25,7 +28,7 @@ class DataSender(private val db: SensorDataDatabase, coroutineScope: LifecycleCo
 
     fun startSending() {
         timer = Timer()
-        timer?.schedule(timerTask {
+        timer?.scheduleAtFixedRate(timerTask {
             connectApi()
         }, 0, intervalMillis.toLong())
     }
@@ -64,7 +67,12 @@ class DataSender(private val db: SensorDataDatabase, coroutineScope: LifecycleCo
     }*/
 
     private fun dbDataTOJSON(): JsonObject {
+        val affect = UserDataStore.getUserRepository(context).affectDao.getAffectData().affect
+        val time = UserDataStore.getUserRepository(context).notificationDao.getNotificationData().time
+        val questionID = UserDataStore.getUserRepository(context).affectDao.getAffectData().notification_id.toString()
+        val questionData = QuestionData(time, affect, questionID,"0")
         scope.launch {
+            db.questionDao.upsertQuestionData(questionData)
             dbData = db.getLatestDataAsJson()
         }
         Log.i("DebuggingA1", dbData)
