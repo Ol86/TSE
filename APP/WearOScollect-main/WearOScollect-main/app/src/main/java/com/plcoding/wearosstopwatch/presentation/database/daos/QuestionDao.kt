@@ -33,4 +33,7 @@ interface QuestionDao {
     @Query("SELECT * FROM questionData ORDER BY questionid DESC LIMIT 1")
     fun getActiveQuestionData(): QuestionData
 
+    @Query("SELECT * FROM questionData WHERE questionid = (SELECT MAX(questionid) FROM questionData) ORDER BY id ASC")
+    fun getLatestQuestionDataOrderedById(): List<QuestionData>
+
 }

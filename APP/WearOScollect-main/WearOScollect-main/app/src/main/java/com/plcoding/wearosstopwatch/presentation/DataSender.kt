@@ -7,6 +7,8 @@ import com.plcoding.wearosstopwatch.presentation.PostApiService
 import com.plcoding.wearosstopwatch.presentation.api.ApiService
 import com.plcoding.wearosstopwatch.presentation.database.SensorDataDatabase
 import com.plcoding.wearosstopwatch.presentation.database.UserDataStore
+import com.plcoding.wearosstopwatch.presentation.database.entities.AffectDataTransferStatus
+import com.plcoding.wearosstopwatch.presentation.database.entities.NotificationDataTransferStatus
 import com.plcoding.wearosstopwatch.presentation.database.entities.QuestionData
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -66,11 +68,70 @@ class DataSender(private val db: SensorDataDatabase, coroutineScope: LifecycleCo
         thread.start()
     }*/
 
+    private fun addQuestionData(){
+        val newAffectData = UserDataStore.getUserRepository(context).affectDao.getAllAffectData()
+        val newNotificationData = UserDataStore.getUserRepository(context).notificationDao.getAllNotificationData()
+        //val questionData = QuestionData(time, affect, questionID,"0")
+        val maxAffectID: Long
+        val maxNotID: Long
+        if(db.affectDataTransferStatusDao.getLatestAffectDataTransferStatus() != null) {
+            maxAffectID =
+                db.affectDataTransferStatusDao.getLatestAffectDataTransferStatus().affectDataId
+        } else {
+            maxAffectID = 0
+        }
+        if (db.notificationDataTransferStatusDao.getLatestNotificationDataTransferStatus() != null) {
+            maxNotID = db.notificationDataTransferStatusDao.getLatestNotificationDataTransferStatus().notificationDataId
+        } else {
+            maxNotID = 0
+        }
+        newAffectData.forEach {element ->
+            Log.i("DebuggingA33.1", maxAffectID.toString())
+            Log.i("DebuggingA33.2", element.id.toString())
+            if(element.id > maxAffectID) {
+                Log.i("DebuggingA33.3", maxAffectID.toString())
+                Log.i("DebuggingA33.4", element.id.toString())
+                val a = AffectDataTransferStatus(element.id, false)
+                scope.launch {
+                    db.affectDataTransferStatusDao.insert(a)
+                }
+            } else {
+                Log.i("DebuggingA33.5", maxAffectID.toString())
+                Log.i("DebuggingA33.6", element.id.toString())
+            }
+        }
+        newNotificationData.forEach {element ->
+            Log.i("DebuggingA34.1", maxNotID.toString())
+            Log.i("DebuggingA34.2", element.id.toString())
+            if(element.id > maxNotID) {
+                Log.i("DebuggingA34.3", maxNotID.toString())
+                Log.i("DebuggingA34.4", element.id.toString())
+                val a = NotificationDataTransferStatus(element.id, false)
+                scope.launch {
+                    db.notificationDataTransferStatusDao.insert(a)
+                }
+            } else {
+                Log.i("DebuggingA34.5", maxNotID.toString())
+                Log.i("DebuggingA34.6", element.id.toString() + "; " + element.time)
+            }
+        }
+        /*
+        val transferredAffect = db.affectDataTransferStatusDao.getAllLatestAffectDataTransferStatus()
+        val transferredNotification = db.notificationDataTransferStatusDao.getAllLatestNotificationDataTransferStatus()
+        transferredAffect.forEach{element->
+            if (element.id > maxAffectID){
+                val time: String
+                val affect: String
+                val questionid: String
+            }
+        }*/
+    }
     private fun dbDataTOJSON(): JsonObject {
         val affect = UserDataStore.getUserRepository(context).affectDao.getAffectData().affect
         val time = UserDataStore.getUserRepository(context).notificationDao.getNotificationData().time
         val questionID = UserDataStore.getUserRepository(context).affectDao.getAffectData().notification_id.toString()
         val questionData = QuestionData(time, affect, questionID,"0")
+        this.addQuestionData()
         scope.launch {
             db.questionDao.upsertQuestionData(questionData)
             dbData = db.getLatestDataAsJson()
@@ -205,7 +266,7 @@ class DataSender(private val db: SensorDataDatabase, coroutineScope: LifecycleCo
                             //Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
                             Log.i("sendDataApi2", postResponse.toString())
                             Log.i("sendDataApi3", "${postResponse.code()}")
-                            Log.i("sendDataApi3.5", postResponse.body().toString())
+                            Log.i("sendDataApi3", postResponse.body().toString())
 
                         } else {
                             Log.i("sendDataApi4", postResponse.toString())

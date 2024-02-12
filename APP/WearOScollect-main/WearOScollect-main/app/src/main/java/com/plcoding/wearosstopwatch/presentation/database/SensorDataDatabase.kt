@@ -5,16 +5,20 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.plcoding.wearosstopwatch.presentation.database.daos.AccelerometerDao
+import com.plcoding.wearosstopwatch.presentation.database.daos.AffectDataTransferStatusDao
 import com.plcoding.wearosstopwatch.presentation.database.daos.EcgDao
 import com.plcoding.wearosstopwatch.presentation.database.daos.HeartrateDao
+import com.plcoding.wearosstopwatch.presentation.database.daos.NotificationDataTransferStatusDao
 import com.plcoding.wearosstopwatch.presentation.database.daos.PpgGreenDao
 import com.plcoding.wearosstopwatch.presentation.database.daos.PpgIRDao
 import com.plcoding.wearosstopwatch.presentation.database.daos.PpgRedDao
 import com.plcoding.wearosstopwatch.presentation.database.daos.QuestionDao
 import com.plcoding.wearosstopwatch.presentation.database.daos.Spo2Dao
 import com.plcoding.wearosstopwatch.presentation.database.entities.AccelerometerData
+import com.plcoding.wearosstopwatch.presentation.database.entities.AffectDataTransferStatus
 import com.plcoding.wearosstopwatch.presentation.database.entities.EcgData
 import com.plcoding.wearosstopwatch.presentation.database.entities.HeartrateData
+import com.plcoding.wearosstopwatch.presentation.database.entities.NotificationDataTransferStatus
 import com.plcoding.wearosstopwatch.presentation.database.entities.PpgGreenData
 import com.plcoding.wearosstopwatch.presentation.database.entities.PpgIRData
 import com.plcoding.wearosstopwatch.presentation.database.entities.PpgRedData
@@ -25,8 +29,10 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 
-@Database(entities = [EcgData::class, HeartrateData::class, Spo2Data::class, AccelerometerData::class, PpgIRData::class, PpgRedData::class, PpgGreenData::class, QuestionData::class],
-    version = 3)
+@Database(entities = [EcgData::class, HeartrateData::class, Spo2Data::class, AccelerometerData::class,
+    PpgIRData::class, PpgRedData::class, PpgGreenData::class, QuestionData::class,
+    AffectDataTransferStatus::class, NotificationDataTransferStatus::class],
+    version = 4)
 abstract class SensorDataDatabase: RoomDatabase() {
     abstract val ecgDao: EcgDao
     abstract val heartrateDao: HeartrateDao
@@ -36,6 +42,8 @@ abstract class SensorDataDatabase: RoomDatabase() {
     abstract val ppgRedDao: PpgRedDao
     abstract val ppgGreenDao: PpgGreenDao
     abstract val questionDao: QuestionDao
+    abstract val affectDataTransferStatusDao: AffectDataTransferStatusDao
+    abstract val notificationDataTransferStatusDao: NotificationDataTransferStatusDao
     private var sessionid = 1
 
     fun convertToJsonObject(map: Map<String, Any>): JSONObject {

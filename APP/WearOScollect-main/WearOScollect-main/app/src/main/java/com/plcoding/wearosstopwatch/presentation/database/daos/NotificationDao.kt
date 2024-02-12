@@ -15,4 +15,10 @@ interface NotificationDao {
     @Query("SELECT * FROM notificationdata ORDER BY id DESC LIMIT 1")
     fun getNotificationData(): NotificationData
 
+    @Query("SELECT * FROM notificationdata ORDER BY id ASC")
+    fun getAllNotificationData(): List<NotificationData>
+
+    @Query("SELECT * FROM notificationdata WHERE id = :id")
+    fun getNotificationDataByID(id: Long)
+
 }
