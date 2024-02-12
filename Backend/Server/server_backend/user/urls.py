@@ -1,4 +1,4 @@
-#TODO: Add comments.
+#TODO: Add comment
 from django.urls import path
 from . import views
 

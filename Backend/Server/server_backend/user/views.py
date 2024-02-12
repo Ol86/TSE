@@ -1,4 +1,4 @@
-# TODO: Add comments.
+# TODO: Add comment
 from django.shortcuts import render, redirect
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.decorators import login_required
@@ -9,6 +9,7 @@ from user.models import Profile, Watch
 # --------------------------------------------------------------------------------------------------- #
 @login_required(login_url='login')
 def registerWatch(response):
+    # TODO: Add comment
     if response.method == 'POST':
         form = WatchRegisterForm(response.POST)
         if form.is_valid():
@@ -32,6 +33,7 @@ def registerWatch(response):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 @login_required(login_url='login')
 def watches(request):
+    # TODO: Add comment
     watches = Watch.objects.all()
     context = {'watches': watches}
     return render(request, 'user/watches.html', context)
@@ -39,6 +41,7 @@ def watches(request):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 @login_required(login_url='login')
 def deleteWatch(request, pk):
+    # TODO: Add comment
     watch = Watch.objects.get(user_id=pk)
     if request.method == 'POST':
         watch.delete()
@@ -47,6 +50,7 @@ def deleteWatch(request, pk):
 
 # --------------------------------------------------------------------------------------------------- #
 def registerUser(response):
+    # TODO: Add comment
     if response.method == 'POST':
         form = UserRegisterForm(response.POST)
         if form.is_valid():

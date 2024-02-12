@@ -217,6 +217,7 @@ class SPO2(models.Model):
 
 # --------------------------------------------------------------------------------------------------- #
 class Accelerometer(models.Model):
+    # TODO: Add comment
     id = models.AutoField(auto_created=True, primary_key=True)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     x = models.IntegerField(default=0)
@@ -239,6 +240,7 @@ class Accelerometer(models.Model):
 
 # --------------------------------------------------------------------------------------------------- #
 class PPG_Green(models.Model):
+    # TODO: Add comment
     id = models.AutoField(auto_created=True, primary_key=True)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     ppg_green = models.IntegerField(default=0)
@@ -259,6 +261,7 @@ class PPG_Green(models.Model):
 
 # --------------------------------------------------------------------------------------------------- #
 class PPG_IR(models.Model):
+    # TODO: Add comment
     id = models.AutoField(auto_created=True, primary_key=True)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     ppg_ir = models.IntegerField(default=0)
@@ -279,6 +282,7 @@ class PPG_IR(models.Model):
 
 # --------------------------------------------------------------------------------------------------- #
 class PPG_Red(models.Model):
+    # TODO: Add comment
     id = models.AutoField(auto_created=True, primary_key=True)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     ppg_red = models.IntegerField(default=0)

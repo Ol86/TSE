@@ -127,6 +127,7 @@ def deleteExperiment(request, pk):
     return render(request, 'base/experiment/delete_experiment.html', {'experiment': experiment})
 
 # --------------------------------------------------------------------------------------------------- #
+# TODO: Add comment
 @login_required(login_url='login')
 def questions(request):
     questions = Questions.objects.all()
@@ -134,6 +135,7 @@ def questions(request):
     return render(request, 'base/question/questions.html', context)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
+# TODO: Add comment
 @login_required(login_url='login')
 def createQuestion(request):
     form = QuestionForm()
@@ -168,6 +170,7 @@ def deleteQuestion(request, pk):
     return render(request, 'base/question/delete_question.html', {'question': question})
 
 # --------------------------------------------------------------------------------------------------- #
+# TODO: Add comment
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def testApi(request):
@@ -176,6 +179,7 @@ def testApi(request):
     return Response({'error': 'Wrong rest method'})
 
 # --------------------------------------------------------------------------------------------------- #
+# TODO: Add comment
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getExperimentTemplate(request):
@@ -200,6 +204,7 @@ def getExperimentTemplate(request):
     return Response({'error': 'Wrong rest method'})
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
+# TODO: Add comment
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def sendWatchData(request):
@@ -230,6 +235,7 @@ def sendWatchData(request):
     return Response({'error': 'Wrong rest method'}, status=status.HTTP_400_BAD_REQUEST)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
+# TODO: Add comment
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def createSession(request):
