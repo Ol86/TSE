@@ -116,6 +116,7 @@ class Answers(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     question = models.ForeignKey(Questions, on_delete=models.CASCADE)
     answer = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(4)])
+    time = models.DateTimeField(default=0)
 
     class Meta:
         """This class defines the ordering of the database table.

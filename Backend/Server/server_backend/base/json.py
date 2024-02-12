@@ -170,6 +170,7 @@ def insertAnswers(data):
             question=answer["question"],
             experiment=session.experiment,
             session=session,
-            answer=answer["answer"]
+            answer=answer["answer"],
+            time=datetime.utcfromtimestamp(int(answer["time"]) / 1000)
         )
         line.save()

@@ -143,7 +143,7 @@ class Profile(models.Model):
 
 # --------------------------------------------------------------------------------------------------- #
 class Watch(models.Model):
-    """This is the watch model, that adds the mac_adress field.
+    """This is the watch model, that adds the serialnumber field.
 
     Args:
         models (Model): The basic model of django.
