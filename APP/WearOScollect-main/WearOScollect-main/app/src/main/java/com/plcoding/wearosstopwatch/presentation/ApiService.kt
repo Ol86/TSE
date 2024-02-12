@@ -14,9 +14,9 @@ interface ApiService {
     @Headers("Content-Type: application/json")
     fun getToken(@Body body: JsonObject): Call<JsonObject>
 
-    @POST("/post")
+    @POST("api/watch/data/")
     @Headers("Content-Type: application/json")
-    fun testPost(@Body body: JSONObject, @Header("Authorization") token: String): Call<Unit>
+    fun testPost(@Body body: JsonObject, @Header("Authorization") token: String): Call<Unit>
 
     @GET("api/watch/template")
     @Headers("Content-Type: application/json")

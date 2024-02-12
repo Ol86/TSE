@@ -1,4 +1,4 @@
-package com.plcoding.wearosstopwatch.presentation.database
+package com.plcoding.wearosstopwatch.presentation
 
 import org.json.JSONObject
 import retrofit2.Call

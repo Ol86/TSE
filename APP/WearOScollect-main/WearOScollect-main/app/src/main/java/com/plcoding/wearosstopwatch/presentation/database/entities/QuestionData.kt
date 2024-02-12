@@ -4,17 +4,18 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class PpgGreenData (
+data class QuestionData (
     val time: String,
-    val ppgGreen: String,
+    val answer: String,
+    val questionid: String,
     val sync: String,
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0
+    var id: Long = 0
 ){
     fun toJsonMap(): Map<String, String> {
         return mapOf(
             "time" to time,
-            "ppggreen" to ppgGreen
+            "answer" to answer
         )
     }
 }

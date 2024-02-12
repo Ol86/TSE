@@ -31,10 +31,10 @@ class PpgIRTrackerListener(private val trackerType: HealthTrackerType, private v
                     val allValues = ArrayList<String>()
                     allValues.add(dataPoint.timestamp.toString())
 
-                    allValues.add(dataPoint.timestamp.toString())
+                    allValues.add(dataPoint.getValue(ValueKey.PpgIrSet.PPG_IR).toString())
 
                     json.dataToJSON("ppgir", allValues)
-                    val ppgIRData = PpgIRData(dataPoint.timestamp.toString(), dataPoint.timestamp.toString(), "0")
+                    val ppgIRData = PpgIRData(dataPoint.timestamp.toString(), dataPoint.getValue(ValueKey.PpgIrSet.PPG_IR).toString(), "0")
                     scope.launch {
                         db.ppgIRDao.upsertPpgIRData(ppgIRData)
                     }
