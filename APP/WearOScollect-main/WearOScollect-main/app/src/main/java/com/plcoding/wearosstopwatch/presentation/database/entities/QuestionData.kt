@@ -15,7 +15,8 @@ data class QuestionData (
     fun toJsonMap(): Map<String, String> {
         return mapOf(
             "time" to time,
-            "answer" to answer
+            "answer" to answer,
+            "questionid" to questionid
         )
     }
 }

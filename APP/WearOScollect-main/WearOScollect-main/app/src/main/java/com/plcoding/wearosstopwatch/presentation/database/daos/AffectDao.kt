@@ -13,4 +13,7 @@ interface AffectDao {
 
     @Query("SELECT * FROM affectdata ORDER BY id DESC LIMIT 1")
     fun getAffectData(): AffectData
+
+    @Query("SELECT * FROM affectdata ORDER BY id ASC")
+    fun getAllAffectData(): List<AffectData>
 }
