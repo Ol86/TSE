@@ -60,7 +60,6 @@ def registerUser(response):
             profile.role = form.cleaned_data.get('role')
             profile.save()
             user.type = 1
-            user.is_admin = True
             user.save()
 
             username = form.cleaned_data.get('username')
