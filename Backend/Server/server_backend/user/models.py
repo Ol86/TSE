@@ -152,13 +152,7 @@ class Watch(models.Model):
         watch: The watch model of the backend.
     """
     user = models.OneToOneField(BaseUser, on_delete=models.CASCADE, primary_key=True)
-    mac_adress = models.CharField(max_length=17, validators=[
-        RegexValidator(
-            regex='^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$',
-            message="Enter a valid mac adress",
-            code="invalid_mac_adress"
-        )
-    ])
+    serialnumber = models.CharField(max_length=50)
 
     def __str__(self):
         """This method sets the display name.

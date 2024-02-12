@@ -26,7 +26,7 @@ def returnExperimentInfo(experiment):
     for i in experiment["watch_id"]:
         watch = WatchSerializer(Watch.objects.get(user_id=i)).data
         base_user = BaseUserSerializer(BaseUser.objects.get(id=watch["user"])).data
-        watches.append({'name': base_user["username"], 'watch': watch["mac_adress"]},)
+        watches.append({'name': base_user["username"], 'watch': watch["serialnumber"]},)
     result = {
         'id': experiment["id"],
         'title': experiment["title"],

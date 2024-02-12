@@ -7,18 +7,11 @@ from user.models import BaseUser
 
 class WatchRegisterForm(UserCreationForm):
     # TODO: Add comment
-    mac_adress = forms.CharField(
-        max_length=17, 
-        required=True, 
+    serialnumber = forms.CharField(
+        max_length=50, 
         widget=forms.TextInput(
-            attrs={'placeholder': 'MAC adress'}
-        ), 
-        validators=[
-            RegexValidator(
-                regex='^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$', 
-                message="Enter a valid mac adress", 
-                code="invalid_mac_adress")
-        ]
+            attrs={'placeholder': 'Serialnumber'}
+        )
     )
 
     def __init__(self, *args, **kwargs):
@@ -31,7 +24,7 @@ class WatchRegisterForm(UserCreationForm):
     class Meta:
         # TODO: Add comment
         model = BaseUser
-        fields = ["username", "password1", "password2", "mac_adress"]
+        fields = ["username", "password1", "password2", "serialnumber"]
 
 class UserRegisterForm(UserCreationForm):
     # TODO: Add comment

@@ -16,7 +16,7 @@ def registerWatch(response):
             user = form.save()
             user.refresh_from_db()
             watch = Watch.objects.create(user=user)
-            watch.mac_adress = form.cleaned_data.get('mac_adress')
+            watch.serialnumber = form.cleaned_data.get('serialnumber')
             watch.save()
             Token.objects.create(user=user)
             user.type = 2
