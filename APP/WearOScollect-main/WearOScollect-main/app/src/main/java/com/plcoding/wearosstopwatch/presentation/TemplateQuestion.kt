@@ -1,6 +1,10 @@
 package com.plcoding.wearosstopwatch.presentation
 
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class TemplateQuestion(
     val id: Int,
@@ -14,4 +18,10 @@ data class TemplateQuestion(
     val button4: Boolean,
     val button4_text: String,
     @SerializedName("created_at") val createdAt: String
-)
+) : Serializable {
+    fun toJson(): String = Gson().toJson(this)
+
+    companion object {
+        fun fromJson(json: String): TemplateQuestion = Gson().fromJson(json, TemplateQuestion::class.java)
+    }
+}
