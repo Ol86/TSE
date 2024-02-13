@@ -13,6 +13,7 @@ import com.plcoding.wearosstopwatch.presentation.database.daos.PpgGreenDao
 import com.plcoding.wearosstopwatch.presentation.database.daos.PpgIRDao
 import com.plcoding.wearosstopwatch.presentation.database.daos.PpgRedDao
 import com.plcoding.wearosstopwatch.presentation.database.daos.QuestionDao
+import com.plcoding.wearosstopwatch.presentation.database.daos.SessionIDDao
 import com.plcoding.wearosstopwatch.presentation.database.daos.Spo2Dao
 import com.plcoding.wearosstopwatch.presentation.database.entities.AccelerometerData
 import com.plcoding.wearosstopwatch.presentation.database.entities.AffectDataTransferStatus
@@ -23,6 +24,7 @@ import com.plcoding.wearosstopwatch.presentation.database.entities.PpgGreenData
 import com.plcoding.wearosstopwatch.presentation.database.entities.PpgIRData
 import com.plcoding.wearosstopwatch.presentation.database.entities.PpgRedData
 import com.plcoding.wearosstopwatch.presentation.database.entities.QuestionData
+import com.plcoding.wearosstopwatch.presentation.database.entities.SessionIDData
 import com.plcoding.wearosstopwatch.presentation.database.entities.Spo2Data
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -31,8 +33,8 @@ import org.json.JSONObject
 
 @Database(entities = [EcgData::class, HeartrateData::class, Spo2Data::class, AccelerometerData::class,
     PpgIRData::class, PpgRedData::class, PpgGreenData::class, QuestionData::class,
-    AffectDataTransferStatus::class, NotificationDataTransferStatus::class],
-    version = 4)
+    AffectDataTransferStatus::class, NotificationDataTransferStatus::class, SessionIDData::class],
+    version = 6)
 abstract class SensorDataDatabase: RoomDatabase() {
     abstract val ecgDao: EcgDao
     abstract val heartrateDao: HeartrateDao
@@ -44,7 +46,8 @@ abstract class SensorDataDatabase: RoomDatabase() {
     abstract val questionDao: QuestionDao
     abstract val affectDataTransferStatusDao: AffectDataTransferStatusDao
     abstract val notificationDataTransferStatusDao: NotificationDataTransferStatusDao
-    private var sessionid = 1
+    abstract val sessionIDDao: SessionIDDao
+    private var sessionid = "1"
 
     fun convertToJsonObject(map: Map<String, Any>): JSONObject {
         val jsonObject = JSONObject()
@@ -73,6 +76,7 @@ abstract class SensorDataDatabase: RoomDatabase() {
     }
 
     suspend fun getLatestDataAsJson(): String {
+        sessionid = sessionIDDao.getActiveSessionID().session
         return withContext(Dispatchers.IO) {
             val questionData = questionDao.getLatestQuestionData()
             val ecgData = ecgDao.getLatestEcgData()
@@ -88,8 +92,8 @@ abstract class SensorDataDatabase: RoomDatabase() {
             val dataMap = mutableMapOf<String, List<Map<String, String>>>()
             dataMap["ecg"] = ecgData.map { it.toJsonMap() }
             dataMap["heartrate"] = heartrateData.map { it.toJsonMap() }
-            dataMap["accelerometer"] = accelerometerData.map { it.toJsonMap() }
             dataMap["spo2"] = spo2Data.map { it.toJsonMap() }
+            dataMap["accelerometer"] = accelerometerData.map { it.toJsonMap() }
             dataMap["ppgir"] = ppgIRData.map { it.toJsonMap() }
             dataMap["ppgred"] = ppgRedData.map { it.toJsonMap() }
             dataMap["ppggreen"] = ppgGreenData.map { it.toJsonMap() }

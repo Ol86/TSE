@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class HeartrateData (
     val time: String,
     val interbeat: String,
+    val ibistatus: String,
     val heartrate: String,
     val status: String,
     val sync: String,
@@ -16,9 +17,10 @@ data class HeartrateData (
     fun toJsonMap(): Map<String, String> {
         return mapOf(
             "time" to time,
-            "interbeat" to interbeat,
-            "heartrate" to heartrate,
-            "status" to status
+            "hr" to heartrate,
+            "hr_status" to status,
+            "ibi" to interbeat,
+            "ibi_status" to ibistatus
         )
     }
 }
