@@ -1,6 +1,8 @@
 package com.plcoding.wearosstopwatch.presentation
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class TemplateInfos(
     val id: Int,

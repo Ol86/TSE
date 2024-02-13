@@ -53,9 +53,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
+import androidx.work.Data
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
 import com.plcoding.wearosstopwatch.presentation.api.ApiService
 import com.plcoding.wearosstopwatch.presentation.database.SensorDataDatabase
 import com.plcoding.wearosstopwatch.presentation.database.UserDataStore
@@ -64,6 +66,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.reflect.Type
 import java.util.concurrent.locks.ReentrantLock
 
 class MainActivity : ComponentActivity(), LifecycleOwner {
@@ -186,36 +189,6 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         }
     }
 
-    private val WORK_TAG = "NotificationWorker"
-    private val requestedPermissions = arrayOf(
-        Manifest.permission.BODY_SENSORS,
-        Manifest.permission.FOREGROUND_SERVICE,
-        Manifest.permission.ACTIVITY_RECOGNITION,
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.WAKE_LOCK,
-        Manifest.permission.POST_NOTIFICATIONS
-    )
-    private val promptFrequency = 1L
-    private val promptFrequencyTimeUnit = TimeUnit.MINUTES
-    private val initialDelay = 1L
-    private val periodicWorkRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
-        promptFrequency,
-        promptFrequencyTimeUnit
-    )
-        .setInitialDelay(initialDelay, promptFrequencyTimeUnit)
-        .addTag("notification")
-        .build()
-
-    private val initialDelay2 = 2L
-    private val periodicWorkRequest_Second_Test = PeriodicWorkRequestBuilder<NotificationWorker>(
-        promptFrequency,
-        promptFrequencyTimeUnit
-    )
-        .setInitialDelay(initialDelay2, promptFrequencyTimeUnit)
-        .addTag("notification")
-        .build()
-
     /*private var _healthTrackingService: HealthTrackingService? = null
     private val healthTrackingService: HealthTrackingService
         get() = _healthTrackingService ?: HealthTrackingService(connectionListener,
@@ -223,9 +196,10 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
 
     //private lateinit var healthTrackingService: HealthTrackingService
 
+    val gson = Gson()
+
     private var isDataCollectionRunning1 = false
 
-    val gson = Gson()
     private val lock = ReentrantLock()
     private val defaultTemplate: String = """
     {
@@ -296,6 +270,47 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
     //Accelerometer,ECG,HeartRate,ppgGreen,ppgIR,ppgRed,SPO2
     //private var activeTrackers = arrayListOf(true, true, true, true, true, true, true)
     private var activeTrackers = templateData.getTrackerBooleans()
+
+
+
+    private val WORK_TAG = "NotificationWorker"
+    private val requestedPermissions = arrayOf(
+        Manifest.permission.BODY_SENSORS,
+        Manifest.permission.FOREGROUND_SERVICE,
+        Manifest.permission.ACTIVITY_RECOGNITION,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.WAKE_LOCK,
+        Manifest.permission.POST_NOTIFICATIONS
+    )
+
+    val listType: Type = object : TypeToken<List<TemplateQuestion>>() {}.type
+    val templateDataJson = gson.toJson(templateData.questions, listType)
+    private val templateQuestions = Data.Builder()
+        .putString("template_questions", templateDataJson)
+        .build()
+
+    private val promptFrequency = 1L
+    private val promptFrequencyTimeUnit = TimeUnit.MINUTES
+    private val initialDelay = 1L
+    private val periodicWorkRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
+        promptFrequency,
+        promptFrequencyTimeUnit
+    )
+        .setInitialDelay(initialDelay, promptFrequencyTimeUnit)
+        .addTag("notification")
+        .setInputData(templateQuestions)
+        .build()
+
+    private val initialDelay2 = 2L
+    private val periodicWorkRequest_Second_Test = PeriodicWorkRequestBuilder<NotificationWorker>(
+        promptFrequency,
+        promptFrequencyTimeUnit
+    )
+        .setInitialDelay(initialDelay2, promptFrequencyTimeUnit)
+        .addTag("notification2")
+        .setInputData(templateQuestions)
+        .build()
 
 
 
@@ -683,7 +698,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
     private fun oneTimeNotification() {
         val notificationManager = NotificationManager(applicationContext)
         //notificationManager.oneTimeNotification("Hello", "World")
-        notificationManager.promptNotification(123456789)
+        notificationManager.promptNotification(123456789, null)
         Log.i("Notify", "HELOOOOOOOOOOOOOOOO")
     }
 }

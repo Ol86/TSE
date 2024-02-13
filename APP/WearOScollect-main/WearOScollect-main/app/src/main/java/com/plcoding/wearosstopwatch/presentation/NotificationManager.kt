@@ -25,7 +25,7 @@ class NotificationManager(private val context: Context) {
     private val channelName = "Primary Notification Channel"
     private val channelDescription = "This channel shall handle all the prompt-notifications for the user"
 
-    fun promptNotification(notificationTimeId: Long) {
+    fun promptNotification(notificationTimeId: Long, questions: List<TemplateQuestion>?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
         }
@@ -36,6 +36,11 @@ class NotificationManager(private val context: Context) {
             flags = Intent.FLAG_ACTIVITY_TASK_ON_HOME or Intent.FLAG_ACTIVITY_NEW_TASK// or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         notificationIntent.putExtra("NotificationTimeId", notificationTimeId)
+        if (questions != null) {
+            Log.i("Manager", "questions")
+            notificationIntent.putExtra("questions", questions.toTypedArray())
+            Log.i("Manager", "questionsAfter")
+        }
 
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context,
             notificationTimeId.toInt(), notificationIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)

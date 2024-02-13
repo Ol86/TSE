@@ -39,6 +39,7 @@ class LabelActivity : ComponentActivity() {
         setContent {
             LabelWatch(
                 intent.getLongExtra("NotificationTimeId", -1),
+                questions = (intent.getSerializableExtra("questions") as Array<TemplateQuestion>).toMutableList(),
                 navController = rememberSwipeDismissableNavController(),
                 modifier = Modifier.fillMaxSize(),
             )
@@ -74,6 +75,7 @@ class LabelActivity : ComponentActivity() {
     @Composable
     private fun LabelWatch(
         notificationTimeId: Long,
+        questions: List<TemplateQuestion>,
         navController: NavHostController,
         startDestination: String = "overview",
         modifier: Modifier = Modifier,
@@ -135,7 +137,8 @@ class LabelActivity : ComponentActivity() {
                                 insertContext(notificationTimeId, "entspannt")
                             }
                         }),
-                    question = "Wie fühlst du dich gerade?",
+                    question = questions[0].question,
+                    //question = "Wie fühlst du dich gerade?",
                     modifier = Modifier.fillMaxSize()
                 )
             }
