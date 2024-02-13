@@ -62,6 +62,7 @@ import com.plcoding.wearosstopwatch.presentation.api.ApiService
 import com.plcoding.wearosstopwatch.presentation.database.SensorDataDatabase
 import com.plcoding.wearosstopwatch.presentation.database.UserDataStore
 import com.plcoding.wearosstopwatch.presentation.database.entities.QuestionData
+import com.plcoding.wearosstopwatch.presentation.database.entities.SessionIDData
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Retrofit
@@ -405,6 +406,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         WorkManager.getInstance(this).cancelAllWork()
         WorkManager.getInstance(this).enqueue(periodicWorkRequest)
         WorkManager.getInstance(this).enqueue(periodicWorkRequest_Second_Test)
+        getSession()
         startDataCollection()
         startDataSending()
     }
@@ -461,12 +463,21 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
     private fun dbDataTOJSON(): JsonObject {
         val scope = lifecycleScope
         var dbData: String = ""
-        val affect = UserDataStore.getUserRepository(applicationContext).affectDao.getAffectData().affect
-        val time = UserDataStore.getUserRepository(applicationContext).notificationDao.getNotificationData().time
-        val questionID = UserDataStore.getUserRepository(applicationContext).affectDao.getAffectData().notification_id.toString()
-        val questionData = QuestionData(time, affect, questionID,"0")
+        try {
+            val affect =
+                UserDataStore.getUserRepository(applicationContext).affectDao.getAffectData().affect
+            val time =
+                UserDataStore.getUserRepository(applicationContext).notificationDao.getNotificationData().time
+            val questionID =
+                UserDataStore.getUserRepository(applicationContext).affectDao.getAffectData().notification_id.toString()
+            val questionData = QuestionData(time, affect, questionID, "0")
+            scope.launch {
+                dbData = db.getLatestDataAsJson()
+            }
+        } catch (e: Exception) {
+
+        }
         scope.launch {
-            db.questionDao.upsertQuestionData(questionData)
             dbData = db.getLatestDataAsJson()
         }
         Log.i("DebuggingA1", dbData)
@@ -607,6 +618,90 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         }
 
         return gson.fromJson(templateAsJsonString, TemplateInfos::class.java)
+    }
+
+    private fun getSession(): String? {
+        var sessionString: String? = null
+
+        val thread = Thread {
+            try {
+                Log.i("APImessage", "Connect")
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("http://193.196.36.62:9000/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+
+                val apiService: ApiService = retrofit.create(ApiService::class.java)
+
+                try {
+                    val tokenResponse = apiService.getToken(
+
+                        JsonObject().apply {
+                            addProperty("username", "Watch1")
+                            addProperty("password", "tse-KIT-2023")
+                        }
+                    ).execute()
+
+                    if (tokenResponse.isSuccessful) {
+                        val token =
+                            "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
+                        println(token)
+
+                        val session = apiService.getSession(token).execute()
+
+                        lock.lock()
+                        try {
+                            sessionString = session.body().toString().trimIndent()
+                        } finally {
+                            lock.unlock()
+                        }
+
+                        // Parse the JSON
+                        val gson = Gson()
+                        //val templateDataInstance: TemplateInfos = gson.fromJson(templateAsJsonString, TemplateInfos::class.java)
+
+                        // Access the parsed data
+                        //println("Title: ${templateDataInstance.title}")
+                        //println("Questions: ${templateDataInstance.questions}")
+
+                        if (session.isSuccessful) {
+                            Log.i("GetSessionApi1", session.body().toString().trimIndent())
+                        } else {
+                            Log.i("GetSessionApi2", "${session.code()}")
+                        }
+                    } else {
+                        Log.i("GetSessionApi3", "${tokenResponse.code()}")
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        thread.start()
+        thread.join()
+
+        lock.lock()
+        try {
+            val valueFromThread = sessionString
+            println("Value from thread: $valueFromThread")
+        } finally {
+            lock.unlock()
+        }
+        val scope = lifecycleScope
+        val pattern = Regex("\\d+")
+        val matchResult = sessionString?.let { pattern.find(it) }
+        val sessionID = matchResult?.value
+        val sessionIDData = sessionID?.let { SessionIDData(it) }
+        scope.launch {
+            if (sessionIDData != null) {
+                db.sessionIDDao.upsertSessionIDData(sessionIDData)
+            }
+        }
+        return sessionID
     }
     companion object {
         private const val TAG = "MainActivity DataCollection"

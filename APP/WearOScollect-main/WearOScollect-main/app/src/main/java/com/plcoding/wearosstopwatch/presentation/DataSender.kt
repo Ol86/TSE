@@ -43,30 +43,30 @@ class DataSender(private val db: SensorDataDatabase, coroutineScope: LifecycleCo
         return JSONObject(dbData)
     }
 
-/*    private fun sendData() {
-        val thread = Thread {
-            try {
-                scope.launch {
-                    dbData = database.getLatestDataAsJson()
-                    //Log.i("uiuiui6",db.getLatestDataAsJson())
-                }
-                val json = this.stringTOJSON(dbData)
-                val token = getToken() // Hier muss die Methode implementiert werden, um das Token zu erhalten
+    /*    private fun sendData() {
+            val thread = Thread {
+                try {
+                    scope.launch {
+                        dbData = database.getLatestDataAsJson()
+                        //Log.i("uiuiui6",db.getLatestDataAsJson())
+                    }
+                    val json = this.stringTOJSON(dbData)
+                    val token = getToken() // Hier muss die Methode implementiert werden, um das Token zu erhalten
 
-                val sendResponse = apiService.testPost(json, token).execute()
+                    val sendResponse = apiService.testPost(json, token).execute()
 
-                if (sendResponse.isSuccessful) {
-                    Log.i("SendData", "Data sent successfully")
-                } else {
-                    println("Error: ${sendResponse.code()}")
+                    if (sendResponse.isSuccessful) {
+                        Log.i("SendData", "Data sent successfully")
+                    } else {
+                        println("Error: ${sendResponse.code()}")
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
-        }
 
-        thread.start()
-    }*/
+            thread.start()
+        }*/
 
     private fun addQuestionData(){
         val newAffectData = UserDataStore.getUserRepository(context).affectDao.getAllAffectData()
@@ -127,13 +127,22 @@ class DataSender(private val db: SensorDataDatabase, coroutineScope: LifecycleCo
         }*/
     }
     private fun dbDataTOJSON(): JsonObject {
-        val affect = UserDataStore.getUserRepository(context).affectDao.getAffectData().affect
-        val time = UserDataStore.getUserRepository(context).notificationDao.getNotificationData().time
-        val questionID = UserDataStore.getUserRepository(context).affectDao.getAffectData().notification_id.toString()
-        val questionData = QuestionData(time, affect, questionID,"0")
-        this.addQuestionData()
+        try {
+
+            val affect = UserDataStore.getUserRepository(context).affectDao.getAffectData().affect
+            val time =
+                UserDataStore.getUserRepository(context).notificationDao.getNotificationData().time
+            val questionID =
+                UserDataStore.getUserRepository(context).affectDao.getAffectData().notification_id.toString()
+            val questionData = QuestionData(time, affect, questionID, "0")
+            this.addQuestionData()
+            scope.launch {
+                dbData = db.getLatestDataAsJson()
+            }
+        } catch (e: Exception){
+
+        }
         scope.launch {
-            db.questionDao.upsertQuestionData(questionData)
             dbData = db.getLatestDataAsJson()
         }
         Log.i("DebuggingA1", dbData)
@@ -143,25 +152,25 @@ class DataSender(private val db: SensorDataDatabase, coroutineScope: LifecycleCo
         return jsonObject
     }
 
-/*    private fun getToken(): String {
-        var token: String = ""
+    /*    private fun getToken(): String {
+            var token: String = ""
 
 
-        val response = apiService.getToken(
-            JsonObject().apply {
-            addProperty("username", "Watch1")
-            addProperty("password", "tse-KIT-2023")
-        }).execute()
+            val response = apiService.getToken(
+                JsonObject().apply {
+                addProperty("username", "Watch1")
+                addProperty("password", "tse-KIT-2023")
+            }).execute()
 
-        if (response.isSuccessful) {
-            token = "Token " + response.body()?.getAsJsonPrimitive("token")?.asString
-            println(token)
-        } else {
-            println("Error: ${response.code()}")
-        }
+            if (response.isSuccessful) {
+                token = "Token " + response.body()?.getAsJsonPrimitive("token")?.asString
+                println(token)
+            } else {
+                println("Error: ${response.code()}")
+            }
 
-        return token
-    }*/
+            return token
+        }*/
 
     private fun connectApi(){
         val thread = Thread {
@@ -293,55 +302,55 @@ class DataSender(private val db: SensorDataDatabase, coroutineScope: LifecycleCo
 
     }
 }
-    /*private fun sendData(){
-        val thread = Thread {
+/*private fun sendData(){
+    val thread = Thread {
+        try {
+            Log.i("APImessage", "Connect")
+            val retrofit = Retrofit.Builder()
+                .baseUrl("http://193.196.36.62:9000/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+            val apiService: ApiService = retrofit.create(ApiService::class.java)
+
             try {
-                Log.i("APImessage", "Connect")
-                val retrofit = Retrofit.Builder()
-                    .baseUrl("http://193.196.36.62:9000/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
+                val tokenResponse = apiService.getToken(
 
-                val apiService: ApiService = retrofit.create(ApiService::class.java)
+                    JsonObject().apply {
+                        addProperty("username", "Watch1")
+                        addProperty("password", "tse-KIT-2023")
+                    }
+                ).execute()
 
-                try {
-                    val tokenResponse = apiService.getToken(
+                if (tokenResponse.isSuccessful) {
+                    val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
+                    Log.i("ServerResponseApi", token)
 
-                        JsonObject().apply {
-                            addProperty("username", "Watch1")
-                            addProperty("password", "tse-KIT-2023")
-                        }
+                    val postResponse = apiService.testPost(
+                        this.dbDataTOJSON(),
+                        token
                     ).execute()
 
-                    if (tokenResponse.isSuccessful) {
-                        val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
-                        Log.i("ServerResponseApi", token)
-
-                        val postResponse = apiService.testPost(
-                            this.dbDataTOJSON(),
-                            token
-                        ).execute()
-
-                        if (postResponse.isSuccessful) {
-                            //println(postResponse.body())
-                            Log.i("SendData", "Data sent successfully")
-                        } else {
-                            println("Error: ${postResponse.code()}")
-                            Log.i("ServerResponseApi", postResponse.toString())
-                            Log.i("ServerResponseApi", "${postResponse.code()}")
-                        }
+                    if (postResponse.isSuccessful) {
+                        //println(postResponse.body())
+                        Log.i("SendData", "Data sent successfully")
                     } else {
-                        println("Error: ${tokenResponse.code()}")
+                        println("Error: ${postResponse.code()}")
+                        Log.i("ServerResponseApi", postResponse.toString())
+                        Log.i("ServerResponseApi", "${postResponse.code()}")
                     }
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                } else {
+                    println("Error: ${tokenResponse.code()}")
                 }
-            } catch (e: java.lang.Exception) {
+
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
         }
+    }
 
-        thread.start()
+    thread.start()
 
-    }*/
+}*/

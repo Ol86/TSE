@@ -22,4 +22,8 @@ interface ApiService {
     @Headers("Content-Type: application/json")
     fun getTemplate(@Header("Authorization") token: String): Call<JsonObject>
 
+    @GET("api/watch/session")
+    @Headers("Content-Type: application/json")
+    fun getSession(@Header("Authorization") token: String): Call<JsonObject>
+
 }
