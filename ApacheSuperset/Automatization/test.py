@@ -25,13 +25,16 @@ csrf_token = \
 
 print(csrf_token)
 
-# api.createDashboard(url, csrf_token, auth_token, session)
-#api.createChart(url, csrf_token, auth_token, session)
-#api.getCharts(url, auth_token)
-#new_chart = api.createChart(url, csrf_token, auth_token, session)
-#api.saveToFile(json.dumps(new_chart, indent=4))
+"""
+api.createDashboard(url, csrf_token, auth_token, session)
+api.createChart(url, csrf_token, auth_token, session)
+api.getCharts(url, auth_token)
+new_chart = api.createChart(url, csrf_token, auth_token, session)
+api.saveToFile(json.dumps(new_chart, indent=4))
 
-#api.getDatasets(url, auth_token)
+api.getDatasets(url, auth_token)
+"""
+
 api.createDataset(url, csrf_token, auth_token, session)
 
 
