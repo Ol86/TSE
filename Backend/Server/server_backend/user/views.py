@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from user.forms import WatchRegisterForm, UserRegisterForm
 from user.models import Profile, Watch
+from user.api import entrypoint
 
 # --------------------------------------------------------------------------------------------------- #
 @login_required(login_url='login')
@@ -64,6 +65,10 @@ def registerUser(response):
 
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
+            #TODO: is_admin
+            
+            #TODO: Add entripoint method.
+
             user = authenticate(username=username, password=password)
             login(response, user)
 
