@@ -8,7 +8,7 @@ ENV ADMIN_PASSWORD $ADMIN_PASSWORD
 
 COPY ./superset-init.sh ./superset-init.sh
 
-RUN chmod +x /superset-init.sh
+RUN chmod +x ./superset-init.sh
 RUN chown superset ./superset-init.sh
 
 COPY superset_config.py /app/
