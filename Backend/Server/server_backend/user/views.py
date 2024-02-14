@@ -68,6 +68,7 @@ def registerUser(response):
             #TODO: is_admin
             
             #TODO: Add entripoint method.
+            entrypoint(username, password, True)
 
             user = authenticate(username=username, password=password)
             login(response, user)
