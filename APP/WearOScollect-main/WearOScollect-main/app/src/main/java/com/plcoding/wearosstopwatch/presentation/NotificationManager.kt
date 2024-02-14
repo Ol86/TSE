@@ -48,11 +48,11 @@ class NotificationManager(private val context: Context) {
 
         val notification = NotificationCompat.Builder(context, channelId)
             .setContentTitle("Zeit zu interagieren!")
-            .setContentText("Wie fühlst du dich gerade?")
+            //.setContentText("Wie fühlst du dich gerade?")
             .setSmallIcon(R.drawable.logo)
             .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
-            .setTimeoutAfter(180000) // will remove the notification after 3 Minutes
+            .setAutoCancel(false)
+            .setTimeoutAfter(30000) // will remove the notification after 3 Minutes
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
         with(NotificationManagerCompat.from(context)) {
@@ -74,8 +74,8 @@ class NotificationManager(private val context: Context) {
             .setContentText(text)
             .setSmallIcon(1)
             //.setContentIntent(pendingIntent)
-            .setAutoCancel(true)
-            .setTimeoutAfter(60000) // will remove the notification after 3 Minutes
+            .setAutoCancel(false)
+            .setTimeoutAfter(15000) // will remove the notification after 3 Minutes
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
         with(NotificationManagerCompat.from(context)) {

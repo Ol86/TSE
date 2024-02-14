@@ -4,6 +4,7 @@ import DataSender
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color.parseColor
 import android.os.Bundle
@@ -218,7 +219,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         "ppg_i": true,
         "ppg_r": true,
         "bia": true,
-        "ecg": false,
+        "ecg": true,
         "spo2": true,
         "swl": true,
         "created_at": "2024-02-10T16:37:04.512963+01:00",
@@ -291,9 +292,9 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         .putString("template_questions", templateDataJson)
         .build()
 
-    private val promptFrequency = 1L
-    private val promptFrequencyTimeUnit = TimeUnit.MINUTES
-    private val initialDelay = 1L
+    private val promptFrequency = 1500L
+    private val promptFrequencyTimeUnit = TimeUnit.SECONDS
+    private val initialDelay = 10L
     private val periodicWorkRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
         promptFrequency,
         promptFrequencyTimeUnit
@@ -312,8 +313,6 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         .addTag("notification2")
         .setInputData(templateQuestions)
         .build()
-
-
 
     @SuppressLint("MutableCollectionMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -335,8 +334,6 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.BODY_SENSORS), 0)
         }
 
-
-
         setContent {
             val viewModel = viewModel<StopWatchViewModel>()
             val timerState by viewModel.timerState.collectAsStateWithLifecycle()
@@ -344,6 +341,10 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             val templateDataState = remember { mutableStateOf(templateData) }
             val activeTrackersState = remember { mutableStateOf(activeTrackers) }
             var currentView by remember { mutableStateOf(ViewType.FirstScreen) }
+
+            var labelActivityAnswer = intent.getIntExtra("currentView", 0)
+            currentView = if (labelActivityAnswer == 1) ViewType.StopWatch else currentView
+
             when (currentView) {
                 ViewType.StopWatch -> {
                     StopWatch(
@@ -405,7 +406,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         viewModel.start()
         WorkManager.getInstance(this).cancelAllWork()
         WorkManager.getInstance(this).enqueue(periodicWorkRequest)
-        WorkManager.getInstance(this).enqueue(periodicWorkRequest_Second_Test)
+        //WorkManager.getInstance(this).enqueue(periodicWorkRequest_Second_Test)
         getSession()
         startDataCollection()
         startDataSending()
