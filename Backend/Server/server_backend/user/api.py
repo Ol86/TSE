@@ -88,4 +88,12 @@ session.post(f'{url}/api/v1/security/roles/{role_id}/permissions', headers=heade
 
 
 Bei Swagger V1 gibt es einen Block mit Security Permissions und Security Permissions (view menus)
+
+
+
+
+Man kann einer Role permissions über die Permission id hinzufügen.
+Die Permission ID bekommt man durch ***
+Idee 1: Die Permissions abrufen mit get methode und vergleichen.
+Idee 2: Globale Variable die hochzählt
 """
