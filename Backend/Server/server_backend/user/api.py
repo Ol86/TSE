@@ -1,12 +1,14 @@
+import requests
 
 def entrypoint(username, password, is_admin):
     """Entrypoint for the main api-calls with authorization.
 
     :param test: test
     """
-    session = requests.Session()
-
-    url = 'http://193.196.36.62:8088'
+    session = requests.session()
+    
+    # http://193.196.36.62:8088
+    url = 'http://bia:8088'
     # username = 'admin'
     # password = 'admin'
 
@@ -29,9 +31,10 @@ def entrypoint(username, password, is_admin):
     }
 
     # When the user creates a new experiment, the datasets will be added to the role of him. "{url}/api/v1/security/roles/{role_id}/permissions"
-    role = session.post(f'{url}/api/security/roles', headers=headers, json={
+    role = session.post(f'{url}/api/v1/security/roles', headers=headers, json={
         "name": username
     })
+
     # role_id = createPermission(username, session, url)
     session.post(f'{url}/api/v1/security/users', headers=headers, json={
         "active": True,
@@ -40,8 +43,7 @@ def entrypoint(username, password, is_admin):
         "last_name": username,
         "password": password,
         "roles": [
-            4, role.json()['id'] 
-            # Maybe not an integer
+            4, role.json()['id']
         ],
         "username": username
     })
@@ -58,6 +60,8 @@ def createUser(username, password, permission, is_admin, session):
     return True
 
 # Man kann bei Datasets einen Owner hinzufügen--- vielleicht noch besser als die Roles
+
+
 
 """
 Next Steps:

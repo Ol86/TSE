@@ -22,6 +22,8 @@ def returnExperimentInfo(experiment):
     for i in experiment["questions"]:
         questions.append(QuestionsSerializer(Questions.objects.get(id=i), many=False).data)
     
+# TODO: get current watch
+
     watches = []
     for i in experiment["watch_id"]:
         watch = WatchSerializer(Watch.objects.get(user_id=i)).data
