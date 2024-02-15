@@ -55,6 +55,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import androidx.work.Data
+import androidx.work.ListenableWorker
+import androidx.work.PeriodicWorkRequest
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -226,9 +228,9 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         "questions": [
             {
                 "id": 1,
-                "question": "Wie sind deine aktuellen Emotionen?",
+                "question": "aaaaaaaaaaaaaa",
                 "button1": true,
-                "button1_text": "Positiv",
+                "button1_text": "11111",
                 "button2": true,
                 "button2_text": "Negativ",
                 "button3": true,
@@ -239,7 +241,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             },
             {
                 "id": 2,
-                "question": "Wie fühlen sie sich?",
+                "question": "bbbbbbbb",
                 "button1": true,
                 "button1_text": "Gut",
                 "button2": true,
@@ -252,7 +254,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             },
             {
                 "id": 3,
-                "question": "Sind sie verärgert?",
+                "question": "cccccccccccccc",
                 "button1": true,
                 "button1_text": "Ja",
                 "button2": true,
@@ -286,9 +288,9 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         Manifest.permission.POST_NOTIFICATIONS
     )
 
-    val listType: Type = object : TypeToken<List<TemplateQuestion>>() {}.type
-    val templateDataJson = gson.toJson(templateData.questions, listType)
-    private val templateQuestions = Data.Builder()
+    /*val listType: Type = object : TypeToken<List<TemplateQuestion>>() {}.type
+    var templateDataJson = gson.toJson(templateData.questions, listType)
+    private var templateQuestions = Data.Builder()
         .putString("template_questions", templateDataJson)
         .build()
 
@@ -302,9 +304,9 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         .setInitialDelay(initialDelay, promptFrequencyTimeUnit)
         .addTag("notification")
         .setInputData(templateQuestions)
-        .build()
+        .build()*/
 
-    private val initialDelay2 = 2L
+    /*private val initialDelay2 = 2L
     private val periodicWorkRequest_Second_Test = PeriodicWorkRequestBuilder<NotificationWorker>(
         promptFrequency,
         promptFrequencyTimeUnit
@@ -312,7 +314,33 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         .setInitialDelay(initialDelay2, promptFrequencyTimeUnit)
         .addTag("notification2")
         .setInputData(templateQuestions)
-        .build()
+        .build()*/
+
+    private fun createNotificationWorker(initialDelay: Long, promptFrequency: Long,
+                                         templateData: TemplateInfos) : PeriodicWorkRequest {
+
+        //promptFrequency min sind 15min deswegen bringt das nichts <15
+
+        val listType: Type = object : TypeToken<List<TemplateQuestion>>() {}.type
+        val templateDataJson = gson.toJson(templateData.questions, listType)
+        val templateQuestions = Data.Builder()
+            .putString("template_questions", templateDataJson)
+            .build()
+
+        val promptFrequencyTimeUnit = TimeUnit.MINUTES
+
+        val periodicWorkRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
+            promptFrequency,
+            promptFrequencyTimeUnit
+        )
+            .setInitialDelay(initialDelay, promptFrequencyTimeUnit)
+            .addTag("notification")
+            .setInputData(templateQuestions)
+            .build()
+
+        return periodicWorkRequest
+    }
+
 
     @SuppressLint("MutableCollectionMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -342,8 +370,8 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             val activeTrackersState = remember { mutableStateOf(activeTrackers) }
             var currentView by remember { mutableStateOf(ViewType.FirstScreen) }
 
-            var labelActivityAnswer = intent.getIntExtra("currentView", 0)
-            currentView = if (labelActivityAnswer == 1) ViewType.StopWatch else currentView
+            //val labelActivityAnswer = intent.getIntExtra("currentView", 0)
+            //currentView = if (labelActivityAnswer == 1) ViewType.StopWatch else currentView
 
             when (currentView) {
                 ViewType.StopWatch -> {
@@ -351,7 +379,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                         state = timerState,
                         time = stopWatchText,
                         notifications = "0",
-                        onStart = {startRoutine(viewModel)},
+                        onStart = {startRoutine(viewModel, templateDataState.value)},
                         onReset = {resetRoutine(viewModel)},
                         onEndStudy = {currentView = ViewType.ConfirmActionScreen},
                         isDataCollectionRunning = isDataCollectionRunning1,
@@ -402,11 +430,14 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             }
         }
     }
-    private fun startRoutine(viewModel: StopWatchViewModel) {
+    private fun startRoutine(viewModel: StopWatchViewModel, templateData: TemplateInfos) {
         viewModel.start()
         WorkManager.getInstance(this).cancelAllWork()
+        Log.i("TemplateData", templateData.questions[0].question)
+        val periodicWorkRequest = createNotificationWorker(1, 1, templateData)
         WorkManager.getInstance(this).enqueue(periodicWorkRequest)
-        //WorkManager.getInstance(this).enqueue(periodicWorkRequest_Second_Test)
+        val periodicWorkRequestTheSecond = createNotificationWorker(2, 1, templateData)
+        WorkManager.getInstance(this).enqueue(periodicWorkRequestTheSecond)
         getSession()
         startDataCollection()
         startDataSending()

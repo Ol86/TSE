@@ -52,7 +52,8 @@ class NotificationManager(private val context: Context) {
             .setSmallIcon(R.drawable.logo)
             .setContentIntent(pendingIntent)
             .setAutoCancel(false)
-            .setTimeoutAfter(30000) // will remove the notification after 3 Minutes
+            .setTimeoutAfter(30000) // will remove the notification after 30 seconds
+            .setPriority(NotificationCompat.PRIORITY_HIGH) // Set notification priority to high
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
         with(NotificationManagerCompat.from(context)) {
