@@ -19,6 +19,7 @@ def registerWatch(response):
             user.refresh_from_db()
             watch = Watch.objects.create(user=user)
             watch.serialnumber = form.cleaned_data.get('serialnumber')
+            watch.is_running = False
             watch.save()
             Token.objects.create(user=user)
             user.type = 2

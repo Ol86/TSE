@@ -29,4 +29,5 @@ urlpatterns = [
     path('api/watch/template/', views.getExperimentTemplate, name="template"),
     path('api/watch/data/', views.sendWatchData, name="data"),
     path('api/watch/session/', views.createSession, name="session"),
+    path('api/watch/quit/', views.endSession, name="quit"),
 ]

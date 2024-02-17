@@ -88,7 +88,7 @@ class Session(models.Model):
     """
     id = models.AutoField(auto_created=True, primary_key=True)
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
-    watch = models.ForeignKey(Watch, on_delete=models.CASCADE)
+    watch_id = models.ForeignKey(Watch, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -28,7 +28,11 @@
     <div id="watch-title">
     {% for watch in watches %}
         <div class="watch">
-            <span id="text">{{watch.user.username}} - {{watch.serialnumber}}</span>
+            {% if watch.is_running %}
+                <span id="text"><i style="color: red;" class="fa fa-circle" aria-hidden="true"></i> {{watch.user.username}} - {{watch.serialnumber}}</span>
+            {% else %}
+                <span id="text"><i style="color: greenyellow;" class="fa fa-circle" aria-hidden="true"></i> {{watch.user.username}} - {{watch.serialnumber}}</span>
+            {% endif %}
         </div>
     {% endfor %}
     </div>

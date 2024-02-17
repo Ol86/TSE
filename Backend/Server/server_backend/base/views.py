@@ -196,7 +196,10 @@ def getExperimentTemplate(request):
                     is_valid = True
 
         if is_valid:
-            result = returnExperimentInfo(experiment[last_experiment_index])
+            result = returnExperimentInfo(
+                experiment[last_experiment_index], 
+                token.user.id
+            )
         else:
             result = {"error": "No experiment with this watch"}
 
@@ -251,11 +254,41 @@ def createSession(request):
         
         session = Session(
             experiment=Experiment.objects.get(id=experiment[last_experiment_index]["id"]), 
-            watch=Watch.objects.get(user=token.user.id)
+            watch_id=Watch.objects.get(user=token.user.id)
         )
         session.save()
 
-        result = {"session": session.id}
+        watch = Watch.objects.get(user=token.user.id)
+        watch.is_running = True
+        watch.save()
+
+        result = {
+            "message": "Watch activity is now set to: " + str(watch.is_running) + ".",
+            "session": session.id
+        }
+
 
         return Response(result ,status=status.HTTP_201_CREATED)
+    return Response({'error': 'Wrong rest method'}, status=status.HTTP_400_BAD_REQUEST)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
+# TODO: Add comment
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def endSession(request):
+    if request.method == 'GET':
+        key = request.META['HTTP_AUTHORIZATION'].split(" ")[1]
+        token = Token.objects.get(key=key)
+        session = SessionSerializer(Session.objects.all(), many=True).data
+        last_session_index = 0
+        for i in range(len(session) -1, -1, -1):
+            if session[i]["watch_id"] == token.user.id:
+                last_session_index = i
+
+        watch = Watch.objects.get(user=token.user.id)
+        watch.is_running = False
+        result = {"message": "Watch activity is now set to: " + str(watch.is_running) + "."}
+        watch.save()
+
+        return Response(result, status=status.HTTP_200_OK)
     return Response({'error': 'Wrong rest method'}, status=status.HTTP_400_BAD_REQUEST)

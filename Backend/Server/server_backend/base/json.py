@@ -11,11 +11,12 @@ from base.models import *
 from user.models import *
 
 # --------------------------------------------------------------------------------------------------- #
-def returnExperimentInfo(experiment):
+def returnExperimentInfo(experiment, watch_id):
     """This method takes all the required informations of the template and fits it into a
     specified pattern.
 
     :param experiment: The information of the required experiment.
+    :param watch_id: The information of the current watch.
     :return: The resulting dictionary, that ich converted into a json.
     """
     questions = []
@@ -23,16 +24,13 @@ def returnExperimentInfo(experiment):
         questions.append(QuestionsSerializer(Questions.objects.get(id=i), many=False).data)
     
 # TODO: get current watch
-
-    watches = []
-    for i in experiment["watch_id"]:
-        watch = WatchSerializer(Watch.objects.get(user_id=i)).data
-        base_user = BaseUserSerializer(BaseUser.objects.get(id=watch["user"])).data
-        watches.append({'name': base_user["username"], 'watch': watch["serialnumber"]},)
+    watch = Watch.objects.get(user_id=watch_id)
+    current_watch = []
+    current_watch.append({'name': watch.user.username, 'watch': watch.serialnumber})
     result = {
         'id': experiment["id"],
         'title': experiment["title"],
-        'watches': watches,
+        'watches': current_watch,
         'acc': experiment["accelerometer"],
         'hr': experiment["heart_rate"],
         'ppg_g': experiment["ppg_green"],

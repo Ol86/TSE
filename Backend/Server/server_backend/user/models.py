@@ -52,6 +52,7 @@ class BaseUserManager(Manager):
             password=password,
         )
         user.is_admin = True
+        user.is_active = True
         user.save(using=self.db)
         profile = Profile.objects.create(user=user)
         profile.role = 1
@@ -153,6 +154,7 @@ class Watch(models.Model):
     """
     user = models.OneToOneField(BaseUser, on_delete=models.CASCADE, primary_key=True)
     serialnumber = models.CharField(max_length=50)
+    is_running = models.BooleanField(default=False)
 
     def __str__(self):
         """This method sets the display name.
