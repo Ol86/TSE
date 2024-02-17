@@ -4,6 +4,8 @@ from django.db import models
 # The Regex pattern for the mac address.
 from django.core.validators import RegexValidator
 
+import time
+
 # The base Structures for the user and usermanager
 from django.contrib.auth.models import BaseUserManager as Manager
 from django.contrib.auth.models import AbstractBaseUser as UserBase
@@ -78,7 +80,7 @@ class BaseUser(UserBase):
     type = models.PositiveSmallIntegerField(choices=TYPE, default=USER)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    created_at = models.IntegerField(default=time.time(), editable=False)
 
     objects = BaseUserManager()
 

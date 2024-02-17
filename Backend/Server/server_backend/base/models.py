@@ -2,6 +2,8 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+import time
+
 # The user models for cross connections between tables inside the database.
 from user.models import Watch, Profile
 
@@ -26,7 +28,7 @@ class Questions(models.Model):
     # Answer 4
     button4 = models.BooleanField(default=True)
     button4_text = models.CharField(max_length=50, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.IntegerField(default=time.time())
 
     class Meta:
         """This class defines the ordering of the database table.
@@ -65,7 +67,7 @@ class Experiment(models.Model):
     questions = models.ManyToManyField(Questions)
     # Add a time to keep track of the experiments.
     created_by = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.IntegerField(default=time.time())
 
     class Meta:
         """This class defines the ordering of the database table.
@@ -89,7 +91,7 @@ class Session(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True)
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     watch_id = models.ForeignKey(Watch, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.IntegerField(default=time.time())
 
     class Meta:
         """This class defines the ordering of the database table.
@@ -116,7 +118,7 @@ class Answers(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     question = models.ForeignKey(Questions, on_delete=models.CASCADE)
     answer = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(4)])
-    time = models.DateTimeField(default=0)
+    time = models.IntegerField(default=0)
 
     class Meta:
         """This class defines the ordering of the database table.
@@ -146,7 +148,7 @@ class ECG(models.Model):
     max_threshold = models.IntegerField(default=0)
     sequence = models.IntegerField(default=0)
     min_threshold = models.IntegerField(default=0)
-    time = models.DateTimeField(default=0)
+    time = models.IntegerField(default=0)
 
     class Meta:
         """This class defines the ordering of the database table.
@@ -174,7 +176,7 @@ class Heart_Rate(models.Model):
     hr_status = models.IntegerField(default=0)
     ibi = models.IntegerField(default=0)
     ibi_status = models.IntegerField(default=0)
-    time = models.DateTimeField(default=0)
+    time = models.IntegerField(default=0)
 
     class Meta:
         """This class defines the ordering of the database table.
@@ -201,7 +203,7 @@ class SPO2(models.Model):
     spo2 = models.IntegerField(default=0)
     heartrate = models.IntegerField(default=0)
     status = models.IntegerField(default=0)
-    time = models.DateTimeField(default=0)
+    time = models.IntegerField(default=0)
 
     class Meta:
         """This class defines the ordering of the database table.
@@ -224,7 +226,7 @@ class Accelerometer(models.Model):
     x = models.IntegerField(default=0)
     y = models.IntegerField(default=0)
     z = models.IntegerField(default=0)
-    time = models.DateTimeField(default=0)
+    time = models.IntegerField(default=0)
 
     class Meta:
         """This class defines the ordering of the database table.
@@ -245,7 +247,7 @@ class PPG_Green(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     ppg_green = models.IntegerField(default=0)
-    time = models.DateTimeField(default=0)
+    time = models.IntegerField(default=0)
 
     class Meta:
         """This class defines the ordering of the database table.
@@ -266,7 +268,7 @@ class PPG_IR(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     ppg_ir = models.IntegerField(default=0)
-    time = models.DateTimeField(default=0)
+    time = models.IntegerField(default=0)
 
     class Meta:
         """This class defines the ordering of the database table.
@@ -287,7 +289,7 @@ class PPG_Red(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     ppg_red = models.IntegerField(default=0)
-    time = models.DateTimeField(default=0)
+    time = models.IntegerField(default=0)
 
     class Meta:
         """This class defines the ordering of the database table.

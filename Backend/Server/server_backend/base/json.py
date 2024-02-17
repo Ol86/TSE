@@ -1,11 +1,9 @@
-# Datetime to convert a timestamp into datetime-format
-from datetime import datetime
-
 # Json to handle json opperations.
 import json
 
 # The seriallizer to get all the required informations of the Models.
 from base.serializers import *
+
 # All models to get and store the required informations.
 from base.models import *
 from user.models import *
@@ -61,7 +59,7 @@ def insertEcgData(data):
             max_threshold=ecg["maxThreshold"],
             sequence=ecg["sequence"],
             min_threshold=ecg["minThreshold"],
-            time=datetime.utcfromtimestamp(int(ecg["time"]) / 1000)
+            time=ecg["time"]
         )
         line.save()
 
@@ -75,7 +73,7 @@ def insertHeartrateData(data):
     for hr in data["data"]["heartrate"]:
         line = Heart_Rate(
             session=session,
-            time=datetime.utcfromtimestamp(int(hr["time"]) / 1000),
+            time=hr["time"],
             hr=hr["hr"],
             hr_status=hr["hr_status"],
             ibi=hr["ibi"],
@@ -94,7 +92,7 @@ def insertSPO2Data(data):
         line = SPO2(
             spo2=spo2["spo2"],
             session=session,
-            time=datetime.utcfromtimestamp(int(spo2["time"]) / 1000),
+            time=spo2["time"],
             heartrate=spo2["heartRate"],
             status=spo2["spo2"]
         )
@@ -110,7 +108,7 @@ def insertAccelerometerData(data):
     for accelerometer in data["data"]["accelerometer"]:
         line = Accelerometer(
             session=session,
-            time=datetime.utcfromtimestamp(int(accelerometer["time"]) / 1000),
+            time=accelerometer["time"],
             x=accelerometer["x"],
             y=accelerometer["y"],
             z=accelerometer["z"]
@@ -128,7 +126,7 @@ def insertPPGIRData(data):
         line = PPG_IR(
             ppg_ir=ppgir["ppgir"],
             session=session,
-            time=datetime.utcfromtimestamp(int(ppgir["time"]) / 1000)
+            time=ppgir["time"]
         )
         line.save()
 
@@ -143,7 +141,7 @@ def insertPPGRedData(data):
         line = PPG_Red(
             ppg_red=ppgred["ppgred"],
             session=session,
-            time=datetime.utcfromtimestamp(int(ppgred["time"]) / 1000)
+            time=ppgred["time"]
         )
         line.save()
 
@@ -158,7 +156,7 @@ def insertPPGGreenData(data):
         line = PPG_Green(
             ppg_green=ppggreen["ppggreen"],
             session=session,
-            time=datetime.utcfromtimestamp(int(ppggreen["time"]) / 1000)
+            time=ppggreen["time"]
         )
         line.save()
 
@@ -171,6 +169,6 @@ def insertAnswers(data):
             experiment=session.experiment,
             session=session,
             answer=answer["answer"],
-            time=datetime.utcfromtimestamp(int(answer["time"]) / 1000)
+            time=answer["time"]
         )
         line.save()
