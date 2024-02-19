@@ -13,6 +13,7 @@ import android.os.Looper
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -75,6 +76,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Type
 import java.util.concurrent.locks.ReentrantLock
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
+import androidx.compose.runtime.Composable
 
 class MainActivity : ComponentActivity(), LifecycleOwner {
 
@@ -355,6 +360,21 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         sPO2TrackerListener.trackerActive = activeTrackerList[6]
     }
 
+    private fun isNetworkAvailable(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+        return if (connectivityManager != null) {
+            val network = connectivityManager.activeNetwork
+            val capabilities = connectivityManager.getNetworkCapabilities(network)
+            capabilities != null && (
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+                    )
+        } else {
+            false
+        }
+    }
+
 
     @SuppressLint("MutableCollectionMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -407,7 +427,8 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                         onStopDataCollection = {stopDataCollection()},
                         onBackToSettings = {currentView = ViewType.FirstScreen},
                         onConnectApi = {connectApi()},
-                        activeTrackersState.value,
+                        trackers = activeTrackersState.value,
+                        dataUploaded = isNetworkAvailable(applicationContext),
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -872,6 +893,7 @@ private fun StopWatch(
     onBackToSettings: () -> Unit,
     onConnectApi: () -> Unit,
     trackers: ArrayList<Boolean>,    //Accelerometer,ECG,HeartRate,ppgGreen,ppgIR,ppgRed,SPO2
+    dataUploaded: Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -958,8 +980,20 @@ private fun StopWatch(
                     )
                 }
             }
-            Spacer(modifier = Modifier.width(15.dp))
-            Button(
+            Spacer(modifier = Modifier.width(25.dp))
+
+            if (state != TimerState.RUNNING) {
+                Canvas(modifier = Modifier.size(22.dp)) {
+                    drawCircle(color = Color.DarkGray)
+                }
+            }
+            else {
+                Canvas(modifier = Modifier.size(22.dp)) {
+                    drawCircle(color = if (dataUploaded) Color(0xFF32CD32)
+                    else Color(0xFFAC3123))
+                }
+            }
+            /*Button(
                 onClick = { onConnectApi() },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (state == TimerState.RUNNING) {
@@ -973,7 +1007,7 @@ private fun StopWatch(
                     imageVector = Icons.Default.UploadFile,
                     contentDescription = "Send Data"
                 )
-            }
+            }*/
         }
 
         if (state != TimerState.RUNNING) {
