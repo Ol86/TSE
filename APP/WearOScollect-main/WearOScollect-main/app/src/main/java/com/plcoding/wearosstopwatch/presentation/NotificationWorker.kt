@@ -1,6 +1,7 @@
 package com.plcoding.wearosstopwatch.presentation
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -36,6 +37,8 @@ class NotificationWorker(context: Context, params: WorkerParameters) : Worker(co
                 )
             }
         }
+        val intent = Intent("ACTION_WORK_COMPLETED")
+        applicationContext.sendBroadcast(intent)
         //TODO start oneTimeWorker to dismiss notification after 3 minutes
         Log.v("NotificationWorker","AH YES, SUCCESS")
         return Result.success()

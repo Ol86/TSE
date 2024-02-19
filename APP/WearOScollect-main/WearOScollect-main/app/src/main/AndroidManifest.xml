@@ -65,6 +65,16 @@
             android:label="Second Activity">
         </activity>
 
-    </application>
+        <receiver
+            android:name=".presentation.MainActivity"
+            android:exported="true"
+            android:enabled="true">
+        <intent-filter>
+            <action android:name="ACTION_WORK_COMPLETED" />
+        </intent-filter>
+        </receiver>
+
+
+</application>
 
 </manifest>

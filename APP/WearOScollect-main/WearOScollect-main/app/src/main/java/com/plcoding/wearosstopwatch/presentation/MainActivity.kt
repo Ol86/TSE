@@ -4,7 +4,10 @@ import DataSender
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color.parseColor
 import android.os.Bundle
@@ -86,6 +89,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import java.util.UUID
 
 class MainActivity : ComponentActivity(), LifecycleOwner {
 
@@ -381,6 +385,20 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         }
     }
 
+    /*private val workerList: List<UUID> = listOf()
+    private fun observeWorkers(workerIdList: List<UUID>): Boolean {
+        var notifyDone = false
+        WorkManager.getInstance(this).getWorkInfoByIdLiveData(workerIdList[0])
+            .observe(this) { workInfo ->
+                if (workInfo != null && workInfo.state == WorkInfo.State.SUCCEEDED) {
+                    notifyDone = true
+                    Log.i("Worker", "Worker has been called")
+                }
+            }
+        return notifyDone
+    }*/
+
+    private var notifyCounter = 0
 
     @SuppressLint("MutableCollectionMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -412,8 +430,27 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             val templateDataState = remember { mutableStateOf(templateData) }
             val activeTrackersState = remember { mutableStateOf(activeTrackers) }
             var currentView by remember { mutableStateOf(ViewType.FirstScreen) }
+            //var workers by remember { mutableStateOf(workerList) }
+            val notificationCounterState = remember { mutableStateOf(notifyCounter) }
 
             setTracker(activeTrackersState.value)
+
+            LaunchedEffect(Unit) {
+                val broadcastReceiver = object : BroadcastReceiver() {
+                    override fun onReceive(context: Context?, intent: Intent?) {
+                        if (intent?.action == "ACTION_WORK_COMPLETED") {
+                            notificationCounterState.value += 1
+                            Log.i("Counter", "Counter Worked")
+                        }
+                    }
+                }
+                val filter = IntentFilter("ACTION_WORK_COMPLETED")
+                applicationContext.registerReceiver(broadcastReceiver, filter)
+
+            }
+            /*if (workers.isNotEmpty() && observeWorkers(workers)) {
+                notificationCounter += 1
+            }*/
 
             //val labelActivityAnswer = intent.getIntExtra("currentView", 0)
             //currentView = if (labelActivityAnswer == 1) ViewType.StopWatch else currentView
@@ -423,10 +460,10 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                     StopWatch(
                         state = timerState,
                         time = stopWatchText,
-                        notifications = "0",
+                        notifications = notificationCounterState.value.toString(),
                         notificationsMax = "10",
                         onStart = { startRoutine(viewModel, templateDataState.value) },
-                        onReset = {resetRoutine(viewModel)},
+                        onReset = { resetRoutine(viewModel) },
                         onEndStudy = {currentView = ViewType.ConfirmActionScreen},
                         isDataCollectionRunning = isDataCollectionRunning1,
                         onStartDataCollection = {startDataCollection()},
@@ -458,7 +495,8 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                     ConfirmActionScreen(
                         onCancel = { currentView = ViewType.StopWatch},
                         onConfirm = { currentView = ViewType.StopWatch
-                            resetRoutine(viewModel) }
+                            resetRoutine(viewModel)
+                            notificationCounterState.value = 0}
                     )
                 }
             }
@@ -470,8 +508,9 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         Log.i("TemplateData", templateData.questions[0].question)
         val periodicWorkRequest = createNotificationWorker(0, 1, templateData)
         WorkManager.getInstance(this).enqueue(periodicWorkRequest)
-        //val periodicWorkRequestTheSecond = createNotificationWorker(2, 1, templateData)
-        //WorkManager.getInstance(this).enqueue(periodicWorkRequestTheSecond)
+
+        val periodicWorkRequestTheSecond = createNotificationWorker(1, 1, templateData)
+        WorkManager.getInstance(this).enqueue(periodicWorkRequestTheSecond)
 
         getSession()
         startDataCollection()
@@ -927,7 +966,7 @@ private fun StopWatch(
                 modifier = Modifier.align(Alignment.Bottom)
             )
             Text(
-                text = " / $notificationsMax",
+                text = " Notifications",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Light,
                 textAlign = TextAlign.Center,
