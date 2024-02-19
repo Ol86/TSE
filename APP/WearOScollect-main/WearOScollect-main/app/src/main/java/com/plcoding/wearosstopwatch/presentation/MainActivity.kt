@@ -79,7 +79,13 @@ import java.util.concurrent.locks.ReentrantLock
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 
 class MainActivity : ComponentActivity(), LifecycleOwner {
 
@@ -432,33 +438,20 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                         modifier = Modifier.fillMaxSize()
                     )
                 }
+                ViewType.FirstScreen -> {
+                    FirstScreen(
+                        onNavigateToSecondActivity = { currentView = ViewType.SecondActivity },
+                        onAccept = { currentView = ViewType.SecondActivity },
+                        onSyncTemplates = { templateDataState.value = getTemplate()
+                            activeTrackersState.value = templateDataState.value.getTrackerBooleans() },
+                        templateData = templateDataState
+                    )
+                }
                 ViewType.SecondActivity -> {
                     SecondActivity(
                         trackers = activeTrackersState,
                         onBack = { currentView = ViewType.FirstScreen },
-                        onAccOff = {accelerometerOff()},
-                        onAccOn = {accelerometerOn()},
-                        onEcgOff = {ecgOff()},
-                        onEcgOn = {ecgOn()},
-                        onHeartRateOff = {heartRateOff()},
-                        onHeartRateOn = {heartRateOn()},
-                        onPPGGreenOff = {ppgGreenOff()},
-                        onPPGGreenOn = {ppgGreenOn()},
-                        onPPGIROff = {ppgIROff()},
-                        onPPGIROn = {ppIROn()},
-                        onPPGRedOff = {ppgRedOff()},
-                        onPPGRedOn = {ppgRedOn()},
-                        onSPO2Off = {sPO2Off()},
-                        onSPO2On = {sPO2On()}
-                    )
-                }
-                ViewType.FirstScreen -> {
-                    FirstScreen(
-                        onNavigateToSecondActivity = { currentView = ViewType.SecondActivity },
-                        onAccept = { currentView = ViewType.StopWatch },
-                        onSyncTemplates = { templateDataState.value = getTemplate()
-                            activeTrackersState.value = templateDataState.value.getTrackerBooleans() },
-                        templateData = templateDataState
+                        onNext = { currentView = ViewType.StopWatch}
                     )
                 }
                 ViewType.ConfirmActionScreen -> {
@@ -913,13 +906,13 @@ private fun StopWatch(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.Bottom)
             )
-            Text(
+            /*Text(
                 text = " / 1:30:00",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Light,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.Bottom)
-            )
+            )*/
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -982,17 +975,23 @@ private fun StopWatch(
             }
             Spacer(modifier = Modifier.width(25.dp))
 
-            if (state != TimerState.RUNNING) {
-                Canvas(modifier = Modifier.size(22.dp)) {
-                    drawCircle(color = Color.DarkGray)
+            Box(
+                modifier = Modifier.padding(top = 15.dp)
+            ) {
+                if (state != TimerState.RUNNING) {
+                    Canvas(modifier = Modifier.size(22.dp)) {
+                        drawCircle(color = Color.DarkGray)
+                    }
+                } else {
+                    Canvas(modifier = Modifier.size(22.dp)) {
+                        drawCircle(
+                            color = if (dataUploaded) Color(0xFF32CD32) else Color(0xFFAC3123)
+                        )
+                    }
                 }
             }
-            else {
-                Canvas(modifier = Modifier.size(22.dp)) {
-                    drawCircle(color = if (dataUploaded) Color(0xFF32CD32)
-                    else Color(0xFFAC3123))
-                }
-            }
+
+
             /*Button(
                 onClick = { onConnectApi() },
                 colors = ButtonDefaults.buttonColors(
@@ -1034,246 +1033,6 @@ private fun StopWatch(
     }
 }
 
-@Composable
-private fun SecondActivity(
-    trackers: MutableState<ArrayList<Boolean>>,
-    onAccOff: () -> Unit,
-    onAccOn: () -> Unit,
-    onEcgOff: () -> Unit,
-    onEcgOn: () -> Unit,
-    onHeartRateOff: () -> Unit,
-    onHeartRateOn: () -> Unit,
-    onPPGGreenOff: () -> Unit,
-    onPPGGreenOn: () -> Unit,
-    onPPGIROff: () -> Unit,
-    onPPGIROn: () -> Unit,
-    onPPGRedOn: () -> Unit,
-    onPPGRedOff: () -> Unit,
-    onSPO2On: () -> Unit,
-    onSPO2Off: () -> Unit,
-    onBack: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    /*var localEnabled0 by remember { mutableStateOf(trackers[0]) }
-    var localEnabled1 by remember { mutableStateOf(trackers[1]) }
-    var localEnabled2 by remember { mutableStateOf(trackers[2]) }
-    var localEnabled3 by remember { mutableStateOf(trackers[3]) }
-    var localEnabled4 by remember { mutableStateOf(trackers[4]) }
-    var localEnabled5 by remember { mutableStateOf(trackers[5]) }
-    var localEnabled6 by remember { mutableStateOf(trackers[6]) }*/
-
-    Column(
-        modifier = modifier.verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Button(
-                onClick = onBack,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 46.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.DarkGray
-                )
-            ) {
-                Text("      Back      ")
-            }
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Button(
-                onClick = {
-                    if (trackers.value[0]) {
-                        onAccOff()
-                    }
-                    else {
-                        onAccOn()
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 46.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (trackers.value[0]) Color(parseColor("#0FADF0"))
-                    else Color(parseColor("#AC3123"))
-                )
-            ) {
-                Text("Accelerometer")
-            }
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Button(
-                onClick = {
-                    if (trackers.value[1]) {
-                        onEcgOff()
-                    }
-                    else {
-                        onEcgOn()
-                    }
-                    /*localEnabled1 = !localEnabled1
-                    if (localEnabled1) {
-                        onEcgOn()
-                    } else {
-                        onEcgOff()
-                    }*/
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 46.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (trackers.value[1]) Color(parseColor("#0FADF0"))
-                        else Color(parseColor("#AC3123"))
-                )
-            ) {
-                Text("ECG")
-            }
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Button(
-                onClick = {
-                    if (trackers.value[2]) {
-                        onHeartRateOff()
-                    }
-                    else {
-                        onHeartRateOn()
-                    }
-                    /*val currentTrackers = trackers().value.toMutableList()
-
-                    currentTrackers[2] = !currentTrackers[2]
-                    trackers().value = currentTrackers as ArrayList<Boolean>*/
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 46.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (trackers.value[2]) Color(parseColor("#0FADF0"))
-                    else Color(parseColor("#AC3123"))
-                )
-            ) {
-                Text("HeartRate")
-            }
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Button(
-                onClick = {
-                    if (trackers.value[3]) {
-                        onPPGGreenOff()
-                    }
-                    else {
-                        onPPGGreenOn()
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 46.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (trackers.value[3]) Color(parseColor("#0FADF0"))
-                    else Color(parseColor("#AC3123"))
-                )
-            ) {
-                Text("PPGGreen")
-            }
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Button(
-                onClick = {
-                    if (trackers.value[4]) {
-                        onPPGIROff()
-                    }
-                    else {
-                        onPPGIROn()
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 46.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (trackers.value[4]) Color(parseColor("#0FADF0"))
-                    else Color(parseColor("#AC3123"))
-                )
-            ) {
-                Text("PPGIR")
-            }
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Button(
-                onClick = {
-                    if (trackers.value[5]) {
-                        onPPGRedOff()
-                    }
-                    else {
-                        onPPGRedOn()
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 46.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (trackers.value[5]) Color(parseColor("#0FADF0"))
-                    else Color(parseColor("#AC3123"))
-                )
-            ) {
-                Text("PPGRed")
-            }
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Button(
-                onClick = {
-                    if (trackers.value[6]) {
-                        onSPO2Off()
-                    }
-                    else {
-                        onSPO2On()
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 46.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (trackers.value[6]) Color(parseColor("#0FADF0"))
-                    else Color(parseColor("#AC3123"))
-                )
-            ) {
-                Text("SPO2")
-            }
-        }
-    }
-}
 
 @Composable
 private fun FirstScreen(
@@ -1289,18 +1048,31 @@ private fun FirstScreen(
     ) {
         Spacer(modifier = Modifier.height(30.dp))
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = templateData.value.title,
+                text = if (templateData.value.id == 31415 && templateData.value.title == "{Default}") {
+                    "No Template synchronised"
+                } else {
+                    "Currently is \"${templateData.value.title}\" synchronised"
+                },
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
+
+            /*Text(
+                text = templateData.value.title,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )*/
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        /*Spacer(modifier = Modifier.height(10.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -1325,13 +1097,28 @@ private fun FirstScreen(
                     contentDescription = "Tracker Settings"
                 )
             }
-        }
+        }*/
 
-        Spacer(modifier = Modifier.height(5.dp))
+        Spacer(modifier = Modifier.height(25.dp))
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
             horizontalArrangement = Arrangement.Center
         ) {
+            Button(
+                onClick = { onSyncTemplates() },
+                modifier = Modifier
+                    .weight(1.5f)
+                    .padding(horizontal = 5.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(parseColor("#0FADF0"))
+                )
+            ) {
+                Text("Sync new Template",
+                    textAlign = TextAlign.Center)
+            }
+
             Button(
                 onClick = {
                     if (templateData.value.id != 31415 && templateData.value.title != "{Default}") {
@@ -1339,16 +1126,197 @@ private fun FirstScreen(
                     }
                 },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 50.dp),
+                    .weight(1f)
+                    .padding(horizontal = 5.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (templateData.value.id != 31415
                         && templateData.value.title != "{Default}") Color(parseColor("#32CD32"))
                     else Color(parseColor("#AC3123"))
-                    //backgroundColor = Color(parseColor("#32CD32"))
+                )
+            ) {
+                Text("Accept",
+                    textAlign = TextAlign.Center)
+            }
+        }
+    }
+}
+
+@Composable
+private fun SecondActivity(
+    trackers: MutableState<ArrayList<Boolean>>,
+    onNext: () -> Unit,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = onNext,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(parseColor("#32CD32"))
                 )
             ) {
                 Text("Accept")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = if (trackers.value[0]) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
+                )
+            ) {
+                Text("Accelerometer")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = if (trackers.value[1]) Color(parseColor("#0FADF0"))
+                        else Color(parseColor("#AC3123"))
+                )
+            ) {
+                Text("ECG")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = if (trackers.value[2]) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
+                )
+            ) {
+                Text("HeartRate")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = if (trackers.value[3]) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
+                )
+            ) {
+                Text("PPGGreen")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = if (trackers.value[4]) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
+                )
+            ) {
+                Text("PPGIR")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = if (trackers.value[5]) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
+                )
+            ) {
+                Text("PPGRed")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = if (trackers.value[6]) Color(parseColor("#0FADF0"))
+                    else Color(parseColor("#AC3123"))
+                )
+            ) {
+                Text("SPO2")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = onBack,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 46.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.DarkGray
+                )
+            ) {
+                Text("Back")
             }
         }
     }
