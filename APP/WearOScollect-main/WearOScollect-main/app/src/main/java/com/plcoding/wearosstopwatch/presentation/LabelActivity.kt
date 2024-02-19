@@ -71,6 +71,8 @@ class LabelActivity : ComponentActivity() {
                     //putExtra("currentView", 1)
                 //}
 
+                //this makes the App return to the Stopwatch View
+                //if removed the App returns to the HomeScreen of the Watch
                 val mainActivityIntent = Intent(this@LabelActivity, MainActivity::class.java)
                 startActivity(mainActivityIntent)
                 finish()
@@ -98,6 +100,10 @@ class LabelActivity : ComponentActivity() {
             val contextButton = 0xFF505050
 
             composable("overview") {
+                val buttonVisibility = remember { mutableStateListOf<Boolean>() }
+                repeat(4) {
+                    buttonVisibility.add(it < numberOfQuestions)
+                }
                 LabelView(
                     first = LabelButton(
                         questions[0].button1_text,
@@ -106,7 +112,7 @@ class LabelActivity : ComponentActivity() {
                             if (numberOfQuestions > 1) {
                                 Log.i("NUMBER", questions.size.toString())
                                 Log.i("Questions", questions.toString())
-                                navController.navigate("veraergert")
+                                navController.navigate("Question_2")
                             }
                             else {
                                 Log.i("NUMBER", questions.size.toString())
@@ -119,7 +125,7 @@ class LabelActivity : ComponentActivity() {
                         blueButton,
                         func = {
                             if (numberOfQuestions > 1) {
-                                navController.navigate("traurig")
+                                navController.navigate("Question_2")
                             }
                             else {
                                 insertContext(notificationTimeId, questions[0].button2_text)
@@ -130,7 +136,7 @@ class LabelActivity : ComponentActivity() {
                         greenButton,
                         func = {
                             if (numberOfQuestions > 1) {
-                                navController.navigate("gluecklich")
+                                navController.navigate("Question_2")
                             }
                             else {
                                 insertContext(notificationTimeId, questions[0].button3_text)
@@ -141,18 +147,23 @@ class LabelActivity : ComponentActivity() {
                         yellowButton,
                         func = {
                             if (numberOfQuestions > 1) {
-                                navController.navigate("entspannt")
+                                navController.navigate("Question_2")
                             }
                             else {
                                 insertContext(notificationTimeId, questions[0].button4_text)
                             }
                         }),
                     question = questions[0].question,
-                    //question = "Wie fühlst du dich gerade?",
+                    buttonVisibility = listOf(questions[0].button1, questions[0].button2,
+                        questions[0].button3, questions[0].button4),
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            composable("veraergert") {
+            composable("Question_2") {
+                val buttonVisibility = remember { mutableStateListOf<Boolean>() }
+                repeat(4) {
+                    buttonVisibility.add(it < numberOfQuestions)
+                }
                 LabelView(
                     first = LabelButton(
                         questions[1].button1_text,
@@ -203,9 +214,13 @@ class LabelActivity : ComponentActivity() {
                             }
                         }),
                     question = questions[1].question,
+                    buttonVisibility = listOf(questions[1].button1, questions[1].button2,
+                        questions[1].button3, questions[1].button4),
                     modifier = Modifier.fillMaxSize()
                 )
             }
+
+            /*
             composable("traurig") {
                 LabelView(
                     first = LabelButton(
@@ -368,7 +383,13 @@ class LabelActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 )
             }
+             */
+
             composable("kontext") {
+                val buttonVisibility = remember { mutableStateListOf<Boolean>() }
+                repeat(4) {
+                    buttonVisibility.add(it < numberOfQuestions)
+                }
                 LabelView(
                     first = LabelButton(
                         questions[2].button1_text,
@@ -419,10 +440,16 @@ class LabelActivity : ComponentActivity() {
                             }
                         }),
                     question = questions[2].question,
+                    buttonVisibility = listOf(questions[2].button1, questions[2].button2,
+                        questions[2].button3, questions[2].button4),
                     modifier = Modifier.fillMaxSize()
                 )
             }
             composable("Question_4") {
+                val buttonVisibility = remember { mutableStateListOf<Boolean>() }
+                repeat(4) {
+                    buttonVisibility.add(it < numberOfQuestions)
+                }
                 LabelView(
                     first = LabelButton(
                         questions[3].button1_text,
@@ -473,10 +500,16 @@ class LabelActivity : ComponentActivity() {
                             }
                         }),
                     question = questions[3].question,
+                    buttonVisibility = listOf(questions[3].button1, questions[3].button2,
+                        questions[3].button3, questions[3].button4),
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            composable("Question_5") {
+            composable("Question_5") {val buttonVisibility = remember { mutableStateListOf<Boolean>() }
+                repeat(4) {
+                    buttonVisibility.add(it < numberOfQuestions)
+                }
+
                 LabelView(
                     first = LabelButton(
                         questions[4].button1_text,
@@ -494,7 +527,10 @@ class LabelActivity : ComponentActivity() {
                         questions[4].button4_text,
                         contextButton,
                         func = { insertContext(notificationTimeId, questions[4].button4_text)}),
+
                     question = questions[4].question,
+                    buttonVisibility = listOf(questions[4].button1, questions[4].button2,
+                        questions[4].button3, questions[4].button4),
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -508,6 +544,7 @@ class LabelActivity : ComponentActivity() {
         third: LabelButton,
         fourth: LabelButton,
         question: String,
+        buttonVisibility: List<Boolean>,
         modifier: Modifier = Modifier
     ) {
         Column(
@@ -529,35 +566,43 @@ class LabelActivity : ComponentActivity() {
                     .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Chip(
-                    onClick = first.func,
-                    label = {
-                        Text(
-                            text = first.label,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 12.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    colors = ChipDefaults.primaryChipColors(backgroundColor = Color(first.color)),
-                    modifier = Modifier.weight(1f).padding(end = 4.dp)
-
-                )
-                Chip(
-                    onClick = second.func,
-                    label = {
-                        Text(
-                            text = second.label,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 12.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    colors = ChipDefaults.primaryChipColors(backgroundColor = Color(second.color)),
-                    modifier = Modifier.weight(1f)
-                )
+                if (buttonVisibility.getOrNull(0) == true) {
+                    Chip(
+                        onClick = first.func,
+                        label = {
+                            Text(
+                                text = first.label,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        },
+                        colors = ChipDefaults.primaryChipColors(backgroundColor = Color(first.color)),
+                        modifier = Modifier
+                            .width(90.dp)
+                            //.weight(1f)
+                            .padding(end = 4.dp)
+                    )
+                }
+                if (buttonVisibility.getOrNull(1) == true) {
+                    Chip(
+                        onClick = second.func,
+                        label = {
+                            Text(
+                                text = second.label,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        },
+                        colors = ChipDefaults.primaryChipColors(backgroundColor = Color(second.color)),
+                        modifier = Modifier
+                            .width(90.dp)
+                            //.weight(1f)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(5.dp).width(5.dp))
@@ -568,36 +613,44 @@ class LabelActivity : ComponentActivity() {
                     .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Chip(
-                    onClick = third.func,
-                    label = {
-                        Text(
-                            text = third.label,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 12.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    colors = ChipDefaults.primaryChipColors(backgroundColor = Color(third.color)),
-                    modifier = Modifier.weight(1f).padding(end = 4.dp)
-                )
-                Chip(
-                    onClick = fourth.func,
-                    label = {
-                        Text(
-                            text = fourth.label,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 12.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    colors = ChipDefaults.primaryChipColors(backgroundColor = Color(fourth.color)),
-                    modifier = Modifier.weight(1f)
-                )
+                if (buttonVisibility.getOrNull(2) == true) {
+                    Chip(
+                        onClick = third.func,
+                        label = {
+                            Text(
+                                text = third.label,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        },
+                        colors = ChipDefaults.primaryChipColors(backgroundColor = Color(third.color)),
+                        modifier = Modifier
+                            .width(90.dp)
+                            //.weight(1f)
+                            .padding(end = 4.dp)
+                    )
+                }
+                if (buttonVisibility.getOrNull(3) == true) {
+                    Chip(
+                        onClick = fourth.func,
+                        label = {
+                            Text(
+                                text = fourth.label,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        },
+                        colors = ChipDefaults.primaryChipColors(backgroundColor = Color(fourth.color)),
+                        modifier = Modifier
+                            .width(90.dp)
+                            //.weight(1f)
+                    )
+                }
             }
         }
     }
-
 }

@@ -52,11 +52,14 @@ import java.util.concurrent.TimeUnit
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import androidx.work.Data
 import androidx.work.ListenableWorker
 import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkInfo
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -85,20 +88,23 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
     }
 
     lateinit var healthTracking : HealthTrackingService
+
+    private lateinit var accelerometerTracker: AccelerometerTracker
+    private lateinit var ecgTracker: ECGTracker
     private lateinit var heartRateTracker: HeartRateTracker
     private lateinit var ppgGreenTracker: PpgGreenTracker
-    private lateinit var ecgTracker: ECGTracker
-    private lateinit var accelerometerTracker: AccelerometerTracker
-    private lateinit var sPO2Tracker: SPO2Tracker
     private lateinit var ppgIRTracker: PpgIRTracker
     private lateinit var ppgRedTracker: PpgRedTracker
-    private lateinit var ppgGreenTrackerListener: PpgGreenTrackerListener
-    private lateinit var heartRateTrackerListener: HeartRateTrackerListener
-    private lateinit var ecgTrackerListener: ECGTrackerListener
+    private lateinit var sPO2Tracker: SPO2Tracker
+
     private lateinit var accelerometerTrackerListener: AccelerometerTrackerListener
-    private lateinit var sPO2TrackerListener: SPO2TrackerListener
+    private lateinit var ecgTrackerListener: ECGTrackerListener
+    private lateinit var heartRateTrackerListener: HeartRateTrackerListener
+    private lateinit var ppgGreenTrackerListener: PpgGreenTrackerListener
     private lateinit var ppgIRTrackerListener: PpgIRTrackerListener
     private lateinit var ppgRedTrackerListener: PpgRedTrackerListener
+    private lateinit var sPO2TrackerListener: SPO2TrackerListener
+
     private lateinit var dataSender: DataSender
 //    private val ppgGreenTrackerListener = PpgGreenTrackerListener(HealthTrackerType.PPG_GREEN, json, db)
 //    private val heartRateTrackerListener = HeartRateTrackerListener(HealthTrackerType.HEART_RATE, json, db)
@@ -108,9 +114,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
 //    private val ppgIRTrackerListener = PpgIRTrackerListener(HealthTrackerType.PPG_IR, json, db)
 //    private val ppgRedTrackerListener = PpgRedTrackerListener(HealthTrackerType.PPG_RED, json, db)
 
-
-
-    private val connectionListener = object : ConnectionListener {
+    val connectionListener = object : ConnectionListener {
         override fun onConnectionSuccess() {
             println("wwwwwwwwwwwwwwwwwwwwwwwwwwwww")
             Log.d("HealthTracker", "Connection success")
@@ -341,21 +345,34 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         return periodicWorkRequest
     }
 
+    private fun setTracker(activeTrackerList: List<Boolean>) {
+        accelerometerTrackerListener.trackerActive = activeTrackerList[0]
+        ecgTrackerListener.trackerActive = activeTrackerList[1]
+        heartRateTrackerListener.trackerActive = activeTrackerList[2]
+        ppgGreenTrackerListener.trackerActive = activeTrackerList[3]
+        ppgIRTrackerListener.trackerActive = activeTrackerList[4]
+        ppgRedTrackerListener.trackerActive = activeTrackerList[5]
+        sPO2TrackerListener.trackerActive = activeTrackerList[6]
+    }
+
 
     @SuppressLint("MutableCollectionMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val lifecycleScope = lifecycleScope
-        ppgGreenTrackerListener = PpgGreenTrackerListener(HealthTrackerType.PPG_GREEN, json, db, lifecycleScope)
-        heartRateTrackerListener = HeartRateTrackerListener(HealthTrackerType.HEART_RATE, json, db, lifecycleScope)
-        ecgTrackerListener = ECGTrackerListener(HealthTrackerType.ECG, json, db, lifecycleScope)
         accelerometerTrackerListener = AccelerometerTrackerListener(HealthTrackerType.ACCELEROMETER, json, db, lifecycleScope)
-        sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2, json, db, lifecycleScope)
+        ecgTrackerListener = ECGTrackerListener(HealthTrackerType.ECG, json, db, lifecycleScope)
+        heartRateTrackerListener = HeartRateTrackerListener(HealthTrackerType.HEART_RATE, json, db, lifecycleScope)
+        ppgGreenTrackerListener = PpgGreenTrackerListener(HealthTrackerType.PPG_GREEN, json, db, lifecycleScope)
         ppgIRTrackerListener = PpgIRTrackerListener(HealthTrackerType.PPG_IR, json, db, lifecycleScope)
         ppgRedTrackerListener = PpgRedTrackerListener(HealthTrackerType.PPG_RED, json, db, lifecycleScope)
+        sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2, json, db, lifecycleScope)
         dataSender = DataSender(db, lifecycleScope, applicationContext)
         requestPermissions(requestedPermissions, 0)
         /*healthTracking = HealthTrackingService(connectionListener, this@MainActivity)*/
+
+        heartRateTrackerListener.trackerActive = activeTrackers[2]
+        Log.i("HEARTRATE IMPORTANT", heartRateTrackerListener.trackerActive.toString())
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.BODY_SENSORS) != PackageManager.PERMISSION_GRANTED) {
             // Request the permission
@@ -370,6 +387,8 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             val activeTrackersState = remember { mutableStateOf(activeTrackers) }
             var currentView by remember { mutableStateOf(ViewType.FirstScreen) }
 
+            setTracker(activeTrackersState.value)
+
             //val labelActivityAnswer = intent.getIntExtra("currentView", 0)
             //currentView = if (labelActivityAnswer == 1) ViewType.StopWatch else currentView
 
@@ -379,7 +398,8 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                         state = timerState,
                         time = stopWatchText,
                         notifications = "0",
-                        onStart = {startRoutine(viewModel, templateDataState.value)},
+                        notificationsMax = "10",
+                        onStart = { startRoutine(viewModel, templateDataState.value) },
                         onReset = {resetRoutine(viewModel)},
                         onEndStudy = {currentView = ViewType.ConfirmActionScreen},
                         isDataCollectionRunning = isDataCollectionRunning1,
@@ -434,10 +454,11 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         viewModel.start()
         WorkManager.getInstance(this).cancelAllWork()
         Log.i("TemplateData", templateData.questions[0].question)
-        val periodicWorkRequest = createNotificationWorker(1, 1, templateData)
+        val periodicWorkRequest = createNotificationWorker(0, 1, templateData)
         WorkManager.getInstance(this).enqueue(periodicWorkRequest)
-        val periodicWorkRequestTheSecond = createNotificationWorker(2, 1, templateData)
-        WorkManager.getInstance(this).enqueue(periodicWorkRequestTheSecond)
+        //val periodicWorkRequestTheSecond = createNotificationWorker(2, 1, templateData)
+        //WorkManager.getInstance(this).enqueue(periodicWorkRequestTheSecond)
+
         getSession()
         startDataCollection()
         startDataSending()
@@ -620,6 +641,10 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                         // Access the parsed data
                         println("Title: ${templateDataInstance.title}")
                         println("Questions: ${templateDataInstance.questions}")
+                        println("Tracker, ${templateDataInstance.acc}" +
+                                ", ${templateDataInstance.ecg}, ${templateDataInstance.hr}" +
+                                ", ${templateDataInstance.ppgG}, ${templateDataInstance.ppgI}" +
+                                ", ${templateDataInstance.ppgR}, ${templateDataInstance.spo2}")
 
                         if (template.isSuccessful) {
                             Log.i("GetTemplateApi1", template.body().toString().trimIndent())
@@ -739,10 +764,12 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         private const val TAG = "MainActivity DataCollection"
     }
 
+
+    //Werte von activeTracker sind irrelevant
     private fun accelerometerOff(){
         activeTrackers[0] = false
-        accelerometerTrackerListener.trackerActive = activeTrackers[0]
-        Log.i("Button", "Acc is " + activeTrackers[0].toString())
+        accelerometerTrackerListener.trackerActive = false
+        Log.i("Button", "Acc is " + false.toString())
     }
 
     private fun accelerometerOn(){
@@ -835,6 +862,7 @@ private fun StopWatch(
     state: TimerState,
     time: String,
     notifications: String,
+    notificationsMax: String,
     onStart: () -> Unit,
     onReset: () -> Unit,
     onEndStudy: () -> Unit,
@@ -884,7 +912,7 @@ private fun StopWatch(
                 modifier = Modifier.align(Alignment.Bottom)
             )
             Text(
-                text = " / 10",
+                text = " / $notificationsMax",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Light,
                 textAlign = TextAlign.Center,
