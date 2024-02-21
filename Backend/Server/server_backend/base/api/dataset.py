@@ -77,7 +77,8 @@ def create_datasets(user_id, role_id, superset_id):
             "table_name": username + '_' + name
         })
         #TODO testen, aber vorher das Problem ungleich user-ids lösen
-        permissions.append(getPermissionID(session, headers, username + '_' + name, dataset.json()['id']))
+        if dataset.status_code == 200:
+            permissions.append(getPermissionID(session, headers, username + '_' + name, dataset.json()['id']))
     session.post(f'{url}/api/v1/security/roles/{role_id}/permissions', headers=headers, json={
         "permission_view_menu_ids": permissions
     })

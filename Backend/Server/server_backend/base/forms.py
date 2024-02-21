@@ -14,8 +14,9 @@ class ExperimentForm(ModelForm):
     :param ModelForm: The base structure for the form.
     """
     title = forms.CharField(required=True, max_length=200, widget=forms.TextInput(attrs={'placeholder': 'Title'}))
-    questions = forms.ModelMultipleChoiceField(queryset=Questions.objects.all(), widget=forms.CheckboxSelectMultiple)
-    watch_id = forms.ModelMultipleChoiceField(queryset=Watch.objects.all(), widget=forms.CheckboxSelectMultiple)
+    question_interval = forms.IntegerField(max_value=30, min_value=10, initial=10, required=True)
+    questions = forms.ModelMultipleChoiceField(queryset=Questions.objects.all(), required=True, widget=forms.CheckboxSelectMultiple)
+    watch_id = forms.ModelMultipleChoiceField(queryset=Watch.objects.all(), required=True, widget=forms.CheckboxSelectMultiple)
     created_by = forms.ModelChoiceField(queryset=Profile.objects.all(), required=False)
     class Meta:
         """This class specifies what model and fields should be used.

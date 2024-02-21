@@ -65,6 +65,7 @@ class Experiment(models.Model):
     sweat_loss = models.BooleanField(default=False)
     # Define the questions, to be asked.
     questions = models.ManyToManyField(Questions)
+    question_interval = models.PositiveIntegerField(default=10)
     # Add a time to keep track of the experiments.
     created_by = models.ForeignKey(Profile, on_delete=models.CASCADE)
     created_at = models.IntegerField(default=time.time(), editable=False)
