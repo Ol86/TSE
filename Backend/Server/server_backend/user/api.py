@@ -1,6 +1,7 @@
 import requests
+from base.api.dataset import create_datasets
 
-def entrypoint(username, password, is_admin):
+def entrypoint(username, password, is_admin, id):
     """Entrypoint for the main api-calls with authorization.
 
     :param test: test
@@ -47,10 +48,9 @@ def entrypoint(username, password, is_admin):
         ],
         "username": username
     })
-
-
-    # TODO: API-Calls mit parameter zum auswählen weche Funktion/methode aufgerufen werden soll.
-    # TODO Brauchen wir die anderen Methoden überhaupt? Kein Zugriff auf die Session und Attribute wie url etc.
+    #TODO die Methode aus dataset.py aufrufen um Datasets zu erstellen. Dafür User id des USers im Backend benötigt.
+    superset_id = session.get(f'{url}/api/v1/security/users')
+    create_datasets(id, role.json()['id'], superset_id.json['count'])
     session.close()
 
 def createPermission(username, session, url):
