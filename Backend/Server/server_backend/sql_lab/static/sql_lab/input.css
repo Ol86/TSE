@@ -7,10 +7,28 @@ body {
     grid-template-areas: 
         "header header header header logout"
         "title title title title title"
-        "question question question question ."
+        ". . answer . database"
+        ". . chatfield copy database"
         "footer footer footer footer footer"
     ;
     grid-gap: 8px;
+}
+
+.database-table {
+    grid-area: database;
+}
+
+.chatfield {
+    grid-area: chatfield;
+}
+
+#processed-text {
+    grid-area: answer;
+}
+
+button {
+    grid-area: copy;
+    width: fit-content;
 }
 
 .logout-button {
@@ -49,97 +67,11 @@ header {
     margin-left: 0;
 }
 
-h1 {
+
+h2 {
     grid-area: title;
 }
 
-#question-title {
-    grid-area: question;
-    width: 100%;
-}
-
-.question {
-    display: block;
-    height: fit-content;
-    margin: 15px 0;
-}
-
-.collapsible {
-    display: contents;
-    cursor: pointer;
-    width: 100%;
-    border: none;
-    text-align: left;
-    outline: none;
-    line-height: 24px;
-    font-weight: 600;
-    font-size: 1.40em;
-    letter-spacing: 0.05em;
-}
-
-ol {
-    margin: 12px 0 0 120px;
-}
-
-.content {
-    padding: 0 18px;
-    display: none;
-    overflow: hidden;
-    line-height: 24px;
-    font-weight: 600;
-    font-size: 1.40em;
-    letter-spacing: 0.05em;
-}
-
-.delete-button {
-    display: inline-block;
-    width: 106px;
-    margin-right: 10px;
-    padding: 12px;
-    text-align: center;
-    background: darkslategray;
-    color: turquoise;
-    cursor: pointer;
-    border-radius: 4px;
-    line-height: 24px;
-    font-weight: 600;
-    font-size: 1.40em;
-    letter-spacing: 0.05em;
-}
-
-.buttonList {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  margin:-5px 0;
-}
-
-.buttonList>a {
-  position: relative;
-  display: block;
-  margin: 5px 0;
-  width: 50px;
-  height: 50px;
-  right: 0px;
-  bottom: 0px;
-  background: darkslategrey;
-  border-radius: 50%;
-  -webkit-transition: .3s ease-out; transition: .3s ease-out;
-  z-index: 2;
-}
-  
-.buttonList>a>i {
-  display: inline-block;
-  width: 100%;
-  line-height: 50px;
-  text-align: center;
-  vertical-align: middle;
-  color: turquoise;
-}
-    
-.buttonList>a:hover {
-  bottom: 5px;
-}
 
 .styled-table thead tr {
     background-color: #009879;

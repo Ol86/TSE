@@ -21,20 +21,24 @@
     </header>
 
     <h2>SQL Laboratory</h2>
-    <form method="post" action="{% url 'sql_lab' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Translate</button>
-    </form>
+    <div class="chatfield">
+        <form method="post" action="{% url 'sql_lab' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Translate</button>
+        </form>
+    </div>
     <br><br>
     <h2>Verarbeiteter Text</h2>
     <p>Input: {{ original_text }}</p>
-    <div id="processed_text">{{ processed_text }}</div>
+    <div id="processed-text">{{ processed_text }}</div>
     <br>
     <button onclick="CopyToClipboard('processed_text');return false;">Copy Text</button>
 
     <br><br>
-    {% include 'sql_lab/database.html' %}
+    <div class="database-table">
+        {% include 'sql_lab/database.html' %}
+    </div>
 {% endblock %}
 
 {% block script %}
