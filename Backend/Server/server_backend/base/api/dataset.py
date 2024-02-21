@@ -6,7 +6,8 @@ import requests
 
     Auf Basis dieser werden nun danach Dashboards erstellt, für die Experimente der Researcher
 """
-#TODO First table normally, seconde doesn not have session_id, third...
+#TODO First table normally, seconde does not have session_id, third...
+#TODO other tables
 table_names = ['base_spo2', 'base_ppg_red', 'base_ppg_ir', 'base_ppg_green', 'base_heart_rate', 
     'base_ecg', 'base_answers', 'base_accelerometer']
 table_connected = ['base_experiment_watch_id', 'base_experiment_questions', 'base_questions']
@@ -55,7 +56,7 @@ def get_sql(name, user_id):
 def create_datasets(user_id):
     session = requests.session()
     headers = get_header(session)
-    username_request = session.get(f'{url}/api/v1/security/users/' + str(user_id), headers=headers)
+    username_request = session.get(f'{url}/api/v1/security/users/' + str(2), headers=headers)
     username = username_request.json()['result']['username']
     for name in table_names:
         sql = get_sql(name, user_id)
@@ -68,7 +69,7 @@ def create_datasets(user_id):
             "is_managed_externally": False,
             "normalize_columns": False,
             "owners": [
-                1       
+                2       
             ],
             "schema": "public",
             "sql": sql,
@@ -97,4 +98,25 @@ def test():
 
     session.close()
 
-create_datasets(1)
+def getPermissionID(session, headers, table_name, table_id):
+    # Default name of the permission "name": "[PostgreSQL].[Guest_base_spo2](id:22)"
+    name = "[PostgreSQL].[" + table_name + "](id:" + str(table_id) + ")"
+    #While schleife bauen, um alle Permissions, ab Permission X durchzugehen und die passende zu finden. 
+    i = 198
+    found = False
+
+    while found == False:
+        i += 1
+        request = session.get(f'{url}/api/v1/security/permissions-resources/{i}', headers=headers)
+        view_menu_name = request.json()['result']['view_menu']['name']
+        if name == view_menu_name:
+            found = True
+    #TODO Vlt lässt sich über die Table id die Permission id berechnen
+
+    return i
+
+
+#TODIO USer ID in Backen is different to USerID in SUperset
+session = requests.session()
+print(getPermissionID(session, get_header(session), 'Guest_base_spo2', 22))
+session.close()
