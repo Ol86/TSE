@@ -28,7 +28,7 @@ class Questions(models.Model):
     # Answer 4
     button4 = models.BooleanField(default=True)
     button4_text = models.CharField(max_length=50, null=True, blank=True)
-    created_at = models.IntegerField(default=time.time())
+    created_at = models.IntegerField(default=time.time(), editable=False)
 
     class Meta:
         """This class defines the ordering of the database table.
@@ -67,7 +67,7 @@ class Experiment(models.Model):
     questions = models.ManyToManyField(Questions)
     # Add a time to keep track of the experiments.
     created_by = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    created_at = models.IntegerField(default=time.time())
+    created_at = models.IntegerField(default=time.time(), editable=False)
 
     class Meta:
         """This class defines the ordering of the database table.
