@@ -56,7 +56,7 @@ def get_sql(name, user_id):
 def create_datasets(user_id, role_id, superset_id):
     session = requests.session()
     headers = get_header(session)
-    username_request = session.get(f'{url}/api/v1/security/users/' + str(2), headers=headers)
+    username_request = session.get(f'{url}/api/v1/security/users/' + str(superset_id), headers=headers)
     username = username_request.json()['result']['username']
     permissions = []
     for name in table_names:
@@ -70,18 +70,19 @@ def create_datasets(user_id, role_id, superset_id):
             "is_managed_externally": False,
             "normalize_columns": False,
             "owners": [
-                2       
+                1, superset_id       
             ],
             "schema": "public",
             "sql": sql,
             "table_name": username + '_' + name
         })
         #TODO testen, aber vorher das Problem ungleich user-ids lösen
-        permissions.add(getPermissionID(session, headers, name, dataset.json()[id]))
+        permissions.append(getPermissionID(session, headers, username + '_' + name, dataset.json()['id']))
     session.post(f'{url}/api/v1/security/roles/{role_id}/permissions', headers=headers, json={
-        "permission_view_menu_ids": permissions.json()
+        "permission_view_menu_ids": permissions
     })
     #TODO bereits existierende Rollen
+    session.close()
 
 sql_test = "Select * FROM base_ppg_green WHERE session_id IN (SELECT base_session.id as session_id FROM base_session JOIN base_experiment ON base_experiment.id = base_session.experiment_id WHERE created_by_id = 1)"
 
@@ -124,6 +125,4 @@ def getPermissionID(session, headers, table_name, table_id):
 
 
 #TODIO USer ID in Backen is different to USerID in SUperset
-session = requests.session()
-print(getPermissionID(session, get_header(session), 'Guest_base_spo2', 22))
-session.close()
+create_datasets(9, 7, 3)
