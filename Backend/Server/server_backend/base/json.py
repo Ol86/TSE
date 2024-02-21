@@ -59,7 +59,7 @@ def insertEcgData(data):
             max_threshold=ecg["maxThreshold"],
             sequence=ecg["sequence"],
             min_threshold=ecg["minThreshold"],
-            time=ecg["time"]
+            time=int(ecg["time"])/1000
         )
         line.save()
 
@@ -73,7 +73,7 @@ def insertHeartrateData(data):
     for hr in data["data"]["heartrate"]:
         line = Heart_Rate(
             session=session,
-            time=hr["time"],
+            time=int(hr["time"])/1000,
             hr=hr["hr"],
             hr_status=hr["hr_status"],
             ibi=hr["ibi"],
@@ -92,7 +92,7 @@ def insertSPO2Data(data):
         line = SPO2(
             spo2=spo2["spo2"],
             session=session,
-            time=spo2["time"],
+            time=int(spo2["time"])/1000,
             heartrate=spo2["heartRate"],
             status=spo2["spo2"]
         )
@@ -108,7 +108,7 @@ def insertAccelerometerData(data):
     for accelerometer in data["data"]["accelerometer"]:
         line = Accelerometer(
             session=session,
-            time=accelerometer["time"],
+            time=int(accelerometer["time"])/1000,
             x=accelerometer["x"],
             y=accelerometer["y"],
             z=accelerometer["z"]
@@ -126,7 +126,7 @@ def insertPPGIRData(data):
         line = PPG_IR(
             ppg_ir=ppgir["ppgir"],
             session=session,
-            time=ppgir["time"]
+            time=int(ppgir["time"])/1000
         )
         line.save()
 
@@ -141,7 +141,7 @@ def insertPPGRedData(data):
         line = PPG_Red(
             ppg_red=ppgred["ppgred"],
             session=session,
-            time=ppgred["time"]
+            time=int(ppgred["time"])/1000
         )
         line.save()
 
@@ -156,7 +156,7 @@ def insertPPGGreenData(data):
         line = PPG_Green(
             ppg_green=ppggreen["ppggreen"],
             session=session,
-            time=ppggreen["time"]
+            time=int(ppggreen["time"])/1000
         )
         line.save()
 
@@ -169,6 +169,6 @@ def insertAnswers(data):
             experiment=session.experiment,
             session=session,
             answer=answer["answer"],
-            time=answer["time"]
+            time=int(answer["time"])/1000
         )
         line.save()
