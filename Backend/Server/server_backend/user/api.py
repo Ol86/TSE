@@ -48,8 +48,8 @@ def entrypoint(username, password, is_admin, id):
         ],
         "username": username
     })
-    #TODO die Methode aus dataset.py aufrufen um Datasets zu erstellen. Dafür User id des USers im Backend benötigt.
-    superset_id = session.get(f'{url}/api/v1/security/users')
+    #TODO sollte ein User gelöscht werden, kann es hier zu Probleme kommen. Vlt eigene Methode machen die usernames vergleicht
+    superset_id = session.get(f'{url}/api/v1/security/users') 
     create_datasets(id, role.json()['id'], superset_id.json['count'])
     session.close()
 
@@ -58,8 +58,6 @@ def createPermission(username, session, url):
 
 def createUser(username, password, permission, is_admin, session):
     return True
-
-# Man kann bei Datasets einen Owner hinzufügen--- vielleicht noch besser als die Roles
 
 
 
@@ -99,5 +97,4 @@ Bei Swagger V1 gibt es einen Block mit Security Permissions und Security Permiss
 Man kann einer Role permissions über die Permission id hinzufügen.
 Die Permission ID bekommt man durch ***
 Idee 1: Die Permissions abrufen mit get methode und vergleichen.
-Idee 2: Globale Variable die hochzählt
 """
