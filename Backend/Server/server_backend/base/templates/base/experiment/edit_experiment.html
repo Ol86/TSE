@@ -7,14 +7,14 @@
 
 {% block title %}
     <title>
-        Create Experiment
+        Edit Experiment
     </title>
 {% endblock %}
 
 {% block content %}
-    <a id="quit" href="{% url 'experiments' %}">quit</a>
+    <a id="quit" href="{{request.META.HTTP_REFERER}}">quit</a>
     <form class="creationForm" method="POST" action="" >
-        <h2> Create Experiment</h2>
+        <h2> Edit Experiment</h2>
         <div class="formElements">
             {% csrf_token %}
             {{ form.title }}

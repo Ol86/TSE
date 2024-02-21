@@ -12,10 +12,14 @@ urlpatterns = [
     path('login/', views.loginPage, name="login"),
     # This url sends the user to the logoutpage.
     path('logout/', views.logoutUser, name="logout"),
+    # This url sends the user to the experiments page.
+    path('experiments/', views.experiments, name="experiments"),
     # This url sends the user to the specified experiment pages.
     path('experiment/<str:pk>/', views.experiment, name="experiment"),
     # This url sends the user to the creation page of a new experiment.
     path('create/experiment/', views.createExperiment, name="create-experiment"),
+    # This url sends the user to the edit page of a new experiment.
+    path('edit/experiment/<str:pk>/', views.editExperiment, name="edit-experiment"),
     # This url sends the user to the deletion page of an experiment.
     path('delete/experiment/<str:pk>/', views.deleteExperiment, name="delete-experiment"),
     # This url sends the user to the questionpage.
