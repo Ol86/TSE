@@ -70,9 +70,19 @@ def home(request):
     :param request: The request of the page and the user.
     :return: The function returns the resulting webpage.
     """     
+    context = {}             
+    return render(request, 'base/home.html', context)   #siehe templates/base/home.html
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
+@login_required(login_url='login')
+def experiments(request):
+    """ This function handle the generation of the homepage to display the latest experiments.
+
+    :param request: The request of the page and the user.
+    :return: The function returns the resulting webpage.
+    """     
     experiments = Experiment.objects.filter(created_by=request.user.id).order_by('-id')[:10]
     context = {'experiments': experiments}              #gibt unserer home.html die Experimente
-    return render(request, 'base/home.html', context)   #siehe templates/base/home.html
+    return render(request, 'base/experiment/experiments.html', context) #siehe templates/base/experiment/experiments.html
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 @login_required(login_url='login')
@@ -105,7 +115,7 @@ def createExperiment(request):
             edit.created_by = current_profile
             edit.save()
             form.save_m2m()
-            return redirect('home')
+            return redirect('experiments')
 
     context = {'form': form}
     return render(request, 'base/experiment/create_experiment.html', context)
@@ -123,8 +133,30 @@ def deleteExperiment(request, pk):
     experiment = Experiment.objects.get(id=pk)
     if request.method == 'POST':
         experiment.delete()
-        return redirect('home')
+        return redirect('experiments')
     return render(request, 'base/experiment/delete_experiment.html', {'experiment': experiment})
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
+@login_required(login_url='login')
+def editExperiment(request, pk):
+    """ This function handles the edit of an experiment.
+
+    :param request: It handles the request to edit an experiment and update the database.
+    :return: This function returns the same page before edit was clicked, 
+    or it redirects the user to the experimentpage if the edit of an experiment was successful.
+    """
+    experiment = Experiment.objects.get(id=pk)
+    form = ExperimentForm(instance=experiment)
+    current_profile = Profile.objects.get(user=request.user.id)
+    if request.method == 'POST':
+        form = ExperimentForm(request.POST, instance=experiment)
+        if form.is_valid():
+            edit = form.save(commit=False)
+            edit.created_by = current_profile
+            edit.save()
+            form.save_m2m()
+            return redirect('experiments')
+    context = {'form': form}
+    return render(request, 'base/experiment/edit_experiment.html', context)
 
 # --------------------------------------------------------------------------------------------------- #
 # TODO: Add comment
