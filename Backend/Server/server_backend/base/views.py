@@ -15,6 +15,8 @@ from rest_framework.authtoken.models import Token
 # Json to encrypt and decrypt json into dictionarys to work with.
 import json
 
+from datetime import datetime
+
 # Methods to guid the user.
 from django.shortcuts import render, redirect
 
