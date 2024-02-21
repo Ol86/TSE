@@ -70,7 +70,7 @@ def create_datasets(user_id, role_id, superset_id):
             "is_managed_externally": False,
             "normalize_columns": False,
             "owners": [
-                1, superset_id       
+                superset_id       
             ],
             "schema": "public",
             "sql": sql,
@@ -123,7 +123,3 @@ def getPermissionID(session, headers, table_name, table_id):
     #TODO Vlt lässt sich über die Table id die Permission id berechnen
 
     return i
-
-
-#TODIO USer ID in Backen is different to USerID in SUperset
-create_datasets(9, 7, 3)
