@@ -52,12 +52,13 @@ def get_sql(name, user_id):
     sql = "Select * FROM " + name + " WHERE session_id IN (SELECT base_session.id as session_id FROM base_session JOIN base_experiment ON base_experiment.id = base_session.experiment_id WHERE created_by_id = " + str(user_id) + ")"
     return sql
 
-
-def create_datasets(user_id):
+#TODO ohne Session machen und Session aus api.py nutzen
+def create_datasets(user_id, role_id, superset_id):
     session = requests.session()
     headers = get_header(session)
     username_request = session.get(f'{url}/api/v1/security/users/' + str(2), headers=headers)
     username = username_request.json()['result']['username']
+    permissions = []
     for name in table_names:
         sql = get_sql(name, user_id)
         
@@ -75,6 +76,12 @@ def create_datasets(user_id):
             "sql": sql,
             "table_name": username + '_' + name
         })
+        #TODO testen, aber vorher das Problem ungleich user-ids lösen
+        permissions.add(getPermissionID(session, headers, name, dataset.json()[id]))
+    session.post(f'{url}/api/v1/security/roles/{role_id}/permissions', headers=headers, json={
+        "permission_view_menu_ids": permissions.json()
+    })
+    #TODO bereits existierende Rollen
 
 sql_test = "Select * FROM base_ppg_green WHERE session_id IN (SELECT base_session.id as session_id FROM base_session JOIN base_experiment ON base_experiment.id = base_session.experiment_id WHERE created_by_id = 1)"
 
@@ -97,11 +104,11 @@ def test():
     })
 
     session.close()
-
+#TODO muss vielleicht nur einmal aufgerufen werden, danach +1 auf die INdizes -> Gefahr bei Parallelerstellung
 def getPermissionID(session, headers, table_name, table_id):
     # Default name of the permission "name": "[PostgreSQL].[Guest_base_spo2](id:22)"
     name = "[PostgreSQL].[" + table_name + "](id:" + str(table_id) + ")"
-    #While schleife bauen, um alle Permissions, ab Permission X durchzugehen und die passende zu finden. 
+    # While schleife bauen, um alle Permissions, ab Permission X durchzugehen und die passende zu finden. 
     i = 198
     found = False
 

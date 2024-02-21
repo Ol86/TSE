@@ -70,7 +70,8 @@ def registerUser(response):
             #TODO: is_admin
             
             #TODO: Add entripoint method.
-            entrypoint(username, password, True)
+            id = Profile.objects.last().user.id
+            entrypoint(username, password, True, id)
 
             user = authenticate(username=username, password=password)
             login(response, user)
