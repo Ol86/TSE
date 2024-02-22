@@ -27,6 +27,7 @@ def returnExperimentInfo(experiment, watch_id):
     current_watch.append({'name': watch.user.username, 'watch': watch.serialnumber})
     result = {
         'id': experiment["id"],
+        'max_time': experiment["max_time"],
         'title': experiment["title"],
         'watches': current_watch,
         'acc': experiment["accelerometer"],
@@ -39,6 +40,7 @@ def returnExperimentInfo(experiment, watch_id):
         'spo2': experiment["spo2"],
         'swl': experiment["sweat_loss"],
         'created_at': experiment["created_at"],
+        'question_interval': experiment["question_interval"],
         'questions': questions
     }
     return result
