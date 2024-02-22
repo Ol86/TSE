@@ -3,12 +3,12 @@ body {
     padding: 16px;
     display: grid;
     grid-template-columns: 130px auto auto auto 130px;
-    grid-template-rows: 50px 80px auto 50px;
+    grid-template-rows: 50px 80px 80px 50px;
     grid-template-areas: 
         "header header header header logout"
         "title title title title title"
-        ". . answer . database"
-        ". . chatfield copy database"
+        ". . answer database database"
+        ". . chatfield database database"
         "footer footer footer footer footer"
     ;
     grid-gap: 8px;
@@ -24,10 +24,11 @@ body {
 
 #processed-text {
     grid-area: answer;
+    display: inline-block
 }
 
 button {
-    grid-area: copy;
+    grid-area: chatfield;
     width: fit-content;
 }
 
