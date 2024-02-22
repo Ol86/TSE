@@ -51,6 +51,7 @@ class Experiment(models.Model):
     """
     id = models.AutoField(auto_created=True, primary_key=True)
     title = models.CharField(max_length=200)
+    max_time = models.IntegerField(default=0)
     # Add watches to the experiment.
     watch_id = models.ManyToManyField(Watch)
     # Enable the different sensors.
