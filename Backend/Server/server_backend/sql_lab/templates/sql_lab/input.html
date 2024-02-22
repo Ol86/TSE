@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block style %}
-    <link rel="stylesheet" href="{% static 'base/question/questions.css' %}"/>
+    <link rel="stylesheet" href="{% static 'sql_lab/input.css' %}"/>
 {% endblock %}
 
 {% block title %}
@@ -14,19 +14,21 @@
 {% block content %}
     <a class="logout-button" href="{% url 'logout' %}">Logout</a>
     <header>
-        <a class="creation-buttons" href="{% url 'home' %}">Experiments</a>
+        <a class="creation-buttons" href="{% url 'experiments' %}">Experiments</a>
         <a class="creation-buttons" href="{% url 'questions' %}">Questions</a>
         <a class="creation-buttons" href="{% url 'watches' %}">Watches</a>
         <a class="creation-buttons" href="{% url 'sql_lab' %}">SQL Laboratory</a>
     </header>
     <h2>SQL Laboratory</h2>
-    <form method="post" action="{% url 'sql_lab' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Translate</button>
-    </form>
+    <div class="chatfield">
+        <form method="post" action="{% url 'sql_lab' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Translate</button>
+        </form>
+    </div>
     <br><br>
-    <div>
+    <div class="database-table">
         {% include 'sql_lab/database.html' %}
     </div>
 {% endblock %}

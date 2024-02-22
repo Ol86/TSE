@@ -1,0 +1,102 @@
+body {
+    margin: 0;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 130px auto auto auto 130px;
+    grid-template-rows: 50px 80px auto 50px;
+    grid-template-areas: 
+        "header header header header logout"
+        "title title title title title"
+        ". . answer . database"
+        ". . chatfield copy database"
+        "footer footer footer footer footer"
+    ;
+    grid-gap: 8px;
+}
+
+.database-table {
+    grid-area: database;
+}
+
+.chatfield {
+    grid-area: chatfield;
+}
+
+#processed-text {
+    grid-area: answer;
+}
+
+button {
+    grid-area: copy;
+    width: fit-content;
+}
+
+.logout-button {
+    grid-area: logout;
+    text-align: center;
+    height: fit-content;
+    padding: 12px;
+    background: darkslategray;
+    color: turquoise;
+    font-weight: 600;
+    font-size: 1.35em;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+header {
+    grid-area: header;
+}
+
+.creation-buttons {
+    display: inline-block;
+    width: fit-content;
+    margin: 0 4px;
+    padding: 12px;
+    background: darkslategray;
+    color: turquoise;
+    font-weight: 600;
+    font-size: 1.35em;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.creation-buttons:first-child {
+    margin-left: 0;
+}
+
+
+h2 {
+    grid-area: title;
+}
+
+
+.styled-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+
+.styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
+}
