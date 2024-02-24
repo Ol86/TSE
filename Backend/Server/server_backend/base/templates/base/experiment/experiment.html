@@ -18,7 +18,10 @@
     <div id="experimentBody">
         <h1>{{experiment.title}}</h1>
         <p>
-            Watchid: {{experiment.watch_id}} <br>
+            Watchid: {% for watch_id in experiment.watch_id.all %}
+            <li>{{ watch_id }}</li>
+            {% endfor %} <br>
+            Max time: {{experiment.max_time}}
         </p>    
         <table>
             <tr>
@@ -52,7 +55,9 @@
                 <td>{{experiment.sweat_loss}}</td>
             </tr>
         </table>
-        <p> Questions: {% for questions in experiment.questions.all %}
+        <p> 
+            Question interval: {{experiment.question_interval}} <br>
+            Questions: {% for questions in experiment.questions.all %}
             <li>{{ questions }}</li>
             {% endfor %} <br>
             Created by: {{experiment.created_by}} <br>

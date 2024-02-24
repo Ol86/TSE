@@ -49,17 +49,9 @@ def entrypoint(username, password, is_admin, id):
         "username": username
     })
     #TODO sollte ein User gelöscht werden, kann es hier zu Probleme kommen. Vlt eigene Methode machen die usernames vergleicht
-    superset_id = session.get(f'{url}/api/v1/security/users') 
-    create_datasets(id, role.json()['id'], superset_id.json['count'])
+    superset_id = session.get(f'{url}/api/v1/security/users', headers=headers).json()
+    create_datasets(id, role.json()['id'], superset_id['count'])
     session.close()
-
-def createPermission(username, session, url):
-    return True
-
-def createUser(username, password, permission, is_admin, session):
-    return True
-
-
 
 """
 Next Steps:
