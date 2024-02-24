@@ -44,12 +44,13 @@ main {
     margin: 0;
     grid-area: main;
     display: grid;
-    grid-template-columns: auto;
+    grid-template-columns: auto 150px;
     grid-template-rows: auto;
     grid-template-areas:
-        "database"
-        "input"
-        "submit"
+        "database database"
+        "form form"
+        "given given"
+        "result copy"
     ;
     grid-gap: 8px;
 
@@ -57,6 +58,10 @@ main {
 
 .database-table {
     grid-area: database;
+}
+
+form {
+    grid-area: form;
 }
 
 #submit {
@@ -71,11 +76,18 @@ main {
     cursor: pointer;
 }
 
+.given {
+    grid-area: given;
+}
+
+#processed-text {
+    grid-area: result;
+}
+
 .logout-button {
     grid-area: logout;
     text-align: center;
-    height: fit-content;
-    padding: 12px;
+    padding: 20px 10px;
     background: darkslategray;
     color: turquoise;
     font-weight: 600;
@@ -85,7 +97,7 @@ main {
     border-radius: 4px;
 }
 
-input {
+input, button {
     margin: 10px 0;
     width: 100%;
     background: #333333;
@@ -98,6 +110,15 @@ input {
     font-size: 1em;
 }
 
+.copy {
+    grid-area: copy;
+    background: darkslategray;
+    color: turquoise;
+    font-weight: 600;
+    font-size: 1.35em;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+}
 
 .styled-table thead tr {
     background-color: #009879;

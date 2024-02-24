@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block style %}
-    <link rel="stylesheet" href="{% static 'sql_lab/input.css' %}"/>
+    <link rel="stylesheet" href="{% static 'sql_lab/result.css' %}"/>
 {% endblock %}
 
 {% block title %}
@@ -19,38 +19,33 @@
         <a class="creation-buttons" href="{% url 'watches' %}">Watches</a>
         <a class="creation-buttons" href="{% url 'sql_lab' %}">SQL Laboratory</a>
     </header>
-
     <h2>SQL Laboratory</h2>
-    <div class="chatfield">
+    <main>
+        <div class="database-table">
+            {% include 'sql_lab/database.html' %}
+        </div>
         <form method="post" action="{% url 'sql_lab' %}">
+            <h3 id="formHeader">SQL-request</h3>
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Translate</button>
+            {{ form.content }}
+            <input id="submit" type="submit" value="Translate"/>
         </form>
-    </div>
-    <br><br>
-    <h2>Verarbeiteter Text</h2>
-    <p>Input: {{ original_text }}</p>
-    <div id="processed-text">{{ processed_text }}</div>
-    <br>
-    <button onclick="CopyToClipboard('processed_text');return false;">Copy Text</button>
-
-    <br><br>
-    <div class="database-table">
-        {% include 'sql_lab/database.html' %}
-    </div>
-{% endblock %}
+        <div class="given">
+            <h3>Verarbeiteter Text</h3>
+            <input type="text" readonly value="{{ original_text }}"/>
+        </div>
+        <input id="processed-text" type="text" readonly value="{{ processed_text }}"/>
+        <button class="copy" onclick="CopyToClipboard();">Copy Text</button>
+    </main>
+    {% endblock %}
 
 {% block script %}
     <script>
-        function CopyToClipboard(id)
-        {
-        var r = document.createRange();
-        r.selectNode(document.getElementById(id));
-        window.getSelection().removeAllRanges();
-        window.getSelection().addRange(r);
-        document.execCommand('copy');
-        window.getSelection().removeAllRanges();
+        function CopyToClipboard() {
+            var copyText = document.getElementById("processed-text");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value)
         }
     </script>
 {% endblock %}
