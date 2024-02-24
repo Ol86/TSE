@@ -157,7 +157,3 @@ def getPermissionID(session, headers, table_name, table_id):
     #TODO Vlt lässt sich über die Table id die Permission id berechnen
 
     return i
-session = requests.session()
-p = []
-create_three(p, 1, 1, session, get_header(session), 'admin')
-session.close
