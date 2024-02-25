@@ -13,7 +13,7 @@
 {% block content %}
     <header>
         <a class="header-button" href="{% url 'edit-experiment' experiment.id %}">edit</a>
-        <a class="header-button" href="{{request.META.HTTP_REFERER}}">quit</a>
+        <a class="header-button" href="{% url 'experiments' %}">quit</a>
     </header>
     <div id="experimentBody">
         <h1>{{experiment.title}}</h1>

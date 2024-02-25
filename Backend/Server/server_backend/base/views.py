@@ -288,7 +288,8 @@ def createSession(request):
         
         session = Session(
             experiment=Experiment.objects.get(id=experiment[last_experiment_index]["id"]), 
-            watch_id=Watch.objects.get(user=token.user.id)
+            watch_id=Watch.objects.get(user=token.user.id),
+            created_at=int(time.time())
         )
         session.save()
 
