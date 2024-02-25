@@ -47,23 +47,23 @@ class LabelActivity : ComponentActivity() {
         }
     }
 
-    fun insertAffect(id: Long, affect: String) {
+    fun insertAffect(id: Long, affect: String, question: String) {
         UserDataStore
             .getUserRepository(applicationContext)
             .insertAffect(
                 lifecycleScope,
-                AffectData(0, id, affect)
+                AffectData(0, id,  affect, question)
             ) {
                 //finish()
                 Log.v("success", "This actually worked")
             }
     }
-    fun insertContext(id: Long, affect: String) {
+    fun insertContext(id: Long, affect: String, question: String) {
         UserDataStore
             .getUserRepository(applicationContext)
             .insertAffect(
                 lifecycleScope,
-                AffectData(0, id, affect)
+                AffectData(0, id, affect, question)
             ) {
                 finish()
 
@@ -111,13 +111,14 @@ class LabelActivity : ComponentActivity() {
                         func = {
                             if (numberOfQuestions > 1) {
                                 Log.i("NUMBER", questions.size.toString())
+                                insertAffect(notificationTimeId, "1", questions[0].id.toString())
                                 Log.i("Questions", questions.toString())
                                 navController.navigate("Question_2")
                             }
                             else {
                                 Log.i("NUMBER", questions.size.toString())
                                 Log.i("Questions", questions.toString())
-                                insertContext(notificationTimeId, questions[0].button1_text)
+                                insertContext(notificationTimeId, "1", questions[0].id.toString())
                             }
                         }),
                     second = LabelButton(
@@ -125,10 +126,11 @@ class LabelActivity : ComponentActivity() {
                         blueButton,
                         func = {
                             if (numberOfQuestions > 1) {
+                                insertAffect(notificationTimeId, "2", questions[0].id.toString())
                                 navController.navigate("Question_2")
                             }
                             else {
-                                insertContext(notificationTimeId, questions[0].button2_text)
+                                insertContext(notificationTimeId, "2", questions[0].id.toString())
                             }
                         }),
                     third = LabelButton(
@@ -136,10 +138,11 @@ class LabelActivity : ComponentActivity() {
                         greenButton,
                         func = {
                             if (numberOfQuestions > 1) {
+                                insertAffect(notificationTimeId, "3", questions[0].id.toString())
                                 navController.navigate("Question_2")
                             }
                             else {
-                                insertContext(notificationTimeId, questions[0].button3_text)
+                                insertContext(notificationTimeId, "3", questions[0].id.toString())
                             }
                         }),
                     fourth = LabelButton(
@@ -147,10 +150,11 @@ class LabelActivity : ComponentActivity() {
                         yellowButton,
                         func = {
                             if (numberOfQuestions > 1) {
+                                insertAffect(notificationTimeId, "4", questions[0].id.toString())
                                 navController.navigate("Question_2")
                             }
                             else {
-                                insertContext(notificationTimeId, questions[0].button4_text)
+                                insertContext(notificationTimeId, "4", questions[0].id.toString())
                             }
                         }),
                     question = questions[0].question,
@@ -170,11 +174,11 @@ class LabelActivity : ComponentActivity() {
                         redButton,
                         func = {
                             if (numberOfQuestions > 2) {
+                                insertAffect(notificationTimeId, "1", questions[1].id.toString())
                                 navController.navigate("kontext")
-                                insertAffect(notificationTimeId, questions[1].button1_text)
                             }
                             else {
-                                insertContext(notificationTimeId, questions[1].button1_text)
+                                insertContext(notificationTimeId, "1", questions[1].id.toString())
                             }
                         }),
                     second = LabelButton(
@@ -182,11 +186,11 @@ class LabelActivity : ComponentActivity() {
                         redButton,
                         func = {
                             if (numberOfQuestions > 2) {
+                                insertAffect(notificationTimeId, "2", questions[1].id.toString())
                                 navController.navigate("kontext")
-                                insertAffect(notificationTimeId, questions[1].button2_text)
                             }
                             else {
-                                insertContext(notificationTimeId, questions[1].button2_text)
+                                insertContext(notificationTimeId, "2", questions[1].id.toString())
                             }
                         }),
                     third = LabelButton(
@@ -194,11 +198,11 @@ class LabelActivity : ComponentActivity() {
                         redButton,
                         func = {
                             if (numberOfQuestions > 2) {
+                                insertAffect(notificationTimeId, "3", questions[1].id.toString())
                                 navController.navigate("kontext")
-                                insertAffect(notificationTimeId, questions[1].button3_text)
                             }
                             else {
-                                insertContext(notificationTimeId, questions[1].button3_text)
+                                insertContext(notificationTimeId, "3", questions[1].id.toString())
                             }
                         }),
                     fourth = LabelButton(
@@ -206,11 +210,11 @@ class LabelActivity : ComponentActivity() {
                         redButton,
                         func = {
                             if (numberOfQuestions > 2) {
+                                insertAffect(notificationTimeId, "4", questions[1].id.toString())
                                 navController.navigate("kontext")
-                                insertAffect(notificationTimeId, questions[1].button4_text)
                             }
                             else {
-                                insertContext(notificationTimeId, questions[1].button4_text)
+                                insertContext(notificationTimeId, "4", questions[1].id.toString())
                             }
                         }),
                     question = questions[1].question,
@@ -396,11 +400,11 @@ class LabelActivity : ComponentActivity() {
                         contextButton,
                         func = {
                             if (numberOfQuestions > 3) {
+                                insertAffect(notificationTimeId, "1", questions[2].id.toString())
                                 navController.navigate("Question_4")
-                                insertAffect(notificationTimeId, questions[2].button1_text)
                             }
                             else {
-                                insertContext(notificationTimeId, questions[2].button1_text)
+                                insertContext(notificationTimeId,"1", questions[2].id.toString())
                             }
                         }),
                     second = LabelButton(
@@ -408,11 +412,11 @@ class LabelActivity : ComponentActivity() {
                         contextButton,
                         func = {
                             if (numberOfQuestions > 3) {
+                                insertAffect(notificationTimeId, "2", questions[2].id.toString())
                                 navController.navigate("Question_4")
-                                insertAffect(notificationTimeId, questions[2].button2_text)
                             }
                             else {
-                                insertContext(notificationTimeId, questions[2].button2_text)
+                                insertContext(notificationTimeId, "2", questions[2].id.toString())
                             }
                         }),
                     third = LabelButton(
@@ -420,11 +424,12 @@ class LabelActivity : ComponentActivity() {
                         contextButton,
                         func = {
                             if (numberOfQuestions > 3) {
+                                insertAffect(notificationTimeId, "3", questions[2].id.toString())
                                 navController.navigate("Question_4")
-                                insertAffect(notificationTimeId, questions[2].button3_text)
+
                             }
                             else {
-                                insertContext(notificationTimeId, questions[2].button3_text)
+                                insertContext(notificationTimeId, "3", questions[2].id.toString())
                             }
                         }),
                     fourth = LabelButton(
@@ -432,11 +437,11 @@ class LabelActivity : ComponentActivity() {
                         contextButton,
                         func = {
                             if (numberOfQuestions > 3) {
+                                insertAffect(notificationTimeId, "4", questions[2].id.toString())
                                 navController.navigate("Question_4")
-                                insertAffect(notificationTimeId, questions[2].button4_text)
                             }
                             else {
-                                insertContext(notificationTimeId, questions[2].button4_text)
+                                insertContext(notificationTimeId, "4", questions[2].id.toString())
                             }
                         }),
                     question = questions[2].question,
@@ -456,11 +461,12 @@ class LabelActivity : ComponentActivity() {
                         yellowButton,
                         func = {
                             if (numberOfQuestions > 4) {
+                                insertAffect(notificationTimeId, "1", questions[3].id.toString())
                                 navController.navigate("Question_5")
-                                insertAffect(notificationTimeId, questions[3].button1_text)
+
                             }
                             else {
-                                insertContext(notificationTimeId, questions[3].button1_text)
+                                insertContext(notificationTimeId, "1", questions[3].id.toString())
                             }
                         }),
                     second = LabelButton(
@@ -468,11 +474,12 @@ class LabelActivity : ComponentActivity() {
                         yellowButton,
                         func = {
                             if (numberOfQuestions > 4) {
+
+                                insertAffect(notificationTimeId, "2", questions[3].id.toString())
                                 navController.navigate("Question_5")
-                                insertAffect(notificationTimeId, questions[3].button2_text)
                             }
                             else {
-                                insertContext(notificationTimeId, questions[3].button2_text)
+                                insertContext(notificationTimeId, "2", questions[3].id.toString())
                             }
                         }),
                     third = LabelButton(
@@ -480,11 +487,12 @@ class LabelActivity : ComponentActivity() {
                         yellowButton,
                         func = {
                             if (numberOfQuestions > 4) {
+                                insertAffect(notificationTimeId, "3", questions[3].id.toString())
                                 navController.navigate("Question_5")
-                                insertAffect(notificationTimeId, questions[3].button4_text)
+
                             }
                             else {
-                                insertContext(notificationTimeId, questions[3].button4_text)
+                                insertContext(notificationTimeId, "3", questions[3].id.toString())
                             }
                         }),
                     fourth = LabelButton(
@@ -492,11 +500,12 @@ class LabelActivity : ComponentActivity() {
                         yellowButton,
                         func = {
                             if (numberOfQuestions > 4) {
+                                insertAffect(notificationTimeId, "4", questions[3].id.toString())
                                 navController.navigate("Question_5")
-                                insertAffect(notificationTimeId, questions[3].button4_text)
+
                             }
                             else {
-                                insertContext(notificationTimeId, questions[3].button4_text)
+                                insertContext(notificationTimeId, "4", questions[3].id.toString())
                             }
                         }),
                     question = questions[3].question,
@@ -514,19 +523,19 @@ class LabelActivity : ComponentActivity() {
                     first = LabelButton(
                         questions[4].button1_text,
                         contextButton,
-                        func = { insertContext(notificationTimeId, questions[4].button1_text) }),
+                        func = { insertContext(notificationTimeId, "1", questions[4].id.toString()) }),
                     second = LabelButton(
                         questions[4].button2_text,
                         contextButton,
-                        func = { insertContext(notificationTimeId, questions[4].button2_text) }),
+                        func = { insertContext(notificationTimeId, "2", questions[4].id.toString()) }),
                     third = LabelButton(
                         questions[4].button3_text,
                         contextButton,
-                        func = { insertContext(notificationTimeId, questions[4].button3_text) }),
+                        func = { insertContext(notificationTimeId, "3", questions[4].id.toString()) }),
                     fourth = LabelButton(
                         questions[4].button4_text,
                         contextButton,
-                        func = { insertContext(notificationTimeId, questions[4].button4_text)}),
+                        func = { insertContext(notificationTimeId, "4", questions[4].id.toString())}),
 
                     question = questions[4].question,
                     buttonVisibility = listOf(questions[4].button1, questions[4].button2,

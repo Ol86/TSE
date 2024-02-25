@@ -95,7 +95,7 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
                     affect =
                         UserDataStore.getUserRepository(context).affectDao.getAffectDataByID(element.id).affect
                     questionid =
-                        UserDataStore.getUserRepository(context).affectDao.getAffectDataByID(element.id).notification_id.toString()
+                        UserDataStore.getUserRepository(context).affectDao.getAffectDataByID(element.id).question
                     time =
                         UserDataStore.getUserRepository(context).notificationDao.getNotificationDataByID(
                             UserDataStore.getUserRepository(context).affectDao.getAffectDataByID(
@@ -136,21 +136,20 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
     }
 
         private fun connectApi(){
-            val timeoutSeconds = 10// Set your desired timeout value in seconds
+            /*val timeoutSeconds = 10// Set your desired timeout value in seconds
             val client = OkHttpClient.Builder()
                 .readTimeout(timeoutSeconds.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(timeoutSeconds.toLong(), TimeUnit.SECONDS)
-                .build()
+                .build()*/
             Log.i("sendDataApi0001", "Testing Timeout fix")
             val thread = Thread {
                 try {
                     Log.i("APImessage", "Connect")
                     val retrofit = Retrofit.Builder()
                         .baseUrl("http://193.196.36.62:9000/")
-                        .client(client)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build()
-
+//.client(client)
 
                     val apiService: ApiService = retrofit.create(ApiService::class.java)
 

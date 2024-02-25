@@ -16,7 +16,7 @@ data class QuestionData (
         return mapOf(
             "time" to time,
             "answer" to answer,
-            "questionid" to questionid
+            "question" to questionid
         )
     }
 }

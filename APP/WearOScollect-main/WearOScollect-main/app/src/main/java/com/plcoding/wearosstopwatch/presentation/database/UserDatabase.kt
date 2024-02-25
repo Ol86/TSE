@@ -6,7 +6,7 @@ import androidx.room.*
 import com.plcoding.wearosstopwatch.presentation.database.daos.*
 import com.plcoding.wearosstopwatch.presentation.database.entities.*
 
-@Database(version = 9,
+@Database(version = 11,
     entities = [
         SessionData::class,
         ActiveMeasurement::class,
