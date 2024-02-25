@@ -18,9 +18,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.Timer
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timerTask
 
 class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(contextInput, params){
@@ -134,20 +136,23 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
     }
 
         private fun connectApi(){
+            val timeoutSeconds = 10// Set your desired timeout value in seconds
+            val client = OkHttpClient.Builder()
+                .readTimeout(timeoutSeconds.toLong(), TimeUnit.SECONDS)
+                .writeTimeout(timeoutSeconds.toLong(), TimeUnit.SECONDS)
+                .build()
+            Log.i("sendDataApi0001", "Testing Timeout fix")
             val thread = Thread {
                 try {
                     Log.i("APImessage", "Connect")
                     val retrofit = Retrofit.Builder()
                         .baseUrl("http://193.196.36.62:9000/")
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build()
-                    val postRetrofit = Retrofit.Builder()
-                        .baseUrl("http://193.196.36.62/")
+                        .client(client)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build()
 
+
                     val apiService: ApiService = retrofit.create(ApiService::class.java)
-                    val postApiService = postRetrofit.create(PostApiService::class.java)
 
                     try {
                         val tokenResponse = apiService.getToken(
