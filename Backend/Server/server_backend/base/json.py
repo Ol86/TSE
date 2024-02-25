@@ -166,8 +166,9 @@ def insertPPGGreenData(data):
 def insertAnswers(data):
     session = Session.objects.get(id=data["session"])
     for answer in data["questions"]:
+        question = Questions.objects.get(id=answer["question"])
         line = Answers(
-            question=answer["question"],
+            question=question,
             experiment=session.experiment,
             session=session,
             answer=answer["answer"],
