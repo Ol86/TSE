@@ -23,4 +23,10 @@ interface PpgRedDao {
 
     @Query("SELECT * FROM ppgRedData ORDER BY time DESC LIMIT 1")
     fun getLatestPpgRedData(): List<PpgRedData>
+
+    @Query("SELECT * FROM ppgRedData WHERE sync = 0 ORDER BY id ASC")
+    fun getAllLatestPpgRedData(): List<PpgRedData>
+
+    @Query("UPDATE ppgreddata SET sync = :s WHERE id = :id")
+    suspend fun markAsSynced(s: String, id: Long)
 }

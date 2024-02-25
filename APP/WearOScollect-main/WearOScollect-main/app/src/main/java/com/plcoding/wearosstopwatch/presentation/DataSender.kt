@@ -5,7 +5,6 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.plcoding.wearosstopwatch.presentation.PostApiService
 import com.plcoding.wearosstopwatch.presentation.api.ApiService
-import com.plcoding.wearosstopwatch.presentation.database.SensorDataDatabase
 import com.plcoding.wearosstopwatch.presentation.database.UserDataStore
 import com.plcoding.wearosstopwatch.presentation.database.entities.AffectDataTransferStatus
 import com.plcoding.wearosstopwatch.presentation.database.entities.NotificationDataTransferStatus
@@ -17,8 +16,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 import kotlin.concurrent.timerTask
 
-class DataSender(private val db: SensorDataDatabase, coroutineScope: LifecycleCoroutineScope,private val context: Context) {
-
+class DataSender( coroutineScope: LifecycleCoroutineScope,private val context: Context) {
+/*
 
 
     private var timer: Timer? = null
@@ -300,7 +299,7 @@ class DataSender(private val db: SensorDataDatabase, coroutineScope: LifecycleCo
 
         thread.start()
 
-    }
+    }*/
 }
 /*private fun sendData(){
     val thread = Thread {

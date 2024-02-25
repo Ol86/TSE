@@ -33,7 +33,13 @@ interface QuestionDao {
     @Query("SELECT * FROM questionData ORDER BY questionid DESC LIMIT 1")
     fun getActiveQuestionData(): QuestionData
 
+    @Query("SELECT * FROM questionData WHERE sync = 0 ORDER BY questionid asc")
+    fun getAllQuestionData(): List<QuestionData>
+
     @Query("SELECT * FROM questionData WHERE questionid = (SELECT MAX(questionid) FROM questionData) ORDER BY id ASC")
     fun getLatestQuestionDataOrderedById(): List<QuestionData>
+
+    @Query("UPDATE questiondata SET sync = :s WHERE id = :id")
+    suspend fun markAsSynced(s: String, id: Long)
 
 }

@@ -23,4 +23,10 @@ interface EcgDao {
 
     @Query("SELECT * FROM ecgData ORDER BY time DESC LIMIT 1")
     fun getLatestEcgData(): List<EcgData>
+
+    @Query("SELECT * FROM ecgData WHERE sync = 0 ORDER BY id ASC")
+    fun getAllLatestEcgData(): List<EcgData>
+
+    @Query("UPDATE ecgdata SET sync = :s WHERE id = :id")
+    suspend fun markAsSynced(s: String, id: Long)
 }

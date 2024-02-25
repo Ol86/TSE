@@ -12,9 +12,9 @@ data class EcgData (
     val maxThreshold: String,
     val minThreshold: String,
     val sequence: String,
-    val sync: String,
+    var sync: String,
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0
+    val id: Long = 0
 
 ) {
     fun toJsonMap(): Map<String, String> {
