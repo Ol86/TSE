@@ -9,9 +9,9 @@ data class Spo2Data (
     val spo2: String,
     val heartRate: String,
     val status: String,
-    val sync: String,
+    var sync: String,
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0
+    val id: Long = 0
 ){
     fun toJsonMap(): Map<String, String> {
         return mapOf(

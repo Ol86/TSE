@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface AccelerometerDao {
     @Upsert
-    suspend fun upsertAccelerometerData(accelerometerData: AccelerometerData)
+    suspend fun upsertAccelerometerData(accelerometerData: AccelerometerData): Long
 
     @Delete
     suspend fun deleteData(accelerometerData: AccelerometerData)
@@ -23,4 +23,10 @@ interface AccelerometerDao {
 
     @Query("SELECT * FROM accelerometerData ORDER BY time DESC LIMIT 1")
     fun getLatestAccelerometerData(): List<AccelerometerData>
+
+    @Query("SELECT * FROM accelerometerData WHERE sync = 0 ORDER BY id ASC")
+    fun getAllLatestAccelerometerData(): List<AccelerometerData>
+
+    @Query("UPDATE accelerometerdata SET sync = :s WHERE id = :id")
+    suspend fun markAsSynced(s: String, id: Long)
 }

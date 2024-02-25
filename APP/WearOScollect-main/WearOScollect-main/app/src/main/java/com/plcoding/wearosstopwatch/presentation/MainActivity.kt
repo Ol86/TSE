@@ -3,7 +3,6 @@ package com.plcoding.wearosstopwatch.presentation
 import DataSender
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -11,8 +10,6 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color.parseColor
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,9 +20,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Sync
-import androidx.compose.material.icons.filled.UploadFile
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,51 +50,33 @@ import java.util.concurrent.TimeUnit
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import androidx.work.Data
-import androidx.work.ListenableWorker
 import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkInfo
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import com.plcoding.wearosstopwatch.presentation.api.ApiService
-import com.plcoding.wearosstopwatch.presentation.database.SensorDataDatabase
 import com.plcoding.wearosstopwatch.presentation.database.UserDataStore
 import com.plcoding.wearosstopwatch.presentation.database.entities.QuestionData
 import com.plcoding.wearosstopwatch.presentation.database.entities.SessionIDData
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Type
 import java.util.concurrent.locks.ReentrantLock
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
-import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
-import java.util.UUID
+import androidx.work.Constraints
+import androidx.work.NetworkType
 
 class MainActivity : ComponentActivity(), LifecycleOwner {
 
     private val json = JSON()
-    private val db by lazy {
-        Room.databaseBuilder(
-            applicationContext,
-            SensorDataDatabase::class.java,
-            "sensorData.db"
-        ).fallbackToDestructiveMigration().build()
-    }
+
 
     lateinit var healthTracking : HealthTrackingService
 
@@ -360,6 +336,45 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         return periodicWorkRequest
     }
 
+    private fun createBackEndWorker() : PeriodicWorkRequest{
+        // Erstellen des WorkManagers
+
+        // Konfiguration für die PeriodicWorkRequest
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        // Erstellen der PeriodicWorkRequest
+        val periodicWorkRequest = PeriodicWorkRequestBuilder<BackEndWorker>(
+            repeatInterval = 10, // Alle 10 Sekunden wiederholen
+            repeatIntervalTimeUnit = TimeUnit.SECONDS
+        )
+            .setConstraints(constraints)
+            .addTag("BackEndWorker")
+            .build()
+
+        return periodicWorkRequest
+    }
+
+    private fun createW() : PeriodicWorkRequest{
+        // Erstellen des WorkManagers
+
+        // Konfiguration für die PeriodicWorkRequest
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        // Erstellen der PeriodicWorkRequest
+        val periodicWorkRequest = PeriodicWorkRequestBuilder<MyWorker>(
+            repeatInterval = 10, // Alle 10 Sekunden wiederholen
+            repeatIntervalTimeUnit = TimeUnit.SECONDS
+        )
+            .setConstraints(constraints)
+            .build()
+
+        return periodicWorkRequest
+    }
+
     private fun setTracker(activeTrackerList: List<Boolean>) {
         accelerometerTrackerListener.trackerActive = activeTrackerList[0]
         ecgTrackerListener.trackerActive = activeTrackerList[1]
@@ -404,14 +419,14 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val lifecycleScope = lifecycleScope
-        accelerometerTrackerListener = AccelerometerTrackerListener(HealthTrackerType.ACCELEROMETER, json, db, lifecycleScope)
-        ecgTrackerListener = ECGTrackerListener(HealthTrackerType.ECG, json, db, lifecycleScope)
-        heartRateTrackerListener = HeartRateTrackerListener(HealthTrackerType.HEART_RATE, json, db, lifecycleScope)
-        ppgGreenTrackerListener = PpgGreenTrackerListener(HealthTrackerType.PPG_GREEN, json, db, lifecycleScope)
-        ppgIRTrackerListener = PpgIRTrackerListener(HealthTrackerType.PPG_IR, json, db, lifecycleScope)
-        ppgRedTrackerListener = PpgRedTrackerListener(HealthTrackerType.PPG_RED, json, db, lifecycleScope)
-        sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2, json, db, lifecycleScope)
-        dataSender = DataSender(db, lifecycleScope, applicationContext)
+        accelerometerTrackerListener = AccelerometerTrackerListener(HealthTrackerType.ACCELEROMETER, json,lifecycleScope, applicationContext)
+        ecgTrackerListener = ECGTrackerListener(HealthTrackerType.ECG, json, lifecycleScope, applicationContext)
+        heartRateTrackerListener = HeartRateTrackerListener(HealthTrackerType.HEART_RATE, json, lifecycleScope, applicationContext)
+        ppgGreenTrackerListener = PpgGreenTrackerListener(HealthTrackerType.PPG_GREEN, json, lifecycleScope, applicationContext)
+        ppgIRTrackerListener = PpgIRTrackerListener(HealthTrackerType.PPG_IR, json, lifecycleScope, applicationContext)
+        ppgRedTrackerListener = PpgRedTrackerListener(HealthTrackerType.PPG_RED, json, lifecycleScope, applicationContext)
+        sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2, json, lifecycleScope, applicationContext)
+        dataSender = DataSender(lifecycleScope, applicationContext)
         requestPermissions(requestedPermissions, 0)
         /*healthTracking = HealthTrackingService(connectionListener, this@MainActivity)*/
 
@@ -469,7 +484,6 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                         onStartDataCollection = {startDataCollection()},
                         onStopDataCollection = {stopDataCollection()},
                         onBackToSettings = {currentView = ViewType.FirstScreen},
-                        onConnectApi = {connectApi()},
                         trackers = activeTrackersState.value,
                         dataUploaded = isNetworkAvailable(applicationContext),
                         modifier = Modifier.fillMaxSize()
@@ -512,9 +526,15 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         val periodicWorkRequestTheSecond = createNotificationWorker(1, 1, templateData)
         WorkManager.getInstance(this).enqueue(periodicWorkRequestTheSecond)
 
+        val periodicWorkRequestTheThird = createBackEndWorker()
+        WorkManager.getInstance(this).enqueue(periodicWorkRequestTheThird)
+
+        /*val periodicWorkRequest4 = createW()
+        WorkManager.getInstance(this).enqueue(periodicWorkRequest4)*/
+
         getSession()
         startDataCollection()
-        startDataSending()
+        //startDataSending()
     }
     private fun resetRoutine(viewModel: StopWatchViewModel) {
         stopDataCollection()
@@ -562,96 +582,13 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         }
     }
 
-    private fun startDataSending() {
+    /*private fun startDataSending() {
         dataSender.startSending()
-    }
-
-    private fun dbDataTOJSON(): JsonObject {
-        val scope = lifecycleScope
-        var dbData: String = ""
-        try {
-            val affect =
-                UserDataStore.getUserRepository(applicationContext).affectDao.getAffectData().affect
-            val time =
-                UserDataStore.getUserRepository(applicationContext).notificationDao.getNotificationData().time
-            val questionID =
-                UserDataStore.getUserRepository(applicationContext).affectDao.getAffectData().notification_id.toString()
-            val questionData = QuestionData(time, affect, questionID, "0")
-            scope.launch {
-                dbData = db.getLatestDataAsJson()
-            }
-        } catch (e: Exception) {
-
-        }
-        scope.launch {
-            dbData = db.getLatestDataAsJson()
-        }
-        Log.i("DebuggingA1", dbData)
-        val jsonObject: JsonObject = JsonParser().parse(dbData)
-            .getAsJsonObject()
-        Log.i("DebuggingA1", jsonObject.toString())
-        return jsonObject
-    }
-
-    private fun connectApi(){
-        val thread = Thread {
-            try {
-                Log.i("APImessage", "Connect")
-                val retrofit = Retrofit.Builder()
-                    .baseUrl("http://193.196.36.62:9000/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-
-                val apiService: ApiService = retrofit.create(ApiService::class.java)
-
-                try {
-                    val tokenResponse = apiService.getToken(
-
-                        JsonObject().apply {
-                            addProperty("username", "Watch1")
-                            addProperty("password", "tse-KIT-2023")
-                        }
-                    ).execute()
+    }*/
 
 
-                    if (tokenResponse.isSuccessful) {
-                        val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
-                        Log.i("StoredDataApi1", token)
 
-                        val postResponse = apiService.testPost(
-                            this.dbDataTOJSON(),
-                            //json.getStoredDataAsJsonObject(),
-                            /*JsonObject().apply {
-                                addProperty("test1", "Hello World")
-                            },*/
-                            token
-                        ).execute()
 
-                        if (postResponse.isSuccessful) {
-                            //println(postResponse.body())
-                            //Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
-                            Log.i("StoredDataApi2", postResponse.toString())
-                            Log.i("StoredDataApi3", "${postResponse.code()}")
-                        } else {
-                            println("Error: ${postResponse.code()}")
-                            Log.i("StoredDataApi4", postResponse.toString())
-                            Log.i("StoredDataApi5", "${postResponse.code()}")
-                        }
-                    } else {
-                        println("Error: ${tokenResponse.code()}")
-                    }
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
-            }
-        }
-
-        thread.start()
-
-    }
     private fun getTemplate(): TemplateInfos{
         var templateAsJsonString: String? = null
 
@@ -808,7 +745,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         val sessionIDData = sessionID?.let { SessionIDData(it) }
         scope.launch {
             if (sessionIDData != null) {
-                db.sessionIDDao.upsertSessionIDData(sessionIDData)
+                UserDataStore.getUserRepository(applicationContext).sessionIDDao.upsertSessionIDData(sessionIDData)
             }
         }
         return sessionID
@@ -923,7 +860,6 @@ private fun StopWatch(
     onStartDataCollection: () -> Unit,
     onStopDataCollection: () -> Unit,
     onBackToSettings: () -> Unit,
-    onConnectApi: () -> Unit,
     trackers: ArrayList<Boolean>,    //Accelerometer,ECG,HeartRate,ppgGreen,ppgIR,ppgRed,SPO2
     dataUploaded: Boolean,
     modifier: Modifier = Modifier

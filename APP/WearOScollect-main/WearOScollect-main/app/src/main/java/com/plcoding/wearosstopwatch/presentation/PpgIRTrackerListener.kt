@@ -1,17 +1,20 @@
 package com.plcoding.wearosstopwatch.presentation
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LifecycleCoroutineScope
-import com.plcoding.wearosstopwatch.presentation.database.SensorDataDatabase
-import com.plcoding.wearosstopwatch.presentation.database.entities.PpgGreenData
+import com.plcoding.wearosstopwatch.presentation.database.UserDataStore
 import com.plcoding.wearosstopwatch.presentation.database.entities.PpgIRData
 import com.samsung.android.service.health.tracking.HealthTracker
 import com.samsung.android.service.health.tracking.data.DataPoint
 import com.samsung.android.service.health.tracking.data.HealthTrackerType
 import com.samsung.android.service.health.tracking.data.ValueKey
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
-class PpgIRTrackerListener(private val trackerType: HealthTrackerType, private val json: JSON, private val db: SensorDataDatabase, coroutineScope: LifecycleCoroutineScope) : HealthTracker.TrackerEventListener {
+class PpgIRTrackerListener(private val trackerType: HealthTrackerType, private val json: JSON,
+                           coroutineScope: LifecycleCoroutineScope, private val context: Context) : HealthTracker.TrackerEventListener {
     private val scope = coroutineScope
 
     var isDataCollecting = true
@@ -35,8 +38,12 @@ class PpgIRTrackerListener(private val trackerType: HealthTrackerType, private v
 
                     json.dataToJSON("ppgir", allValues)
                     val ppgIRData = PpgIRData(dataPoint.timestamp.toString(), dataPoint.getValue(ValueKey.PpgIrSet.PPG_IR).toString(), "0")
-                    scope.launch {
-                        db.ppgIRDao.upsertPpgIRData(ppgIRData)
+                    val job = scope.launch {
+                        //db.ppgIRDao.upsertPpgIRData(ppgIRData)
+                        UserDataStore.getUserRepository(context).ppgIRDao.upsertPpgIRData(ppgIRData)
+                    }
+                    runBlocking(Dispatchers.IO) {
+                        job.join()
                     }
 
                     //println("json ppgIR")

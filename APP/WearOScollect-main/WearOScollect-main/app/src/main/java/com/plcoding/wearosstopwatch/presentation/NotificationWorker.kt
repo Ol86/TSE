@@ -28,7 +28,7 @@ class NotificationWorker(context: Context, params: WorkerParameters) : Worker(co
         UserDataStore
             .getUserRepository(applicationContext)
             .insertNotificationTime(CoroutineScope(GlobalScope.coroutineContext),
-                NotificationData(0, LocalDateTime.now().toString())) {
+                NotificationData(0, System.currentTimeMillis().toString())) {
                 notificationTimeId = it.id
                 Log.v("success", "This actually worked with $notificationTimeId")
                 NotificationManager(applicationContext).promptNotification(
