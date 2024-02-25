@@ -1,21 +1,24 @@
 package com.plcoding.wearosstopwatch.presentation
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LifecycleCoroutineScope
-import com.plcoding.wearosstopwatch.presentation.database.SensorDataDatabase
+import com.plcoding.wearosstopwatch.presentation.database.UserDataStore
 import com.plcoding.wearosstopwatch.presentation.database.entities.EcgData
-import com.plcoding.wearosstopwatch.presentation.database.entities.PpgGreenData
 import com.samsung.android.service.health.tracking.HealthTracker
 import com.samsung.android.service.health.tracking.data.DataPoint
 import com.samsung.android.service.health.tracking.data.HealthTrackerType
 import com.samsung.android.service.health.tracking.data.ValueKey
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
+import kotlinx.coroutines.runBlocking
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
 
-class ECGTrackerListener(private val trackerType: HealthTrackerType, private val json: JSON, private val db: SensorDataDatabase, coroutineScope: LifecycleCoroutineScope) : HealthTracker.TrackerEventListener {
+class ECGTrackerListener(private val trackerType: HealthTrackerType, private val json: JSON,
+                         coroutineScope: LifecycleCoroutineScope, private val context: Context
+) : HealthTracker.TrackerEventListener {
     private val scope = coroutineScope
 
 
@@ -67,9 +70,14 @@ class ECGTrackerListener(private val trackerType: HealthTrackerType, private val
                     json.dataToJSON("ecg", allValues)
 
 
-                    scope.launch {
-                        db.ecgDao.upsertEcgData(ecgData)
+                    val job = scope.launch {
+                        //db.ecgDao.upsertEcgData(ecgData)
+                        UserDataStore.getUserRepository(context).ecgDao.upsertEcgData(ecgData)
                     }
+                    runBlocking(Dispatchers.IO) {
+                        job.join()
+                    }
+
 
                     //println("JSON Test")
 

@@ -23,4 +23,10 @@ interface PpgIRDao {
 
     @Query("SELECT * FROM ppgIRData ORDER BY time DESC LIMIT 1")
     fun getLatestPpgIRData(): List<PpgIRData>
+
+    @Query("SELECT * FROM ppgIRData WHERE sync = 0 ORDER BY id ASC")
+    fun getAllLatestPpgIRData(): List<PpgIRData>
+
+    @Query("UPDATE ppgirdata SET sync = :s WHERE id = :id")
+    suspend fun markAsSynced(s: String, id: Long)
 }

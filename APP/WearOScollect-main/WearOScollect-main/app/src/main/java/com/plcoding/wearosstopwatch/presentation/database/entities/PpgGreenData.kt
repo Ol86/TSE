@@ -7,9 +7,9 @@ import androidx.room.PrimaryKey
 data class PpgGreenData (
     val time: String,
     val ppgGreen: String,
-    val sync: String,
+    var sync: String,
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0
+    val id: Long = 0
 ){
     fun toJsonMap(): Map<String, String> {
         return mapOf(

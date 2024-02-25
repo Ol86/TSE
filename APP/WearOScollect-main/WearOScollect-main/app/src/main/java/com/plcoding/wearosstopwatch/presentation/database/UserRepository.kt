@@ -8,10 +8,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import java.time.LocalDateTime
 
 class UserRepository(db: UserDatabase) {
 
+    //UserDataStore.getUserRepository(context)
+    //, private val context: Context
+
+    private var sessionid = "1"
     val activeDao = db.getActiveMeasurementDao()
     val interactionDao = db.getInteractionMeasurementDao()
     val passiveDao = db.getPassiveMeasurementDao()
@@ -19,6 +24,15 @@ class UserRepository(db: UserDatabase) {
     val affectDao = db.getAffectDao()
     val notificationDao = db.getNotificationDao()
     val sessionDao = db.getSessionDataDao()
+    val questionDao = db.getQuestionDao()
+    val accelerometerDao = db.getAccelerometerDao()
+    val ecgDao =  db.getEcgDao()
+    val heartrateDao = db.getHeartrateDao()
+    val ppgGreenDao = db.getPpgGreenDao()
+    val ppgIRDao = db.getPpgIRDao()
+    val ppgRedDao = db.getPpgRedDao()
+    val spo2Dao = db.getSpo2Dao()
+    val sessionIDDao = db.getSessionIDDao()
 
     /*fun handleHeartRateDataList(
         list: MutableList<DataPointContainer>,
@@ -43,11 +57,70 @@ class UserRepository(db: UserDatabase) {
         onFinished(resultsToEntity)
     }*/
 
+    suspend fun getLatestDataAsJson(): String {
+        sessionid = sessionIDDao.getActiveSessionID().session
+        return withContext(Dispatchers.IO) {
+            val questionData = questionDao.getLatestQuestionData()
+            val ecgData = ecgDao.getLatestEcgData()
+            ecgData.forEach { element ->
+                ecgDao.markAsSynced("1", element.id)
+            }
+            val heartrateData = heartrateDao.getAllLatestHeartrateData()
+            heartrateData.forEach { element ->
+                heartrateDao.markAsSynced("1", element.id)
+            }
+            val spo2Data = spo2Dao.getLatestSpo2Data()
+            spo2Data.forEach { element ->
+                spo2Dao.markAsSynced("1", element.id)
+            }
+            val accelerometerData = accelerometerDao.getAllLatestAccelerometerData()
+            accelerometerData.forEach { element ->
+                accelerometerDao.markAsSynced("1", element.id)
+            }
+            val ppgIRData = ppgIRDao.getAllLatestPpgIRData()
+            ppgIRData.forEach { element ->
+                ppgIRDao.markAsSynced("1", element.id)
+            }
+            val ppgRedData = ppgRedDao.getAllLatestPpgRedData()
+            ppgRedData.forEach { element ->
+                ppgRedDao.markAsSynced("1", element.id)
+            }
+            val ppgGreenData = ppgGreenDao.getAllLatestPpgGreenData()
+            ppgGreenData.forEach { element ->
+                ppgGreenDao.markAsSynced("1", element.id)
+            }
+
+
+
+            val dataMap = mutableMapOf<String, List<Map<String, String>>>()
+            dataMap["ecg"] = ecgData.map { it.toJsonMap() }
+            dataMap["heartrate"] = heartrateData.map { it.toJsonMap() }
+            dataMap["spo2"] = spo2Data.map { it.toJsonMap() }
+            dataMap["accelerometer"] = accelerometerData.map { it.toJsonMap() }
+            dataMap["ppgir"] = ppgIRData.map { it.toJsonMap() }
+            dataMap["ppgred"] = ppgRedData.map { it.toJsonMap() }
+            dataMap["ppggreen"] = ppgGreenData.map { it.toJsonMap() }
+
+
+            val jsonMap = mutableMapOf<String, Any>()
+            jsonMap["session"] = sessionid
+            jsonMap["questions"] = questionData.map { it.toJsonMap() }
+
+            // Add the 'data' object with other data types if necessary
+            if (dataMap.isNotEmpty()) {
+                Log.i("DebuggingA012", "is not empty")
+                jsonMap["data"] = dataMap
+            }
+
+            JSONObject(jsonMap as Map<*, *>).toString()
+        }
+    }
+
     fun getActiveSession(
         scope: CoroutineScope,
         onFinished: (entity: SessionData) -> Unit,
         onError: (e: Exception) -> Unit
-        ) {
+    ) {
         scope.launch(Dispatchers.IO) {
             try {
                 val result = sessionDao.getActiveSession()
@@ -157,6 +230,33 @@ class UserRepository(db: UserDatabase) {
         scope.launch(Dispatchers.IO) {
             entity.id = sessionDao.insert(entity)
             withContext(Dispatchers.Main) {
+                onFinished(entity)
+            }
+        }
+    }
+
+    fun insertAccelerometerData(
+        scope: CoroutineScope,
+        entity: AccelerometerData,
+        onFinished: (entity: AccelerometerData) -> Unit
+    ){
+        scope.launch(Dispatchers.IO){
+            entity.id = accelerometerDao.upsertAccelerometerData(entity)
+            withContext(Dispatchers.Main){
+                onFinished(entity)
+            }
+        }
+    }
+
+    fun insertQuestionData(
+        scope: CoroutineScope,
+        entity: QuestionData,
+        onFinished: (entity: QuestionData) -> Unit
+    ){
+        scope.launch(Dispatchers.IO){
+            Log.i("DebuggingA00","In UserRep")
+            entity.id = questionDao.insert(entity)
+            withContext(Dispatchers.Main){
                 onFinished(entity)
             }
         }

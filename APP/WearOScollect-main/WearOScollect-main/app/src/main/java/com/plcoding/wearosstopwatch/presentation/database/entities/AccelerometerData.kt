@@ -9,9 +9,9 @@ data class AccelerometerData (
     val x: String,
     val y: String,
     val z: String,
-    val sync: String,
+    var sync: String,
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0
+    var id: Long = 0
 ){
     fun toJsonMap(): Map<String, String> {
         return mapOf(

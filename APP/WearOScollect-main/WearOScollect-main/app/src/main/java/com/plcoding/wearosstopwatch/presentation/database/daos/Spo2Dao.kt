@@ -23,4 +23,10 @@ interface Spo2Dao {
 
     @Query("SELECT * FROM spo2Data ORDER BY time DESC LIMIT 1")
     fun getLatestSpo2Data(): List<Spo2Data>
+
+    @Query("SELECT * FROM spo2Data WHERE sync = 0 ORDER BY id ASC")
+    fun getAllLatestSpo2Data(): List<Spo2Data>
+
+    @Query("UPDATE spo2data SET sync = :s WHERE id = :id")
+    suspend fun markAsSynced(s: String, id: Long)
 }

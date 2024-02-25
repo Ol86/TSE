@@ -23,4 +23,10 @@ interface HeartrateDao {
 
     @Query("SELECT * FROM heartrateData ORDER BY time DESC LIMIT 1")
     fun getLatestHeartrateData(): List<HeartrateData>
+
+    @Query("SELECT * FROM heartrateData WHERE sync = 0 ORDER BY id ASC")
+    fun getAllLatestHeartrateData(): List<HeartrateData>
+
+    @Query("UPDATE heartratedata SET sync = :s WHERE id = :id")
+    suspend fun markAsSynced(s: String, id: Long)
 }
