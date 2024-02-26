@@ -80,7 +80,7 @@ class BaseUser(UserBase):
     type = models.PositiveSmallIntegerField(choices=TYPE, default=USER)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    created_at = models.IntegerField(default=time.time(), editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     objects = BaseUserManager()
 

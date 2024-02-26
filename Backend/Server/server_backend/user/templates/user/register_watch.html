@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block content %}
-    <a id="quit" href="{{request.META.HTTP_REFERER}}">quit</a>
+    <a id="quit" href="{% url 'watches' %}">quit</a>
     <form class="creationForm" method="POST" action="">
         <h2>Create Watch</h2>
         <div class="formElements">

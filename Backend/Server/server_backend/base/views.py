@@ -25,7 +25,7 @@ from base.serializers import *
 # The models to store to the database.
 from base.models import *
 # The forms to be rendered.
-from base.forms import ExperimentForm, QuestionForm
+from base.forms import ExperimentForm, QuestionForm, QuestionAnswersForm
 # The handling methods to save the given data to the database.
 from base.json import *
 
@@ -164,27 +164,89 @@ def editExperiment(request, pk):
 # TODO: Add comment
 @login_required(login_url='login')
 def questions(request):
+    result = []
     questions = Questions.objects.all()
-    context = {'questions': questions}
+    for question in questions:
+        answer1 = QuestionAnswers.objects.get(question=question, position=1)
+        answer2 = QuestionAnswers.objects.get(question=question, position=2)
+        if question.button3:
+            answer3 = QuestionAnswers.objects.get(question=question, position=3)
+        else:
+            answer3 = {'answer': ''}
+        if question.button4:
+            answer4 = QuestionAnswers.objects.get(question=question, position=4)
+        else:
+            answer4 = {'answer': ''}
+        resultElement = {
+            'id': question.id,
+            'question': question.question,
+            'button1': question.button1,
+            'button1_text': answer1.answer,
+            'button2': question.button2,
+            'button2_text': answer2.answer,
+            'button3': question.button3,
+            'button3_text': answer3.answer,
+            'button4': question.button4,
+            'button4_text': answer4.answer,
+
+        }
+        result.append(resultElement)
+    context = {'questions': result}
     return render(request, 'base/question/questions.html', context)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 # TODO: Add comment
 @login_required(login_url='login')
 def createQuestion(request):
-    form = QuestionForm()
+    questionForm = QuestionForm()
+    answer1Form = QuestionAnswersForm(prefix='1')
+    answer2Form = QuestionAnswersForm(prefix='2')
+    answer3Form = QuestionAnswersForm(prefix='3')
+    answer4Form = QuestionAnswersForm(prefix='4')
+
     if request.method == 'POST':
-        form = QuestionForm(request.POST)
-        if form.is_valid():
-            edit = form.save(commit=False)
-            edit.button1 = bool(edit.button1_text)
-            edit.button2 = bool(edit.button2_text)
-            edit.button3 = bool(edit.button3_text)
-            edit.button4 = bool(edit.button4_text)
-            edit.save()
+        questionForm = QuestionForm(request.POST)
+        answer1Form = QuestionAnswersForm(request.POST, prefix='1')
+        answer2Form = QuestionAnswersForm(request.POST, prefix='2')
+        answer3Form = QuestionAnswersForm(request.POST, prefix='3')
+        answer4Form = QuestionAnswersForm(request.POST, prefix='4')
+        if questionForm.is_valid() and answer1Form.is_valid() and answer2Form.is_valid():
+            editQuestion = questionForm.save(commit=False)
+            editAnswer1 = answer1Form.save(commit=False)
+            editAnswer2 = answer2Form.save(commit=False)
+            editAnswer3 = answer3Form.save(commit=False)
+            editAnswer4 = answer4Form.save(commit=False)
+
+            editQuestion.button1 = bool(editAnswer1.answer)
+            editQuestion.button2 = bool(editAnswer2.answer)
+            editQuestion.button3 = bool(editAnswer3.answer)
+            editQuestion.button4 = bool(editAnswer4.answer)
+            editQuestion.save()
+
+            editAnswer1.question = Questions.objects.last()
+            editAnswer1.position = 1
+            editAnswer1.save()
+            editAnswer2.question = Questions.objects.last()
+            editAnswer2.position = 2
+            editAnswer2.save()
+
+            if bool(editAnswer3.answer):
+                editAnswer3.question = Questions.objects.last()
+                editAnswer3.position = 3
+                editAnswer3.save()
+            if bool(editAnswer4.answer):
+                editAnswer4.question = Questions.objects.last()
+                editAnswer4.position = 4
+                editAnswer4.save()
             return redirect('questions')
 
-    context = {'form': form}
+    context = {
+        'questionForm': questionForm,
+        'answer1Form': answer1Form,
+        'answer2Form': answer2Form,
+        'answer3Form': answer3Form,
+        'answer4Form': answer4Form
+    }
     return render(request, 'base/question/create_question.html', context)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
@@ -288,8 +350,7 @@ def createSession(request):
         
         session = Session(
             experiment=Experiment.objects.get(id=experiment[last_experiment_index]["id"]), 
-            watch_id=Watch.objects.get(user=token.user.id),
-            created_at=int(time.time())
+            watch_id=Watch.objects.get(user=token.user.id)
         )
         session.save()
 
