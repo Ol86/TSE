@@ -203,11 +203,12 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
     private val defaultTemplate: String = """
     {
         "id": 31415,
+        "max_time":0,
         "title": "{Default}",
         "watches": [
             {
                 "name": "Watch1",
-                "watch": "11:22:33:44:55:66"
+                "watch": "RFAW31MPVBJ"
             }
         ],
         "acc": true,
@@ -220,6 +221,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         "spo2": true,
         "swl": true,
         "created_at": "2024-02-10T16:37:04.512963+01:00",
+        "question_interval":10,
         "questions": [
             {
                 "id": 1,
@@ -430,8 +432,14 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         requestPermissions(requestedPermissions, 0)
         /*healthTracking = HealthTrackingService(connectionListener, this@MainActivity)*/
 
+        accelerometerTrackerListener.trackerActive = activeTrackers[0]
+        ecgTrackerListener.trackerActive = activeTrackers[1]
         heartRateTrackerListener.trackerActive = activeTrackers[2]
         Log.i("HEARTRATE IMPORTANT", heartRateTrackerListener.trackerActive.toString())
+        ppgGreenTrackerListener.trackerActive = activeTrackers[3]
+        ppgIRTrackerListener.trackerActive = activeTrackers[4]
+        ppgRedTrackerListener.trackerActive = activeTrackers[5]
+        sPO2TrackerListener.trackerActive = activeTrackers[6]
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.BODY_SENSORS) != PackageManager.PERMISSION_GRANTED) {
             // Request the permission
@@ -475,6 +483,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                     StopWatch(
                         state = timerState,
                         time = stopWatchText,
+                        maxTime = templateDataState.value.max_time,
                         notifications = notificationCounterState.value.toString(),
                         notificationsMax = "10",
                         onStart = { startRoutine(viewModel, templateDataState.value) },
@@ -520,11 +529,21 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         viewModel.start()
         WorkManager.getInstance(this).cancelAllWork()
         Log.i("TemplateData", templateData.questions[0].question)
-        val periodicWorkRequest = createNotificationWorker(0, 1, templateData)
-        WorkManager.getInstance(this).enqueue(periodicWorkRequest)
 
-        val periodicWorkRequestTheSecond = createNotificationWorker(1, 1, templateData)
-        WorkManager.getInstance(this).enqueue(periodicWorkRequestTheSecond)
+        if (templateData.question_interval < 15) {
+            val periodicWorkRequest = createNotificationWorker(templateData.question_interval.toLong(),
+                templateData.question_interval.toLong() * 2, templateData)
+            WorkManager.getInstance(this).enqueue(periodicWorkRequest)
+
+            val periodicWorkRequestTheSecond = createNotificationWorker(templateData.question_interval.toLong() * 2,
+                templateData.question_interval.toLong() * 2, templateData)
+            WorkManager.getInstance(this).enqueue(periodicWorkRequestTheSecond)
+        }
+        else {
+            val periodicWorkRequest = createNotificationWorker(templateData.question_interval.toLong(),
+                templateData.question_interval.toLong(), templateData)
+            WorkManager.getInstance(this).enqueue(periodicWorkRequest)
+        }
 
         val periodicWorkRequestTheThird = createBackEndWorker()
         WorkManager.getInstance(this).enqueue(periodicWorkRequestTheThird)
@@ -587,8 +606,6 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
     }*/
 
 
-
-
     private fun getTemplate(): TemplateInfos{
         var templateAsJsonString: String? = null
 
@@ -630,6 +647,8 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
 
                         // Access the parsed data
                         println("Title: ${templateDataInstance.title}")
+                        println("max_Time: ${templateDataInstance.max_time}")
+                        println("questionInterval: ${templateDataInstance.question_interval}")
                         println("Questions: ${templateDataInstance.questions}")
                         println("Tracker, ${templateDataInstance.acc}" +
                                 ", ${templateDataInstance.ecg}, ${templateDataInstance.hr}" +
@@ -851,6 +870,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
 private fun StopWatch(
     state: TimerState,
     time: String,
+    maxTime: Int,
     notifications: String,
     notificationsMax: String,
     onStart: () -> Unit,
@@ -881,13 +901,15 @@ private fun StopWatch(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.Bottom)
             )
-            /*Text(
-                text = " / 1:30:00",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Light,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.align(Alignment.Bottom)
-            )*/
+            if (maxTime != 0) {
+                Text(
+                   text = " / $maxTime",
+                   fontSize = 16.sp,
+                   fontWeight = FontWeight.Light,
+                   textAlign = TextAlign.Center,
+                   modifier = Modifier.align(Alignment.Bottom)
+               )
+            }
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
