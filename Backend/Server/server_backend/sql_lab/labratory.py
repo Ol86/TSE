@@ -54,3 +54,101 @@ def translating(message):
     return reply
 
 # print(translating("give me the two tables combined"))
+
+#TODO Usernames einbauen?
+"""
+Here will be the Prototype of the complete JSON
+
+A Table will always follow this format:
+    {
+     "name": "table1",
+       "columns": [
+         {
+           "name": "column1",
+           "type": "string"
+         },
+         {
+           "name": "column2",
+           "type": "integer"
+         },
+         {
+           "name": "column3",
+           "type": "float"
+         }
+       ]}
+
+       
+
+{
+  "database": {
+  "tables": [
+  {
+    "name": "experiment,
+    "cloumns":  [
+    {
+      "name": "experiment_id"
+      "type": "integer"
+      }
+      {
+      "name": "title"
+      "type": "string"
+      }
+      {
+      "name": "questions"
+      "type": "Question"
+      }
+      {
+      "name": "accelerometer"
+      "type": "boolean"
+      }
+      {
+      "name": "heart_rate"
+      "type": "boolean"
+      }
+      {
+      "name": "ppg_green"
+      "type": "boolean"
+      }
+      {
+      "name": "ppg_ir"
+      "type": "boolean"
+      }
+      {
+      "name": "ppg_red"
+      "type": "boolean"
+      }
+      {
+      "name": "bia"
+      "type": "boolean"
+      }
+      {
+      "name": "ecg"
+      "type": "boolean"
+      }
+      {
+      "name": "spo2"
+      "type": "boolean"
+      }
+      {
+      "name": "sweat_loss"
+      "type": "boolean"
+      }
+      {
+      "name": "watches"
+      "type": "Watch"
+      }
+      {
+      "name": "created_by"
+      "type": "integer"
+      }
+      {
+      "name": "created_at"
+      "type": "timestamp"
+    }
+    ]
+    "primary key": "experiment_id"
+  }
+  ]
+}
+
+"""
