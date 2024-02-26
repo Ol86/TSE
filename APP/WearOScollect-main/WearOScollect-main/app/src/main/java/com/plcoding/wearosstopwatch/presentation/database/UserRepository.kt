@@ -60,7 +60,10 @@ class UserRepository(db: UserDatabase) {
     suspend fun getLatestDataAsJson(): String {
         sessionid = sessionIDDao.getActiveSessionID().session
         return withContext(Dispatchers.IO) {
-            val questionData = questionDao.getLatestQuestionData()
+            val questionData = questionDao.getAllQuestionData()
+            questionData.forEach { element ->
+                questionDao.markAsSynced("1", element.id)
+            }
             val ecgData = ecgDao.getLatestEcgData()
             ecgData.forEach { element ->
                 ecgDao.markAsSynced("1", element.id)

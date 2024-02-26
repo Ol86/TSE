@@ -115,7 +115,7 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
                     Log.i("DebuggingA35.5", element.id.toString())
                 }
             }
-            val questionDataList =
+            /*val questionDataList =
                 UserDataStore.getUserRepository(context).questionDao.getAllQuestionData()
             questionDataList.forEach { element ->
                 if (element.sync == "0") {
@@ -129,27 +129,28 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
                         )
                     }
                 }
-            }
+            }*/
         }catch (e: Exception){
             println("Error in Adding QuestionData!")
         }
     }
 
         private fun connectApi(){
-            /*val timeoutSeconds = 10// Set your desired timeout value in seconds
+            val timeoutSeconds = 30// Set your desired timeout value in seconds
             val client = OkHttpClient.Builder()
                 .readTimeout(timeoutSeconds.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(timeoutSeconds.toLong(), TimeUnit.SECONDS)
-                .build()*/
+                .build()
             Log.i("sendDataApi0001", "Testing Timeout fix")
             val thread = Thread {
                 try {
                     Log.i("APImessage", "Connect")
                     val retrofit = Retrofit.Builder()
                         .baseUrl("http://193.196.36.62:9000/")
+                        .client(client)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build()
-//.client(client)
+
 
                     val apiService: ApiService = retrofit.create(ApiService::class.java)
 
