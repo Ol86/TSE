@@ -6,22 +6,12 @@ from openai import OpenAI
 import os
 
 openai.api_key = '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'
-
+with open('database.json', 'r') as f:
+    database = f.read()
 messages = [
     {"role": "system", "content": "You create SQL Queries from Natural Language over a database that contains 2 tables."
-                                  "Only give back SQL-Queries nothing else "
-                                  """{
-  "tables": {
-    "heritage": {
-      "columns": ["name", "age", "city"],
-      "primary_key": "name"
-    },
-    "city_info": {
-      "columns": ["number_of_inhabitants", "city", "postal_code"],
-      "primary_key": "city"
-    }
-  }
-}"""}
+                                  "Only give back SQL-Queries nothing else. Database: " + database
+                                  }
 ]
 # todo großen JSON string auslagern!
 
@@ -64,91 +54,20 @@ A Table will always follow this format:
      "name": "table1",
        "columns": [
          {
-           "name": "column1",
-           "type": "string"
+           "name": "",
+           "type": ""
          },
          {
-           "name": "column2",
-           "type": "integer"
+           "name": "",
+           "type": ""
          },
          {
-           "name": "column3",
-           "type": "float"
+           "name": "",
+           "type": ""
          }
-       ]}
-
-       
-
-{
-  "database": {
-  "tables": [
-  {
-    "name": "experiment,
-    "cloumns":  [
-    {
-      "name": "experiment_id"
-      "type": "integer"
-      }
-      {
-      "name": "title"
-      "type": "string"
-      }
-      {
-      "name": "questions"
-      "type": "Question"
-      }
-      {
-      "name": "accelerometer"
-      "type": "boolean"
-      }
-      {
-      "name": "heart_rate"
-      "type": "boolean"
-      }
-      {
-      "name": "ppg_green"
-      "type": "boolean"
-      }
-      {
-      "name": "ppg_ir"
-      "type": "boolean"
-      }
-      {
-      "name": "ppg_red"
-      "type": "boolean"
-      }
-      {
-      "name": "bia"
-      "type": "boolean"
-      }
-      {
-      "name": "ecg"
-      "type": "boolean"
-      }
-      {
-      "name": "spo2"
-      "type": "boolean"
-      }
-      {
-      "name": "sweat_loss"
-      "type": "boolean"
-      }
-      {
-      "name": "watches"
-      "type": "Watch"
-      }
-      {
-      "name": "created_by"
-      "type": "integer"
-      }
-      {
-      "name": "created_at"
-      "type": "timestamp"
+         
+       ]
+       "primary key": ""
     }
-    ]
-    "primary key": "experiment_id"
-  }
-  ]
-}
 
 """

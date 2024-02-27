@@ -1,12 +1,366 @@
 {
-  "tables": {
-    "heritage": {
-      "columns": ["name", "age", "city"],
-      "primary_key": "name"
-    },
-    "city_info": {
-      "columns": ["number_of_inhabitants", "city", "postal_code"],
-      "primary_key": "city"
-    }
+  "database": {
+    "tables": [
+      {
+        "name": "experiment",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "questions",
+            "type": "Question"
+          },
+          {
+            "name": "accelerometer",
+            "type": "boolean"
+          },
+          {
+            "name": "heart_rate",
+            "type": "boolean"
+          },
+          {
+            "name": "ppg_green",
+            "type": "boolean"
+          },
+          {
+            "name": "ppg_ir",
+            "type": "boolean"
+          },
+          {
+            "name": "ppg_red",
+            "type": "boolean"
+          },
+          {
+            "name": "bia",
+            "type": "boolean"
+          },
+          {
+            "name": "ecg",
+            "type": "boolean"
+          },
+          {
+            "name": "spo2",
+            "type": "boolean"
+          },
+          {
+            "name": "sweat_loss",
+            "type": "boolean"
+          },
+          {
+            "name": "watches",
+            "type": "Watch"
+          },
+          {
+            "name": "created_by",
+            "type": "integer"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "question",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "question",
+            "type": "string"
+          },
+          {
+            "name": "button1",
+            "type": "boolean"
+          },
+          {
+            "name": "button2",
+            "type": "boolean"
+          },
+          {
+            "name": "button3",
+            "type": "boolean"
+          },
+          {
+            "name": "button4",
+            "type": "boolean"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "question_answers",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "question",
+            "type": "Question"
+          },
+          {
+            "name": "position",
+            "type": "integer"
+          },
+          {
+            "name": "answer",
+            "type": "string"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "session",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "experiment",
+            "type": "experiment"
+          },
+          {
+            "name": "watch",
+            "type": "Watch"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "answers",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "experiment",
+            "type": "experiment"
+          },
+          {
+            "name": "session",
+            "type": "session"
+          },
+          {
+            "name": "answer",
+            "type": "question_answers"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "ecg",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "session",
+            "type": "session"
+          },
+          {
+            "name": "esg_ecg",
+            "type": "integer"
+          },
+          {
+            "name": "esg_ppggreen",
+            "type": "integer"
+          },
+          {
+            "name": "esg_leadoff",
+            "type": "integer"
+          },
+          {
+            "name": "esg_maxthreshold",
+            "type": "integer"
+          },
+          {
+            "name": "esg_sequence",
+            "type": "integer"
+          },
+          {
+            "name": "esg_minthreshold",
+            "type": "integer"
+          },
+          {
+            "name": "esg_time",
+            "type": "integer"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "heartrate",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "session",
+            "type": "session"
+          },
+          {
+            "name": "heartrate_status",
+            "type": "integer"
+          },
+          {
+            "name": "heartrate_time",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "spo2",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "session",
+            "type": "session"
+          },
+          {
+            "name": "spo2_spo2",
+            "type": "integer"
+          },
+          {
+            "name": "spo2_heartrate",
+            "type": "integer"
+          },
+          {
+            "name": "spo2_status",
+            "type": "integer"
+          },
+          {
+            "name": "spo2_time",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "accelerometer",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "session",
+            "type": "session"
+          },
+          {
+            "name": "accelerometer_x",
+            "type": "integer"
+          },
+          {
+            "name": "accelerometer_y",
+            "type": "integer"
+          },
+          {
+            "name": "accelerometer_z",
+            "type": "integer"
+          },
+          {
+            "name": "accelerometer_time",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "ppg_ir",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "session",
+            "type": "session"
+          },
+          {
+            "name": "ppgir_ppgir",
+            "type": "integer"
+          },
+          {
+            "name": "ppgir_time",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "ppg_green",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "session",
+            "type": "session"
+          },
+          {
+            "name": "ppggreen_ppggreen",
+            "type": "integer"
+          },
+          {
+            "name": "ppggreen_time",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "ppg_red",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "session",
+            "type": "session"
+          },
+          {
+            "name": "ppgred_ppgred",
+            "type": "integer"
+          },
+          {
+            "name": "ppgred_time",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      }
+    ]
   }
 }
