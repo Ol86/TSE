@@ -135,7 +135,7 @@
             "type": "integer"
           },
           {
-            "name": "experiment",
+            "name": "experiment_id",
             "type": "experiment"
           },
           {
@@ -157,11 +157,11 @@
             "type": "integer"
           },
           {
-            "name": "experiment",
+            "name": "experiment_id",
             "type": "experiment"
           },
           {
-            "name": "session",
+            "name": "session_id",
             "type": "session"
           },
           {
@@ -169,7 +169,7 @@
             "type": "question_answers"
           },
           {
-            "name": "created_az",
+            "name": "created_at",
             "type": "timestamp"
           }
         ],
@@ -183,7 +183,7 @@
             "type": "integer"
           },
           {
-            "name": "session",
+            "name": "session_id",
             "type": "session"
           },
           {

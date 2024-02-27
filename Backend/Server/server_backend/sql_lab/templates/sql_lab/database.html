@@ -1,12 +1,24 @@
 <div style="display: inline-block; margin-right: 20px;">
     <h3>Database</h3>
     <table class="styled-table">
-        <caption>Heritage</caption>
+        <caption>Experient</caption>
         <thead>
             <tr>
-                <th>Name</th>
-                <th>City</th>
-                <th>Age</th>
+                <th>id</th>
+                <th>title</th>
+                <th>questions</th>
+                <th>accelerometer</th>
+                <th>heart_rate</th>
+                <th>ppg_green</th>
+                <th>ppg_ir</th>
+                <th>ppg_red</th>
+                <th>bia</th>
+                <th>ecg</th>
+                <th>spo2</th>
+                <th>swaet_loss</th>
+                <th>watches</th>
+                <th>created_by</th>
+                <th>created_at</th>
             </tr>
         </thead>
     </table>
@@ -15,12 +27,16 @@
 <div style="display: inline-block; margin-right: 20px;">
     <h3>&nbsp;</h3> <!-- Platzhalter, um die Höhen der Container auszugleichen -->
     <table class="styled-table">
-        <caption>city_info</caption>
+        <caption>Questions</caption>
         <thead>
             <tr>
-                <th>City</th>
-                <th>Postal Code</th>
-                <th>Number of Inhabitants</th>
+                <th>id</th>
+                <th>question</th>
+                <th>button1</th>
+                <th>button2</th>
+                <th>button3</th>
+                <th>button4</th>
+                <th>created_at</th>
             </tr>
         </thead>
     </table>
@@ -29,28 +45,70 @@
 <div style="display: inline-block; margin-right: 20px;">
     <h3>&nbsp;</h3> <!-- Platzhalter, um die Höhen der Container auszugleichen -->
     <table class="styled-table">
-        <caption>city_info</caption>
+        <caption>Question_answers</caption>
         <thead>
             <tr>
-                <th>City</th>
-                <th>Postal Code</th>
-                <th>Number of Inhabitants</th>
+                <th>id</th>
+                <th>question</th>
+                <th>position</th>
+                <th>answer</th>
+                <th>created_at</th>
             </tr>
         </thead>
     </table>
 </div>
+
+
+<div style="display: inline-block; margin-right: 20px;">
+    <h3>&nbsp;</h3> <!-- Platzhalter, um die Höhen der Container auszugleichen -->
+    <table class="styled-table">
+        <caption>Session</caption>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>experiment_id</th>
+                <th>watch_id</th>
+                <th>created_at</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+<div style="display: inline-block; margin-right: 20px;">
+    <h3>&nbsp;</h3> <!-- Platzhalter, um die Höhen der Container auszugleichen -->
+    <table class="styled-table">
+        <caption>answers</caption>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>experiment_id</th>
+                <th>session_id</th>
+                <th>answer</th>
+                <th>created_at</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
 
 <div style="clear: both;"></div>
 
+
 <div style="display: inline-block; margin-right: 20px;">
     <h3>&nbsp;</h3> <!-- Platzhalter, um die Höhen der Container auszugleichen -->
     <table class="styled-table">
-        <caption>city_info</caption>
+        <caption>ecg</caption>
         <thead>
             <tr>
-                <th>City</th>
-                <th>Postal Code</th>
-                <th>Number of Inhabitants</th>
+                <th>id</th>
+                <th>session_id</th>
+                <th>ecg</th>
+                <th>ppgreen</th>
+                <th>lead_off</th>
+                <th>max_threshold</th>
+                <th>sequence</th>
+                <th>min_threshold</th>
+                <th>time</th>
             </tr>
         </thead>
     </table>
@@ -59,12 +117,98 @@
 <div style="display: inline-block; margin-right: 20px;">
     <h3>&nbsp;</h3> <!-- Platzhalter, um die Höhen der Container auszugleichen -->
     <table class="styled-table">
-        <caption>city_info</caption>
+        <caption>heart_rate</caption>
         <thead>
             <tr>
-                <th>City</th>
-                <th>Postal Code</th>
-                <th>Number of Inhabitants</th>
+                <th>id</th>
+                <th>session_id</th>
+                <th>hr</th>
+                <th>hr_status</th>
+                <th>ibi</th>
+                <th>ibi_status</th>
+                <th>time</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+<div style="display: inline-block; margin-right: 20px;">
+    <h3>&nbsp;</h3> <!-- Platzhalter, um die Höhen der Container auszugleichen -->
+    <table class="styled-table">
+        <caption>spo2</caption>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>session_id</th>
+                <th>spo2</th>
+                <th>heartrate</th>
+                <th>status</th>
+                <th>time</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+
+<div style="display: inline-block; margin-right: 20px;">
+    <h3>&nbsp;</h3> <!-- Platzhalter, um die Höhen der Container auszugleichen -->
+    <table class="styled-table">
+        <caption>accelerometer</caption>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>session_id</th>
+                <th>x</th>
+                <th>y</th>
+                <th>z</th>
+                <th>time</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+
+<div style="display: inline-block; margin-right: 20px;">
+    <h3>&nbsp;</h3> <!-- Platzhalter, um die Höhen der Container auszugleichen -->
+    <table class="styled-table">
+        <caption>ppg_ir</caption>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>session_id</th>
+                <th>ppgir</th>
+                <th>time</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+
+<div style="display: inline-block; margin-right: 20px;">
+    <h3>&nbsp;</h3> <!-- Platzhalter, um die Höhen der Container auszugleichen -->
+    <table class="styled-table">
+        <caption>ppg_green</caption>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>session_id</th>
+                <th>ppggreen</th>
+                <th>time</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+<div style="display: inline-block; margin-right: 20px;">
+    <h3>&nbsp;</h3> <!-- Platzhalter, um die Höhen der Container auszugleichen -->
+    <table class="styled-table">
+        <caption>ppg_red</caption>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>session_id</th>
+                <th>ppgred</th>
+                <th>time</th>
             </tr>
         </thead>
     </table>
