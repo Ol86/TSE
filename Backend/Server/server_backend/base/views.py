@@ -170,26 +170,49 @@ def questions(request):
         answer1 = QuestionAnswers.objects.get(question=question, position=1)
         answer2 = QuestionAnswers.objects.get(question=question, position=2)
         if question.button3:
-            answer3 = QuestionAnswers.objects.get(question=question, position=3)
+            if question.button4:
+                answer3 = QuestionAnswers.objects.get(question=question, position=3)
+                answer4 = QuestionAnswers.objects.get(question=question, position=4)
+                resultElement = {
+                    'id': question.id,
+                    'question': question.question,
+                    'button1': question.button1,
+                    'button1_text': answer1.answer,
+                    'button2': question.button2,
+                    'button2_text': answer2.answer,
+                    'button3': question.button3,
+                    'button3_text': answer3.answer,
+                    'button4': question.button4,
+                    'button4_text': answer4.answer,
+                }
+            else:
+                answer3 = QuestionAnswers.objects.get(question=question, position=3)
+                resultElement = {
+                    'id': question.id,
+                    'question': question.question,
+                    'button1': question.button1,
+                    'button1_text': answer1.answer,
+                    'button2': question.button2,
+                    'button2_text': answer2.answer,
+                    'button3': question.button3,
+                    'button3_text': answer3.answer,
+                    'button4': question.button4,
+                    'button4_text': "",
+                }
         else:
-            answer3 = {'answer': ''}
-        if question.button4:
-            answer4 = QuestionAnswers.objects.get(question=question, position=4)
-        else:
-            answer4 = {'answer': ''}
-        resultElement = {
-            'id': question.id,
-            'question': question.question,
-            'button1': question.button1,
-            'button1_text': answer1.answer,
-            'button2': question.button2,
-            'button2_text': answer2.answer,
-            'button3': question.button3,
-            'button3_text': answer3.answer,
-            'button4': question.button4,
-            'button4_text': answer4.answer,
-
-        }
+            resultElement = {
+                'id': question.id,
+                'question': question.question,
+                'button1': question.button1,
+                'button1_text': answer1.answer,
+                'button2': question.button2,
+                'button2_text': answer2.answer,
+                'button3': question.button3,
+                'button3_text': "",
+                'button4': question.button4,
+                'button4_text': "",
+            }
+        
         result.append(resultElement)
     context = {'questions': result}
     return render(request, 'base/question/questions.html', context)
