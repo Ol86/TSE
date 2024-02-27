@@ -21,9 +21,7 @@
     </header>
     <h2>SQL Laboratory</h2>
     <main>
-        <div class="database-table">
-            {% include 'sql_lab/database.html' %}
-        </div>
+        
         <form method="post" action="{% url 'sql_lab' %}">
             <h3 id="formHeader">SQL-request</h3>
             {% csrf_token %}
@@ -36,6 +34,10 @@
         </div>
         <input id="processed-text" type="text" readonly value="{{ processed_text }}"/>
         <button class="copy" onclick="CopyToClipboard();">Copy Text</button>
+        
+        <div class="database-table">
+            {% include 'sql_lab/database.html' %}
+        </div>
     </main>
     {% endblock %}
 
