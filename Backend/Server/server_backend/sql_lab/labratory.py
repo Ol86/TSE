@@ -6,7 +6,7 @@ from openai import OpenAI
 import os
 
 openai.api_key = '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'
-with open('database.json', 'r') as f:
+with open('C:\\Users\\jakob\\Documents\\TSE\\TSE-VSC\\TSE\\Backend\\Server\\server_backend\\sql_lab\\database.json', 'r') as f:
     database = f.read()
 messages = [
     {"role": "system", "content": "You create SQL Queries from Natural Language over a database that contains 2 tables."
