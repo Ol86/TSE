@@ -17,7 +17,7 @@
         {% csrf_token %}
         <p class="text">Are you sure that you want to delete "{{experiment.title}}"</p>
                 
-        <a class="back" href="{{request.META.HTTP_REFERER}}">Go back</a>
+        <a class="back" href="{% url 'experiments' %}">Go back</a>
         <input id="submit" type="submit" value="Confirm"/>
     </form>
 {% endblock %}

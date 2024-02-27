@@ -6,6 +6,7 @@ import java.io.Serializable
 
 data class TemplateInfos(
     val id: Int,
+    val max_time: Int,
     val title: String,
     //val watches: List<Watch>,
     val acc: Boolean,
@@ -18,6 +19,7 @@ data class TemplateInfos(
     val spo2: Boolean,
     val swl: Boolean,
     @SerializedName("created_at") val createdAt: String,
+    val question_interval: Int,
     val questions: List<TemplateQuestion>
 ) {
     fun getTrackerBooleans(): ArrayList<Boolean> {

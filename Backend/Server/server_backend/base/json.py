@@ -1,5 +1,6 @@
 # Json to handle json opperations.
 import json
+from datetime import datetime
 
 # The seriallizer to get all the required informations of the Models.
 from base.serializers import *
@@ -19,7 +20,32 @@ def returnExperimentInfo(experiment, watch_id):
     """
     questions = []
     for i in experiment["questions"]:
-        questions.append(QuestionsSerializer(Questions.objects.get(id=i), many=False).data)
+        question = QuestionsSerializer(Questions.objects.get(id=i), many=False).data
+        answer1 = QuestionAnswerSerializer(QuestionAnswers.objects.get(question_id=i, position=1), many=False).data
+        answer2 = QuestionAnswerSerializer(QuestionAnswers.objects.get(question_id=i, position=2), many=False).data
+        if question["button3"]:
+            answer3 = QuestionAnswerSerializer(QuestionAnswers.objects.get(question_id=i, position=3), many=False).data
+        else:
+            answer3 = {'answer': ''}
+        if question["button4"]:
+            answer4 = QuestionAnswerSerializer(QuestionAnswers.objects.get(question_id=i, position=4), many=False).data
+        else:
+            answer4 = {'answer': ''}
+
+        questionResult = {
+            'id': question["id"],
+            'question': question["question"],
+            'button1': question["button1"],
+            'button1_text': answer1["answer"],
+            'button2': question["button2"],
+            'button2_text': answer2["answer"],
+            'button3': question["button3"],
+            'button3_text': answer3["answer"],
+            'button4': question["button4"],
+            'button4_text': answer4["answer"],
+            'created_at': question["created_at"]
+        }
+        questions.append(questionResult)
     
 # TODO: get current watch
     watch = Watch.objects.get(user_id=watch_id)
@@ -61,7 +87,7 @@ def insertEcgData(data):
             max_threshold=ecg["maxThreshold"],
             sequence=ecg["sequence"],
             min_threshold=ecg["minThreshold"],
-            time=int(ecg["time"])/1000
+            time=datetime.fromtimestamp(int(ecg["time"])/1000)
         )
         line.save()
 
@@ -75,7 +101,7 @@ def insertHeartrateData(data):
     for hr in data["data"]["heartrate"]:
         line = Heart_Rate(
             session=session,
-            time=int(hr["time"])/1000,
+            time=datetime.fromtimestamp(int(hr["time"])/1000),
             hr=hr["hr"],
             hr_status=hr["hr_status"],
             ibi=hr["ibi"],
@@ -94,7 +120,7 @@ def insertSPO2Data(data):
         line = SPO2(
             spo2=spo2["spo2"],
             session=session,
-            time=int(spo2["time"])/1000,
+            time=datetime.fromtimestamp(int(spo2["time"])/1000),
             heartrate=spo2["heartRate"],
             status=spo2["spo2"]
         )
@@ -110,7 +136,7 @@ def insertAccelerometerData(data):
     for accelerometer in data["data"]["accelerometer"]:
         line = Accelerometer(
             session=session,
-            time=int(accelerometer["time"])/1000,
+            time=datetime.fromtimestamp(int(accelerometer["time"])/1000),
             x=accelerometer["x"],
             y=accelerometer["y"],
             z=accelerometer["z"]
@@ -128,7 +154,7 @@ def insertPPGIRData(data):
         line = PPG_IR(
             ppg_ir=ppgir["ppgir"],
             session=session,
-            time=int(ppgir["time"])/1000
+            time=datetime.fromtimestamp(int(ppgir["time"])/1000)
         )
         line.save()
 
@@ -143,7 +169,7 @@ def insertPPGRedData(data):
         line = PPG_Red(
             ppg_red=ppgred["ppgred"],
             session=session,
-            time=int(ppgred["time"])/1000
+            time=datetime.fromtimestamp(int(ppgred["time"])/1000)
         )
         line.save()
 
@@ -158,7 +184,7 @@ def insertPPGGreenData(data):
         line = PPG_Green(
             ppg_green=ppggreen["ppggreen"],
             session=session,
-            time=int(ppggreen["time"])/1000
+            time=datetime.fromtimestamp(int(ppggreen["time"])/1000)
         )
         line.save()
 
@@ -166,12 +192,11 @@ def insertPPGGreenData(data):
 def insertAnswers(data):
     session = Session.objects.get(id=data["session"])
     for answer in data["questions"]:
-        question = Questions.objects.get(id=answer["question"])
+        answers = QuestionAnswers.objects.get(question_id=answer["question"], position=answer["answer"])
         line = Answers(
-            question=question,
             experiment=session.experiment,
             session=session,
-            answer=answer["answer"],
-            time=int(answer["time"])/1000
+            answer=answers,
+            created_at=datetime.fromtimestamp(int(answer["time"])/1000)
         )
         line.save()

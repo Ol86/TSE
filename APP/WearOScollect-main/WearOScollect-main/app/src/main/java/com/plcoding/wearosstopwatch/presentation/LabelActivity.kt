@@ -107,7 +107,7 @@ class LabelActivity : ComponentActivity() {
                 LabelView(
                     first = LabelButton(
                         questions[0].button1_text,
-                        redButton,
+                        greenButton,
                         func = {
                             if (numberOfQuestions > 1) {
                                 Log.i("NUMBER", questions.size.toString())
@@ -135,7 +135,7 @@ class LabelActivity : ComponentActivity() {
                         }),
                     third = LabelButton(
                         questions[0].button3_text,
-                        greenButton,
+                        yellowButton,
                         func = {
                             if (numberOfQuestions > 1) {
                                 insertAffect(notificationTimeId, "3", questions[0].id.toString())
@@ -147,7 +147,7 @@ class LabelActivity : ComponentActivity() {
                         }),
                     fourth = LabelButton(
                         questions[0].button4_text,
-                        yellowButton,
+                        redButton,
                         func = {
                             if (numberOfQuestions > 1) {
                                 insertAffect(notificationTimeId, "4", questions[0].id.toString())
@@ -171,7 +171,7 @@ class LabelActivity : ComponentActivity() {
                 LabelView(
                     first = LabelButton(
                         questions[1].button1_text,
-                        redButton,
+                        greenButton,
                         func = {
                             if (numberOfQuestions > 2) {
                                 insertAffect(notificationTimeId, "1", questions[1].id.toString())
@@ -183,7 +183,7 @@ class LabelActivity : ComponentActivity() {
                         }),
                     second = LabelButton(
                         questions[1].button2_text,
-                        redButton,
+                        blueButton,
                         func = {
                             if (numberOfQuestions > 2) {
                                 insertAffect(notificationTimeId, "2", questions[1].id.toString())
@@ -195,7 +195,7 @@ class LabelActivity : ComponentActivity() {
                         }),
                     third = LabelButton(
                         questions[1].button3_text,
-                        redButton,
+                        yellowButton,
                         func = {
                             if (numberOfQuestions > 2) {
                                 insertAffect(notificationTimeId, "3", questions[1].id.toString())
@@ -397,7 +397,7 @@ class LabelActivity : ComponentActivity() {
                 LabelView(
                     first = LabelButton(
                         questions[2].button1_text,
-                        contextButton,
+                        greenButton,
                         func = {
                             if (numberOfQuestions > 3) {
                                 insertAffect(notificationTimeId, "1", questions[2].id.toString())
@@ -409,7 +409,7 @@ class LabelActivity : ComponentActivity() {
                         }),
                     second = LabelButton(
                         questions[2].button2_text,
-                        contextButton,
+                        blueButton,
                         func = {
                             if (numberOfQuestions > 3) {
                                 insertAffect(notificationTimeId, "2", questions[2].id.toString())
@@ -421,7 +421,7 @@ class LabelActivity : ComponentActivity() {
                         }),
                     third = LabelButton(
                         questions[2].button3_text,
-                        contextButton,
+                        yellowButton,
                         func = {
                             if (numberOfQuestions > 3) {
                                 insertAffect(notificationTimeId, "3", questions[2].id.toString())
@@ -434,7 +434,7 @@ class LabelActivity : ComponentActivity() {
                         }),
                     fourth = LabelButton(
                         questions[2].button4_text,
-                        contextButton,
+                        redButton,
                         func = {
                             if (numberOfQuestions > 3) {
                                 insertAffect(notificationTimeId, "4", questions[2].id.toString())
@@ -458,7 +458,7 @@ class LabelActivity : ComponentActivity() {
                 LabelView(
                     first = LabelButton(
                         questions[3].button1_text,
-                        yellowButton,
+                        greenButton,
                         func = {
                             if (numberOfQuestions > 4) {
                                 insertAffect(notificationTimeId, "1", questions[3].id.toString())
@@ -471,7 +471,7 @@ class LabelActivity : ComponentActivity() {
                         }),
                     second = LabelButton(
                         questions[3].button2_text,
-                        yellowButton,
+                        blueButton,
                         func = {
                             if (numberOfQuestions > 4) {
 
@@ -497,7 +497,7 @@ class LabelActivity : ComponentActivity() {
                         }),
                     fourth = LabelButton(
                         questions[3].button4_text,
-                        yellowButton,
+                        redButton,
                         func = {
                             if (numberOfQuestions > 4) {
                                 insertAffect(notificationTimeId, "4", questions[3].id.toString())
@@ -522,19 +522,19 @@ class LabelActivity : ComponentActivity() {
                 LabelView(
                     first = LabelButton(
                         questions[4].button1_text,
-                        contextButton,
+                        greenButton,
                         func = { insertContext(notificationTimeId, "1", questions[4].id.toString()) }),
                     second = LabelButton(
                         questions[4].button2_text,
-                        contextButton,
+                        blueButton,
                         func = { insertContext(notificationTimeId, "2", questions[4].id.toString()) }),
                     third = LabelButton(
                         questions[4].button3_text,
-                        contextButton,
+                        yellowButton,
                         func = { insertContext(notificationTimeId, "3", questions[4].id.toString()) }),
                     fourth = LabelButton(
                         questions[4].button4_text,
-                        contextButton,
+                        redButton,
                         func = { insertContext(notificationTimeId, "4", questions[4].id.toString())}),
 
                     question = questions[4].question,

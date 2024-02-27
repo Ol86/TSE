@@ -1,6 +1,5 @@
 {% extends 'main.html' %}
 {% load static %}
-{% load timestamp_to_datetime %}
 
 {% block style %}
     <link rel="stylesheet" href="{% static 'base/experiment/experiments.css' %}"/>
@@ -30,7 +29,7 @@
     {% for experiment in experiments %}
         <div class="experiment">
             <a id="text" href="{% url 'experiment' experiment.id %}">{{experiment.title}}</a>
-            <span class="date">{{ experiment.created_at|timestamp_to_datetime|date:"d.m.Y" }} - {{ experiment.created_at|timestamp_to_datetime|time:"H:i" }}</span>
+            <span class="date">{{ experiment.created_at|date:"d.m.Y" }} - {{ experiment.created_at|time:"H:i" }}</span>
         </div>
     {% endfor %}
     </div>
