@@ -68,7 +68,7 @@
         "primary key": "id"
       },
       {
-        "name": "question",
+        "name": "questions",
         "columns": [
           {
             "name": "id",
@@ -110,7 +110,7 @@
           },
           {
             "name": "question",
-            "type": "Question"
+            "type": "questions"
           },
           {
             "name": "position",
@@ -139,7 +139,7 @@
             "type": "experiment"
           },
           {
-            "name": "watch",
+            "name": "watch_id",
             "type": "Watch"
           },
           {
@@ -167,6 +167,10 @@
           {
             "name": "answer",
             "type": "question_answers"
+          },
+          {
+            "name": "created_az",
+            "type": "timestamp"
           }
         ],
         "primary key": "id"
@@ -183,38 +187,38 @@
             "type": "session"
           },
           {
-            "name": "esg_ecg",
+            "name": "ecg",
             "type": "integer"
           },
           {
-            "name": "esg_ppggreen",
+            "name": "ppggreen",
             "type": "integer"
           },
           {
-            "name": "esg_leadoff",
+            "name": "lead_off",
             "type": "integer"
           },
           {
-            "name": "esg_maxthreshold",
+            "name": "max_threshold",
             "type": "integer"
           },
           {
-            "name": "esg_sequence",
+            "name": "sequence",
             "type": "integer"
           },
           {
-            "name": "esg_minthreshold",
+            "name": "min_threshold",
             "type": "integer"
           },
           {
-            "name": "esg_time",
-            "type": "integer"
+            "name": "time",
+            "type": "timestamp"
           }
         ],
         "primary key": "id"
       },
       {
-        "name": "heartrate",
+        "name": "heart_rate",
         "columns": [
           {
             "name": "id",
@@ -225,11 +229,23 @@
             "type": "session"
           },
           {
-            "name": "heartrate_status",
+            "name": "hr",
             "type": "integer"
           },
           {
-            "name": "heartrate_time",
+            "name": "hr_status",
+            "type": "integer"
+          },
+          {
+            "name": "ibi",
+            "type": "integer"
+          },
+          {
+            "name": "ibi_status",
+            "type": "integer"
+          },
+          {
+            "name": "time",
             "type": "timestamp"
           }
         ],
@@ -247,19 +263,19 @@
             "type": "session"
           },
           {
-            "name": "spo2_spo2",
+            "name": "spo2",
             "type": "integer"
           },
           {
-            "name": "spo2_heartrate",
+            "name": "heartrate",
             "type": "integer"
           },
           {
-            "name": "spo2_status",
+            "name": "status",
             "type": "integer"
           },
           {
-            "name": "spo2_time",
+            "name": "time",
             "type": "timestamp"
           }
         ],
@@ -277,19 +293,19 @@
             "type": "session"
           },
           {
-            "name": "accelerometer_x",
+            "name": "x",
             "type": "integer"
           },
           {
-            "name": "accelerometer_y",
+            "name": "y",
             "type": "integer"
           },
           {
-            "name": "accelerometer_z",
+            "name": "z",
             "type": "integer"
           },
           {
-            "name": "accelerometer_time",
+            "name": "time",
             "type": "timestamp"
           }
         ],
@@ -307,11 +323,11 @@
             "type": "session"
           },
           {
-            "name": "ppgir_ppgir",
+            "name": "ppgir",
             "type": "integer"
           },
           {
-            "name": "ppgir_time",
+            "name": "time",
             "type": "timestamp"
           }
         ],
@@ -329,11 +345,11 @@
             "type": "session"
           },
           {
-            "name": "ppggreen_ppggreen",
+            "name": "ppggreen",
             "type": "integer"
           },
           {
-            "name": "ppggreen_time",
+            "name": "time",
             "type": "timestamp"
           }
         ],
@@ -351,11 +367,11 @@
             "type": "session"
           },
           {
-            "name": "ppgred_ppgred",
+            "name": "ppgred",
             "type": "integer"
           },
           {
-            "name": "ppgred_time",
+            "name": "time",
             "type": "timestamp"
           }
         ],
