@@ -259,7 +259,7 @@
             "type": "integer"
           },
           {
-            "name": "session",
+            "name": "session_id",
             "type": "session"
           },
           {
@@ -289,7 +289,7 @@
             "type": "integer"
           },
           {
-            "name": "session",
+            "name": "session_id",
             "type": "session"
           },
           {
@@ -319,7 +319,7 @@
             "type": "integer"
           },
           {
-            "name": "session",
+            "name": "session_id",
             "type": "session"
           },
           {
@@ -341,7 +341,7 @@
             "type": "integer"
           },
           {
-            "name": "session",
+            "name": "session_id",
             "type": "session"
           },
           {
@@ -363,7 +363,7 @@
             "type": "integer"
           },
           {
-            "name": "session",
+            "name": "session_id",
             "type": "session"
           },
           {
@@ -373,6 +373,42 @@
           {
             "name": "time",
             "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "experiment_watch_id",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "experiment_id",
+            "type": "session"
+          },
+          {
+            "name": "watch_id",
+            "type": "integer"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "experiment_questions",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "experiment_id",
+            "type": "session"
+          },
+          {
+            "name": "questions_id",
+            "type": "integer"
           }
         ],
         "primary key": "id"
