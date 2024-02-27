@@ -225,7 +225,7 @@
             "type": "integer"
           },
           {
-            "name": "session",
+            "name": "session_id",
             "type": "session"
           },
           {

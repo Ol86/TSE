@@ -116,8 +116,9 @@
             if (currentTab >= tabs.length) {
                 document.getElementById("creationForm").submit();
                 return false;
+            } else {
+                showTab(currentTab);
             }
-            showTab(currentTab);
         }
 
         function validateForm() {
