@@ -78,6 +78,7 @@ class ECGTrackerListener(private val trackerType: HealthTrackerType, private val
                         job.join()
                     }
 
+                    Log.i("ECG", dataPoint.getValue(ValueKey.EcgSet.ECG).toString())
 
                     //println("JSON Test")
 

@@ -47,7 +47,7 @@ class PpgRedTrackerListener(private val trackerType: HealthTrackerType, private 
                         job.join()
                     }
 
-                    //println("json ppgRed")
+                    //Log.i("ppgRed", dataPoint.getValue(ValueKey.PpgRedSet.PPG_RED).toString())
                 }
             }
         }

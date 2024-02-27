@@ -46,7 +46,7 @@ class PpgIRTrackerListener(private val trackerType: HealthTrackerType, private v
                         job.join()
                     }
 
-                    //println("json ppgIR")
+                    //Log.i("ppgIR", dataPoint.getValue(ValueKey.PpgIrSet.PPG_IR).toString())
                 }
             }
         }

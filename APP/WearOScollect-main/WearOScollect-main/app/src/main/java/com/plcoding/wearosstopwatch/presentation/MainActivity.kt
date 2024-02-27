@@ -1,5 +1,6 @@
 package com.plcoding.wearosstopwatch.presentation
 
+import BackEndWorker
 import DataSender
 import android.Manifest
 import android.annotation.SuppressLint
@@ -338,23 +339,28 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         return periodicWorkRequest
     }
 
-    private fun createBackEndWorker() : PeriodicWorkRequest{
+    private fun createBackEndWorker(initialDelay: Long, promptFrequency: Long) : PeriodicWorkRequest{
         // Erstellen des WorkManagers
 
         // Konfiguration für die PeriodicWorkRequest
-        val constraints = Constraints.Builder()
+        /*val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
+            .build()*/
 
+        val promptFrequencyTimeUnit = TimeUnit.MINUTES
         // Erstellen der PeriodicWorkRequest
         val periodicWorkRequest = PeriodicWorkRequestBuilder<BackEndWorker>(
-            repeatInterval = 10, // Alle 10 Sekunden wiederholen
-            repeatIntervalTimeUnit = TimeUnit.SECONDS
+            promptFrequency,
+            promptFrequencyTimeUnit
+            //repeatInterval = 10, // Alle 10 Sekunden wiederholen
+            //repeatIntervalTimeUnit = TimeUnit.SECONDS
         )
-            .setConstraints(constraints)
+            //.setConstraints(constraints)
+            .setInitialDelay(initialDelay, promptFrequencyTimeUnit)
             .addTag("BackEndWorker")
             .build()
 
+        Log.i("BackendWorker", "created")
         return periodicWorkRequest
     }
 
@@ -545,7 +551,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             WorkManager.getInstance(this).enqueue(periodicWorkRequest)
         }
 
-        val periodicWorkRequestTheThird = createBackEndWorker()
+        val periodicWorkRequestTheThird = createBackEndWorker(1, 1)
         WorkManager.getInstance(this).enqueue(periodicWorkRequestTheThird)
 
         /*val periodicWorkRequest4 = createW()
@@ -903,7 +909,7 @@ private fun StopWatch(
             )
             if (maxTime != 0) {
                 Text(
-                   text = " / $maxTime",
+                   text = " / ${convertMinutesToHHMMSS(maxTime)}",
                    fontSize = 16.sp,
                    fontWeight = FontWeight.Light,
                    textAlign = TextAlign.Center,
@@ -1029,6 +1035,14 @@ private fun StopWatch(
         }
     }
 }
+private fun convertMinutesToHHMMSS(minutes: Int): String {
+    val hours = minutes / 60
+    val remainingMinutes = minutes % 60
+    val seconds = 0
+
+    return String.format("%02d:%02d:%02d", hours, remainingMinutes, seconds)
+}
+
 
 
 @Composable

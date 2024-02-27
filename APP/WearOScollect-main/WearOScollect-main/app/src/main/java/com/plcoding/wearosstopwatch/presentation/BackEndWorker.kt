@@ -1,5 +1,3 @@
-package com.plcoding.wearosstopwatch.presentation
-
 import android.app.usage.ConfigurationStats
 import android.content.Context
 import android.util.Log
@@ -61,25 +59,25 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
         timer?.cancel()
     }
 
-        private fun dbDataTOJSON(): JsonObject {
-            try {
-                this.addQuestionData()
-                val job = scope.launch {
-                    dbData = UserDataStore.getUserRepository(context).getLatestDataAsJson()
-                }
-                runBlocking(Dispatchers.IO) {
-                    job.join()
-                }
-            } catch (e: Exception){
-
-                println("Error in Converting to Json!")
+    private fun dbDataTOJSON(): JsonObject {
+        try {
+            this.addQuestionData()
+            val job = scope.launch {
+                dbData = UserDataStore.getUserRepository(context).getLatestDataAsJson()
             }
-            Log.i("DebuggingA1", dbData)
-            val jsonObject: JsonObject = JsonParser().parse(dbData)
-                .getAsJsonObject()
-            Log.i("DebuggingA1", jsonObject.toString())
-            return jsonObject
+            runBlocking(Dispatchers.IO) {
+                job.join()
+            }
+        } catch (e: Exception){
+
+            println("Error in Converting to Json!")
         }
+        Log.i("DebuggingA1", dbData)
+        val jsonObject: JsonObject = JsonParser().parse(dbData)
+            .getAsJsonObject()
+        Log.i("DebuggingA1", jsonObject.toString())
+        return jsonObject
+    }
 
     private fun addQuestionData(){
         var questionData: QuestionData
@@ -135,80 +133,76 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
         }
     }
 
-        private fun connectApi(){
-            val timeoutSeconds = 30// Set your desired timeout value in seconds
-            val client = OkHttpClient.Builder()
-                .readTimeout(timeoutSeconds.toLong(), TimeUnit.SECONDS)
-                .writeTimeout(timeoutSeconds.toLong(), TimeUnit.SECONDS)
-                .build()
-            Log.i("sendDataApi0001", "Testing Timeout fix")
-            val thread = Thread {
+    private fun connectApi(){
+        val timeoutSeconds = 30// Set your desired timeout value in seconds
+        val client = OkHttpClient.Builder()
+            .readTimeout(timeoutSeconds.toLong(), TimeUnit.SECONDS)
+            .writeTimeout(timeoutSeconds.toLong(), TimeUnit.SECONDS)
+            .build()
+        Log.i("sendDataApi0001", "Testing Timeout fix")
+        val thread = Thread {
+            try {
+                Log.i("APImessage", "Connect")
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("http://193.196.36.62:9000/")
+                    .client(client)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+
+
+                val apiService: ApiService = retrofit.create(ApiService::class.java)
+
                 try {
-                    Log.i("APImessage", "Connect")
-                    val retrofit = Retrofit.Builder()
-                        .baseUrl("http://193.196.36.62:9000/")
-                        .client(client)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build()
+                    val tokenResponse = apiService.getToken(
 
-
-                    val apiService: ApiService = retrofit.create(ApiService::class.java)
-
-                    try {
-                        val tokenResponse = apiService.getToken(
-
-                            JsonObject().apply {
-                                addProperty("username", "Watch1")
-                                addProperty("password", "tse-KIT-2023")
-                            }
-                        ).execute()
-                        Log.i("sendDataApi0", "Test")
-
-                        if (tokenResponse.isSuccessful) {
-                            val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
-                            //Log.i("sendDataApi1", token)
-
-                            val postResponse = apiService.testPost(
-                                this.dbDataTOJSON(),
-                                //json.getStoredDataAsJsonObject(),
-                                /*JsonObject().apply {
-                                    addProperty("test1", "Hello World")
-                                },*/
-                                token
-                            ).execute()
-
-                            if (postResponse.isSuccessful) {
-                                //println(postResponse.body())
-                                //Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
-                                Log.i("sendDataApi2", postResponse.toString())
-                                Log.i("sendDataApi3", "${postResponse.code()}")
-                                Log.i("sendDataApi3", postResponse.body().toString())
-
-                            } else {
-                                Log.i("sendDataApi4", postResponse.toString())
-
-
-                                Log.i("sendDataApi5", "${postResponse.code()}")
-                                //Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
-                            }
-                        } else {
-                            Log.i("sendDataApi6", "${tokenResponse.code()}")
-                            Log.i("sendDataApi6,5", tokenResponse.toString())
+                        JsonObject().apply {
+                            addProperty("username", "Watch1")
+                            addProperty("password", "tse-KIT-2023")
                         }
+                    ).execute()
+                    Log.i("sendDataApi0", "Test")
 
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        Log.i("sendDataApi7", "${e.printStackTrace()}")
+                    if (tokenResponse.isSuccessful) {
+                        val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
+                        //Log.i("sendDataApi1", token)
+
+                        val postResponse = apiService.testPost(
+                            this.dbDataTOJSON(),
+                            //json.getStoredDataAsJsonObject(),
+                            /*JsonObject().apply {
+                                addProperty("test1", "Hello World")
+                            },*/
+                            token
+                        ).execute()
+
+                        if (postResponse.isSuccessful) {
+                            //println(postResponse.body())
+                            //Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
+                            Log.i("sendDataApi2", postResponse.toString())
+                            Log.i("sendDataApi3", "${postResponse.code()}")
+                            Log.i("sendDataApi3", postResponse.body().toString())
+
+                        } else {
+                            Log.i("sendDataApi4", postResponse.toString())
+
+
+                            Log.i("sendDataApi5", "${postResponse.code()}")
+                            //Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
+                        }
+                    } else {
+                        Log.i("sendDataApi6", "${tokenResponse.code()}")
+                        Log.i("sendDataApi6,5", tokenResponse.toString())
                     }
-                } catch (e: java.lang.Exception) {
-                    Log.i("sendDataApi8", "${e.printStackTrace()}")
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Log.i("sendDataApi7", "${e.printStackTrace()}")
                 }
+            } catch (e: java.lang.Exception) {
+                Log.i("sendDataApi8", "${e.printStackTrace()}")
             }
-
-            thread.start()
-            thread.join()
         }
-
-
-
+        thread.start()
+        thread.join()
+    }
 }

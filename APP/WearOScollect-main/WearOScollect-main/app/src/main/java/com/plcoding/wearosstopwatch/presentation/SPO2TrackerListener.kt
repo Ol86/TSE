@@ -47,9 +47,7 @@ class SPO2TrackerListener(private val trackerType: HealthTrackerType, private va
                     runBlocking(Dispatchers.IO) {
                         job.join()
                     }
-
-
-                    //(println("json spo2")
+                    //Log.i("SPO2", dataPoint.getValue(ValueKey.SpO2Set.SPO2).toString())
                 }
             }
         }

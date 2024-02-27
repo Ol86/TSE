@@ -48,7 +48,7 @@ class PpgGreenTrackerListener(private val trackerType: HealthTrackerType,private
                         job.join()
                     }
 
-                   // println("json pggGreen")
+                    //Log.i("ppgGreen", dataPoint.getValue(ValueKey.PpgGreenSet.PPG_GREEN).toString())
                 }
             }
         }
