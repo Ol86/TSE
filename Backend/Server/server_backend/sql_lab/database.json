@@ -1,0 +1,418 @@
+{
+  "database": {
+    "tables": [
+      {
+        "name": "experiment",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "questions",
+            "type": "Question"
+          },
+          {
+            "name": "accelerometer",
+            "type": "boolean"
+          },
+          {
+            "name": "heart_rate",
+            "type": "boolean"
+          },
+          {
+            "name": "ppg_green",
+            "type": "boolean"
+          },
+          {
+            "name": "ppg_ir",
+            "type": "boolean"
+          },
+          {
+            "name": "ppg_red",
+            "type": "boolean"
+          },
+          {
+            "name": "bia",
+            "type": "boolean"
+          },
+          {
+            "name": "ecg",
+            "type": "boolean"
+          },
+          {
+            "name": "spo2",
+            "type": "boolean"
+          },
+          {
+            "name": "sweat_loss",
+            "type": "boolean"
+          },
+          {
+            "name": "watches",
+            "type": "Watch"
+          },
+          {
+            "name": "created_by",
+            "type": "integer"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "questions",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "question",
+            "type": "string"
+          },
+          {
+            "name": "button1",
+            "type": "boolean"
+          },
+          {
+            "name": "button2",
+            "type": "boolean"
+          },
+          {
+            "name": "button3",
+            "type": "boolean"
+          },
+          {
+            "name": "button4",
+            "type": "boolean"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "question_answers",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "question",
+            "type": "questions"
+          },
+          {
+            "name": "position",
+            "type": "integer"
+          },
+          {
+            "name": "answer",
+            "type": "string"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "session",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "experiment_id",
+            "type": "experiment"
+          },
+          {
+            "name": "watch_id",
+            "type": "Watch"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "answers",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "experiment_id",
+            "type": "experiment"
+          },
+          {
+            "name": "session_id",
+            "type": "session"
+          },
+          {
+            "name": "answer",
+            "type": "question_answers"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "ecg",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "session_id",
+            "type": "session"
+          },
+          {
+            "name": "ecg",
+            "type": "integer"
+          },
+          {
+            "name": "ppggreen",
+            "type": "integer"
+          },
+          {
+            "name": "lead_off",
+            "type": "integer"
+          },
+          {
+            "name": "max_threshold",
+            "type": "integer"
+          },
+          {
+            "name": "sequence",
+            "type": "integer"
+          },
+          {
+            "name": "min_threshold",
+            "type": "integer"
+          },
+          {
+            "name": "time",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "heart_rate",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "session_id",
+            "type": "session"
+          },
+          {
+            "name": "hr",
+            "type": "integer"
+          },
+          {
+            "name": "hr_status",
+            "type": "integer"
+          },
+          {
+            "name": "ibi",
+            "type": "integer"
+          },
+          {
+            "name": "ibi_status",
+            "type": "integer"
+          },
+          {
+            "name": "time",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "spo2",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "session_id",
+            "type": "session"
+          },
+          {
+            "name": "spo2",
+            "type": "integer"
+          },
+          {
+            "name": "heartrate",
+            "type": "integer"
+          },
+          {
+            "name": "status",
+            "type": "integer"
+          },
+          {
+            "name": "time",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "accelerometer",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "session_id",
+            "type": "session"
+          },
+          {
+            "name": "x",
+            "type": "integer"
+          },
+          {
+            "name": "y",
+            "type": "integer"
+          },
+          {
+            "name": "z",
+            "type": "integer"
+          },
+          {
+            "name": "time",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "ppg_ir",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "session_id",
+            "type": "session"
+          },
+          {
+            "name": "ppgir",
+            "type": "integer"
+          },
+          {
+            "name": "time",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "ppg_green",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "session_id",
+            "type": "session"
+          },
+          {
+            "name": "ppggreen",
+            "type": "integer"
+          },
+          {
+            "name": "time",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "ppg_red",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "session_id",
+            "type": "session"
+          },
+          {
+            "name": "ppgred",
+            "type": "integer"
+          },
+          {
+            "name": "time",
+            "type": "timestamp"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "experiment_watch_id",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "experiment_id",
+            "type": "session"
+          },
+          {
+            "name": "watch_id",
+            "type": "integer"
+          }
+        ],
+        "primary key": "id"
+      },
+      {
+        "name": "experiment_questions",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "experiment_id",
+            "type": "session"
+          },
+          {
+            "name": "questions_id",
+            "type": "integer"
+          }
+        ],
+        "primary key": "id"
+      }
+    ]
+  }
+}

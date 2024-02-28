@@ -1,14 +1,16 @@
+# The base Structure for the model.
 from django.db import models
 
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+# The Regex pattern for the mac address.
 from django.core.validators import RegexValidator
 
+import time
+
+# The base Structures for the user and usermanager
 from django.contrib.auth.models import BaseUserManager as Manager
 from django.contrib.auth.models import AbstractBaseUser as UserBase
 
 # --------------------------------------------------------------------------------------------------- #
-
 class BaseUserManager(Manager):
     """This class manages the creation of the base user.
     """
@@ -52,12 +54,12 @@ class BaseUserManager(Manager):
             password=password,
         )
         user.is_admin = True
+        user.is_active = True
         user.save(using=self.db)
         profile = Profile.objects.create(user=user)
         profile.role = 1
         profile.save()
         return user
-
 
 class BaseUser(UserBase):
     """This class is the base user of the backend.
@@ -78,7 +80,7 @@ class BaseUser(UserBase):
     type = models.PositiveSmallIntegerField(choices=TYPE, default=USER)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     objects = BaseUserManager()
 
@@ -86,22 +88,38 @@ class BaseUser(UserBase):
     REQUIRED_FIELDS = []
 
     def __str__(self):
+        """This method sets the display name.
+
+        :return: The username.
+        """
         return self.username
 
     def has_perm(self, perm, obj=None):
+        """This method sets the permission of the user.
+
+        :param perm: The permission to be checked.
+        :param obj: The permission object, defaults to None.
+        :return: A boolean value if the user has permissions.
+        """
         return True
 
     def has_module_perms(self, app_label):
+        """This method sets the permission to use an other model.
+
+        :param app_label: The label of the app of the model.
+        :return: A boolean value if the user has permissions.
+        """
         return True
 
     @property
     def is_staff(self):
+        """This method sets the is_staff property of the user.
+
+        :return: The boolean value if the user has the property.
+        """
         return self.is_admin
 
-
 # --------------------------------------------------------------------------------------------------- #
-
-
 class Profile(models.Model):
     """This model adds some important fields for the user.
 
@@ -120,12 +138,15 @@ class Profile(models.Model):
     role = models.CharField(max_length=10, choices=ROLE)
 
     def __str__(self):
+        """This method sets the display name.
+
+        :return: The username.
+        """
         return self.user.username
 
 # --------------------------------------------------------------------------------------------------- #
-
 class Watch(models.Model):
-    """This is the watch model, that adds the mac_adress field.
+    """This is the watch model, that adds the serialnumber field.
 
     Args:
         models (Model): The basic model of django.
@@ -134,13 +155,12 @@ class Watch(models.Model):
         watch: The watch model of the backend.
     """
     user = models.OneToOneField(BaseUser, on_delete=models.CASCADE, primary_key=True)
-    mac_adress = models.CharField(max_length=17, validators=[
-        RegexValidator(
-            regex='^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$',
-            message="Enter a valid mac adress",
-            code="invalid_mac_adress"
-        )
-    ])
+    serialnumber = models.CharField(max_length=50)
+    is_running = models.BooleanField(default=False)
 
     def __str__(self):
+        """This method sets the display name.
+
+        :return: The username.
+        """
         return self.user.username

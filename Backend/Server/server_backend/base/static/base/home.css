@@ -6,12 +6,18 @@ body {
     grid-template-rows: 50px 80px auto 50px;
     grid-template-areas: 
         "header header header header logout"
-        "title title title title title"
-        "delete experiment experiment experiment ."
+        ". . title . ."
+        ". . main . ."
         "footer footer footer footer footer"
     ;
     grid-gap: 8px;
 }
+
+#homeBody {
+    grid-area: main;
+}
+
+
 
 .logout-button {
     grid-area: logout;
@@ -51,41 +57,11 @@ header {
 
 h1 {
     grid-area: title;
-}
-
-.experiment {
-    display: block;
-    height: fit-content;
-    padding: 12px;
-    line-height: 24px;
+    font-size: 2em;
     font-weight: 600;
-    font-size: 1.40em;
     letter-spacing: 0.05em;
-    margin: 15px 0;
-}
-
-.date {
-    float: inline-end;
-}
-
-#experiment-delete {
-    grid-area: delete;
-}
-
-#delete-button {
-    text-align: center;
-    background: darkslategray;
     color: turquoise;
-    font-weight: 600;
-    font-size: 1.35em;
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-#experiment-title {
-    grid-area: experiment;
-    width: 100%;
+    text-transform: uppercase;
 }
 
 .buttonList {

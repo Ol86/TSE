@@ -20,9 +20,10 @@ body {
     ;
 }
 
-#quit {
+#quit, button {
     grid-area: quit;
     text-align: center;
+    text-decoration: none;
     height: fit-content;
     padding: 12px;
     background: darkslategray;
@@ -31,24 +32,16 @@ body {
     font-size: 1.35em;
     letter-spacing: 0.05em;
     cursor: pointer;
+    border: none;
     border-radius: 4px;
     text-transform: uppercase;
 }
 
-.creationForm {
+#creationForm {
     grid-area: main;
-    display: grid;
-    grid-template-rows: auto;
-    grid-template-areas: 
-        "header"
-        "form"
-        "footer"
-    ;
 }
 
 h2 {
-    grid-area: header;
-    height: fit-content;
     text-align: center;
     font-size: 2em;
     font-weight: 600;
@@ -57,37 +50,16 @@ h2 {
     text-transform: uppercase;
 }
 
-.formElements {
-    grid-area: form;
+table {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #333333;
+    border-radius: 4px;
 }
 
 td {
     width: 160px;
     text-align: center;
-}
-
-.multipleSelect {
-    display: block;
-    margin: 10px 0;
-    padding: 20px 10px;
-    height: 80px;
-    border-radius: 4px;
-    background: #333333;
-    color: #ffffff;
-    overflow: scroll;
-    border: none;
-    outline: none;
-    font-weight: 500;
-    font-size: 1em;
-}
-
-.multipleSelect::-webkit-scrollbar {
-    display: none;
-}
-
-.multipleSelect {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
 }
 
 .headline {
@@ -118,6 +90,21 @@ input[type="checkbox"] {
     accent-color: turquoise;
 }
 
+#id_questions {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #333333;
+    border-radius: 4px;
+    max-height: 150px;
+    overflow: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+#id_questions::-webkit-scrollbar {
+    display: none;
+}
+
 #id_questions>div {
     height: 20px;
     margin: 10px 0;
@@ -136,36 +123,75 @@ input[type="checkbox"] {
     vertical-align: middle;
 }
 
-#id_watches>div {
+#id_watch_id {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #333333;
+    border-radius: 4px;
+    max-height: 250px;
+    overflow: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+#id_watch_id::-webkit-scrollbar {
+    display: none;
+}
+
+#id_watch_id>div {
     height: 20px;
     margin: 10px 0;
 }
 
-#id_watches>div:first-child {
+#id_watch_id>div:first-child {
     margin-top: 0;
 }
 
-#id_watches>div:last-child {
+#id_watch_id>div:last-child {
     margin-bottom: 0;
 }
 
-#id_watches>div>label>input{
+#id_watch_id>div>label>input{
     width: 30px;
     vertical-align: middle;
 }
 
-#submit {
-    grid-area: footer;
-    height: fit-content;
-    padding: 10px;
-    background: darkslategray;
-    color: turquoise;
-    font-weight: 600;
-    font-size: 1.35em;
-    letter-spacing: 0.05em;
-    cursor: pointer;
+input.invalid {
+    background-color: #fddddd;
 }
 
-#submit:active {
-    opacity: 0.6;
+.tab {
+    display: none;
+}
+
+button {
+    margin-top: 40px;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+#prevBtn {
+    background-color: transparent;
+    border: 1px solid darkslategray;
+}
+
+.step {
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #bbbbbb;
+    border: none;  
+    border-radius: 50%;
+    display: inline-block;
+    opacity: 0.5;
+}
+
+.step.active {
+    opacity: 1;
+}
+
+.step.finish {
+    background-color: turquoise;
 }

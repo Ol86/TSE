@@ -1,5 +1,6 @@
 package com.plcoding.wearosstopwatch.presentation
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -39,34 +40,42 @@ class LabelActivity : ComponentActivity() {
         setContent {
             LabelWatch(
                 intent.getLongExtra("NotificationTimeId", -1),
+                questions = (intent.getSerializableExtra("questions") as Array<TemplateQuestion>).toMutableList(),
                 navController = rememberSwipeDismissableNavController(),
                 modifier = Modifier.fillMaxSize(),
             )
         }
     }
 
-    fun insertAffect(id: Long, affect: String) {
+    fun insertAffect(id: Long, affect: String, question: String) {
         UserDataStore
             .getUserRepository(applicationContext)
             .insertAffect(
                 lifecycleScope,
-                AffectData(0, id, affect)
+                AffectData(0, id,  affect, question)
             ) {
                 //finish()
                 Log.v("success", "This actually worked")
             }
     }
-    fun insertContext(id: Long, affect: String) {
+    fun insertContext(id: Long, affect: String, question: String) {
         UserDataStore
             .getUserRepository(applicationContext)
             .insertAffect(
                 lifecycleScope,
-                AffectData(0, id, affect)
+                AffectData(0, id, affect, question)
             ) {
                 finish()
 
+                //val mainActivityIntent = Intent(this@LabelActivity, MainActivity::class.java).apply {
+                    //putExtra("currentView", 1)
+                //}
+
+                //this makes the App return to the Stopwatch View
+                //if removed the App returns to the HomeScreen of the Watch
                 val mainActivityIntent = Intent(this@LabelActivity, MainActivity::class.java)
                 startActivity(mainActivityIntent)
+                finish()
                 Log.v("success", "This actually worked")
             }
     }
@@ -74,414 +83,464 @@ class LabelActivity : ComponentActivity() {
     @Composable
     private fun LabelWatch(
         notificationTimeId: Long,
+        questions: List<TemplateQuestion>,
         navController: NavHostController,
         startDestination: String = "overview",
         modifier: Modifier = Modifier,
-        numberOfQuestions: Int = 4
+        numberOfQuestions: Int = questions.size
     ) {
         NavHost(
             navController = navController,
             startDestination = "overview"
         ) {
-            val redButton = 0xFFFF4522
-            val greenButton = 0xFFAAAF50
-            val yellowButton = 0xFFCCA62B
+            val redButton = 0xFFAC3123
+            val greenButton = 0xFF32CD32
+            val yellowButton = 0xFFFFF2C000
+            val orangeButton = 0xFFFFF28111
             val blueButton = 0xFF008CE4
             val contextButton = 0xFF505050
 
             composable("overview") {
+                val buttonVisibility = remember { mutableStateListOf<Boolean>() }
+                repeat(4) {
+                    buttonVisibility.add(it < numberOfQuestions)
+                }
                 LabelView(
                     first = LabelButton(
-                        "Stand anschauen",
-                        redButton,
-                        func = {
-                            if (numberOfQuestions > 1) {
-                                navController.navigate("veraergert")
-                            }
-                            else {
-                                insertContext(notificationTimeId, "veraergert")
-                            }
-                        }),
-                    second = LabelButton(
-                        "Traurig",
-                        blueButton,
-                        func = {
-                            if (numberOfQuestions > 1) {
-                                navController.navigate("traurig")
-                            }
-                            else {
-                                insertContext(notificationTimeId, "traurig")
-                            }
-                        }),
-                    third = LabelButton(
-                        "Glücklich",
+                        questions[0].button1_text,
                         greenButton,
                         func = {
                             if (numberOfQuestions > 1) {
-                                navController.navigate("gluecklich")
+                                Log.i("NUMBER", questions.size.toString())
+                                insertAffect(notificationTimeId, "1", questions[0].id.toString())
+                                Log.i("Questions", questions.toString())
+                                navController.navigate("Question_2")
                             }
                             else {
-                                insertContext(notificationTimeId, "glücklich")
+                                Log.i("NUMBER", questions.size.toString())
+                                Log.i("Questions", questions.toString())
+                                insertContext(notificationTimeId, "1", questions[0].id.toString())
                             }
                         }),
-                    fourth = LabelButton(
-                        "Entspannt",
+                    second = LabelButton(
+                        questions[0].button2_text,
                         yellowButton,
                         func = {
                             if (numberOfQuestions > 1) {
-                                navController.navigate("entspannt")
+                                insertAffect(notificationTimeId, "2", questions[0].id.toString())
+                                navController.navigate("Question_2")
                             }
                             else {
-                                insertContext(notificationTimeId, "entspannt")
-                            }
-                        }),
-                    question = "Wie fühlst du dich gerade?",
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-            composable("veraergert") {
-                LabelView(
-                    first = LabelButton(
-                        "Angespannt",
-                        redButton,
-                        func = {
-                            if (numberOfQuestions > 2) {
-                                navController.navigate("kontext")
-                                insertAffect(notificationTimeId, "Angespannt")
-                            }
-                            else {
-                                insertContext(notificationTimeId, "angespannt")
-                            }
-                        }),
-                    second = LabelButton(
-                        "Betrübt",
-                        redButton,
-                        func = {
-                            if (numberOfQuestions > 2) {
-                                navController.navigate("kontext")
-                                insertAffect(notificationTimeId, "Betrübt")
-                            }
-                            else {
-                                insertContext(notificationTimeId, "betrübt")
+                                insertContext(notificationTimeId, "2", questions[0].id.toString())
                             }
                         }),
                     third = LabelButton(
-                        "Frustriert",
-                        redButton,
+                        questions[0].button3_text,
+                        orangeButton,
                         func = {
-                            if (numberOfQuestions > 2) {
-                                navController.navigate("kontext")
-                                insertAffect(notificationTimeId, "Frustriert")
+                            if (numberOfQuestions > 1) {
+                                insertAffect(notificationTimeId, "3", questions[0].id.toString())
+                                navController.navigate("Question_2")
                             }
                             else {
-                                insertContext(notificationTimeId, "frustriert")
+                                insertContext(notificationTimeId, "3", questions[0].id.toString())
                             }
                         }),
                     fourth = LabelButton(
-                        "Wütend",
+                        questions[0].button4_text,
                         redButton,
                         func = {
-                            if (numberOfQuestions > 2) {
-                                navController.navigate("kontext")
-                                insertAffect(notificationTimeId, "Wütend")
+                            if (numberOfQuestions > 1) {
+                                insertAffect(notificationTimeId, "4", questions[0].id.toString())
+                                navController.navigate("Question_2")
                             }
                             else {
-                                insertContext(notificationTimeId, "wütend")
+                                insertContext(notificationTimeId, "4", questions[0].id.toString())
                             }
                         }),
-                    question = "Wie verärgert?",
+                    question = questions[0].question,
+                    buttonVisibility = listOf(questions[0].button1, questions[0].button2,
+                        questions[0].button3, questions[0].button4),
                     modifier = Modifier.fillMaxSize()
                 )
             }
+            composable("Question_2") {
+                val buttonVisibility = remember { mutableStateListOf<Boolean>() }
+                repeat(4) {
+                    buttonVisibility.add(it < numberOfQuestions)
+                }
+                LabelView(
+                    first = LabelButton(
+                        questions[1].button1_text,
+                        greenButton,
+                        func = {
+                            if (numberOfQuestions > 2) {
+                                insertAffect(notificationTimeId, "1", questions[1].id.toString())
+                                navController.navigate("kontext")
+                            }
+                            else {
+                                insertContext(notificationTimeId, "1", questions[1].id.toString())
+                            }
+                        }),
+                    second = LabelButton(
+                        questions[1].button2_text,
+                        blueButton,
+                        func = {
+                            if (numberOfQuestions > 2) {
+                                insertAffect(notificationTimeId, "2", questions[1].id.toString())
+                                navController.navigate("kontext")
+                            }
+                            else {
+                                insertContext(notificationTimeId, "2", questions[1].id.toString())
+                            }
+                        }),
+                    third = LabelButton(
+                        questions[1].button3_text,
+                        yellowButton,
+                        func = {
+                            if (numberOfQuestions > 2) {
+                                insertAffect(notificationTimeId, "3", questions[1].id.toString())
+                                navController.navigate("kontext")
+                            }
+                            else {
+                                insertContext(notificationTimeId, "3", questions[1].id.toString())
+                            }
+                        }),
+                    fourth = LabelButton(
+                        questions[1].button4_text,
+                        redButton,
+                        func = {
+                            if (numberOfQuestions > 2) {
+                                insertAffect(notificationTimeId, "4", questions[1].id.toString())
+                                navController.navigate("kontext")
+                            }
+                            else {
+                                insertContext(notificationTimeId, "4", questions[1].id.toString())
+                            }
+                        }),
+                    question = questions[1].question,
+                    buttonVisibility = listOf(questions[1].button1, questions[1].button2,
+                        questions[1].button3, questions[1].button4),
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
+            /*
             composable("traurig") {
                 LabelView(
                     first = LabelButton(
-                        "Miserabel",
+                        questions[1].button1_text,
                         blueButton,
                         func = {
                             if (numberOfQuestions > 2) {
                                 navController.navigate("kontext")
-                                insertAffect(notificationTimeId, "Miserabel")
+                                insertAffect(notificationTimeId, questions[1].button1_text)
                             }
                             else {
-                                insertContext(notificationTimeId, "miserabel")
+                                insertContext(notificationTimeId, questions[1].button1_text)
                             }
                         }),
                     second = LabelButton(
-                        "Deprimiert",
+                        questions[1].button2_text,
                         blueButton,
                         func = {
                             if (numberOfQuestions > 2) {
                                 navController.navigate("kontext")
-                                insertAffect(notificationTimeId, "Deprimiert")
+                                insertAffect(notificationTimeId, questions[1].button2_text)
                             }
                             else {
-                                insertContext(notificationTimeId, "deprimiert")
+                                insertContext(notificationTimeId, questions[1].button2_text)
                             }
                         }),
                     third = LabelButton(
-                        "Traurig",
+                        questions[1].button3_text,
                         blueButton,
                         func = {
                             if (numberOfQuestions > 2) {
                                 navController.navigate("kontext")
-                                insertAffect(notificationTimeId, "Traurig")
+                                insertAffect(notificationTimeId, questions[1].button3_text)
                             }
                             else {
-                                insertContext(notificationTimeId, "traurig")
+                                insertContext(notificationTimeId, questions[1].button3_text)
                             }
                         }),
                     fourth = LabelButton(
-                        "Gelangweilt",
+                        questions[1].button4_text,
                         blueButton,
                         func = {
                             if (numberOfQuestions > 2) {
                                 navController.navigate("kontext")
-                                insertAffect(notificationTimeId, "Gelangweilt")
+                                insertAffect(notificationTimeId, questions[1].button4_text)
                             }
                             else {
-                                insertContext(notificationTimeId, "gelangweilt")
+                                insertContext(notificationTimeId, questions[1].button4_text)
                             }
                         }),
-                    question = "DDDDDDDDDDDDDDDDDDDDDDDDD",
+                    question = questions[1].question,
                     modifier = Modifier.fillMaxSize()
                 )
             }
             composable("gluecklich") {
                 LabelView(
                     first = LabelButton(
-                        "Glücklich",
+                        questions[1].button1_text,
                         greenButton,
                         func = {
                             if (numberOfQuestions > 2) {
                                 navController.navigate("kontext")
-                                insertAffect(notificationTimeId, "Glücklich")
+                                insertAffect(notificationTimeId, questions[1].button1_text)
                             }
                             else {
-                                insertContext(notificationTimeId, "glücklich")
+                                insertContext(notificationTimeId, questions[1].button1_text)
                             }
                         }),
                     second = LabelButton(
-                        "Begeistert",
+                        questions[1].button2_text,
                         greenButton,
                         func = {
                             if (numberOfQuestions > 2) {
                                 navController.navigate("kontext")
-                                insertAffect(notificationTimeId, "Begeistert")
+                                insertAffect(notificationTimeId, questions[1].button2_text)
                             }
                             else {
-                                insertContext(notificationTimeId, "begeistert")
+                                insertContext(notificationTimeId, questions[1].button2_text)
                             }
                         }),
                     third = LabelButton(
-                        "Aufgeregt",
+                        questions[1].button3_text,
                         greenButton,
                         func = {
                             if (numberOfQuestions > 2) {
                                 navController.navigate("kontext")
-                                insertAffect(notificationTimeId, "Aufgeregt")
+                                insertAffect(notificationTimeId, questions[1].button3_text)
                             }
                             else {
-                                insertContext(notificationTimeId, "aufgeregt")
+                                insertContext(notificationTimeId, questions[1].button3_text)
                             }
                         }),
                     fourth = LabelButton(
-                        "Erfreut",
+                        questions[1].button4_text,
                         greenButton,
                         func = {
                             if (numberOfQuestions > 2) {
                                 navController.navigate("kontext")
-                                insertAffect(notificationTimeId, "Erfreut")
+                                insertAffect(notificationTimeId, questions[1].button4_text)
                             }
                             else {
-                                insertContext(notificationTimeId, "erfreut")
+                                insertContext(notificationTimeId, questions[1].button4_text)
                             }
                         }),
-                    question = "Wie glücklich?",
+                    question = questions[1].question,
                     modifier = Modifier.fillMaxSize()
                 )
             }
             composable("entspannt") {
                 LabelView(
                     first = LabelButton(
-                        "Schläfrig",
+                        questions[1].button1_text,
                         yellowButton,
                         func = {
                             if (numberOfQuestions > 2) {
                                 navController.navigate("kontext")
-                                insertAffect(notificationTimeId, "Schläfrig")
+                                insertAffect(notificationTimeId, questions[1].button1_text)
                             }
                             else {
-                                insertContext(notificationTimeId, "schläfrig")
+                                insertContext(notificationTimeId, questions[1].button1_text)
                             }
                         }),
                     second = LabelButton(
-                        "Zufrieden",
+                        questions[1].button2_text,
                         yellowButton,
                         func = {
                             if (numberOfQuestions > 2) {
                                 navController.navigate("kontext")
-                                insertAffect(notificationTimeId, "Zufrieden")
+                                insertAffect(notificationTimeId, questions[1].button2_text)
                             }
                             else {
-                                insertContext(notificationTimeId, "zufrieden")
+                                insertContext(notificationTimeId, questions[1].button2_text)
                             }
                         }),
                     third = LabelButton(
-                        "Erfüllt",
+                        questions[1].button3_text,
                         yellowButton,
                         func = {
                             if (numberOfQuestions > 2) {
                                 navController.navigate("kontext")
-                                insertAffect(notificationTimeId, "Erfüllt")
+                                insertAffect(notificationTimeId, questions[1].button3_text)
                             }
                             else {
-                                insertContext(notificationTimeId, "erfüllt")
+                                insertContext(notificationTimeId, questions[1].button3_text)
                             }
                         }),
                     fourth = LabelButton(
-                        "Ruhig",
+                        questions[1].button4_text,
                         yellowButton,
                         func = {
                             if (numberOfQuestions > 2) {
                                 navController.navigate("kontext")
-                                insertAffect(notificationTimeId, "Ruhig")
+                                insertAffect(notificationTimeId, questions[1].button4_text)
                             }
                             else {
-                                insertContext(notificationTimeId, "ruhig")
+                                insertContext(notificationTimeId, questions[1].button4_text)
                             }
                         }),
-                    question = "Wie entspannt?",
+                    question = questions[1].question,
                     modifier = Modifier.fillMaxSize()
                 )
             }
+             */
+
             composable("kontext") {
+                val buttonVisibility = remember { mutableStateListOf<Boolean>() }
+                repeat(4) {
+                    buttonVisibility.add(it < numberOfQuestions)
+                }
                 LabelView(
                     first = LabelButton(
-                        "Stand anschauen",
-                        contextButton,
+                        questions[2].button1_text,
+                        greenButton,
                         func = {
                             if (numberOfQuestions > 3) {
+                                insertAffect(notificationTimeId, "1", questions[2].id.toString())
                                 navController.navigate("Question_4")
-                                insertAffect(notificationTimeId, "Stand anschauen")
                             }
                             else {
-                                insertContext(notificationTimeId, "stand_anschauen")
+                                insertContext(notificationTimeId,"1", questions[2].id.toString())
                             }
                         }),
                     second = LabelButton(
-                        "Unterhaltung",
-                        contextButton,
+                        questions[2].button2_text,
+                        blueButton,
                         func = {
                             if (numberOfQuestions > 3) {
+                                insertAffect(notificationTimeId, "2", questions[2].id.toString())
                                 navController.navigate("Question_4")
-                                insertAffect(notificationTimeId, "Unterhaltung")
                             }
                             else {
-                                insertContext(notificationTimeId, "unterhaltung")
+                                insertContext(notificationTimeId, "2", questions[2].id.toString())
                             }
                         }),
                     third = LabelButton(
-                        "Laufen",
-                        contextButton,
+                        questions[2].button3_text,
+                        yellowButton,
                         func = {
                             if (numberOfQuestions > 3) {
+                                insertAffect(notificationTimeId, "3", questions[2].id.toString())
                                 navController.navigate("Question_4")
-                                insertAffect(notificationTimeId, "Laufen")
+
                             }
                             else {
-                                insertContext(notificationTimeId, "laufen")
+                                insertContext(notificationTimeId, "3", questions[2].id.toString())
                             }
                         }),
                     fourth = LabelButton(
-                        "Sonstiges",
-                        contextButton,
+                        questions[2].button4_text,
+                        redButton,
                         func = {
                             if (numberOfQuestions > 3) {
+                                insertAffect(notificationTimeId, "4", questions[2].id.toString())
                                 navController.navigate("Question_4")
-                                insertAffect(notificationTimeId, "Sonstiges")
                             }
                             else {
-                                insertContext(notificationTimeId, "sonstiges")
+                                insertContext(notificationTimeId, "4", questions[2].id.toString())
                             }
                         }),
-                    question = "Was tust du gerade?",
+                    question = questions[2].question,
+                    buttonVisibility = listOf(questions[2].button1, questions[2].button2,
+                        questions[2].button3, questions[2].button4),
                     modifier = Modifier.fillMaxSize()
                 )
             }
             composable("Question_4") {
+                val buttonVisibility = remember { mutableStateListOf<Boolean>() }
+                repeat(4) {
+                    buttonVisibility.add(it < numberOfQuestions)
+                }
                 LabelView(
                     first = LabelButton(
-                        "answer4.1",
-                        yellowButton,
+                        questions[3].button1_text,
+                        greenButton,
                         func = {
                             if (numberOfQuestions > 4) {
+                                insertAffect(notificationTimeId, "1", questions[3].id.toString())
                                 navController.navigate("Question_5")
-                                insertAffect(notificationTimeId, "QQQQQ")
+
                             }
                             else {
-                                insertContext(notificationTimeId, "qqqqqq")
+                                insertContext(notificationTimeId, "1", questions[3].id.toString())
                             }
                         }),
                     second = LabelButton(
-                        "answer4.2",
+                        questions[3].button2_text,
                         yellowButton,
                         func = {
                             if (numberOfQuestions > 4) {
+
+                                insertAffect(notificationTimeId, "2", questions[3].id.toString())
                                 navController.navigate("Question_5")
-                                insertAffect(notificationTimeId, "WWWWW")
                             }
                             else {
-                                insertContext(notificationTimeId, "wwwww")
+                                insertContext(notificationTimeId, "2", questions[3].id.toString())
                             }
                         }),
                     third = LabelButton(
-                        "answer4.3",
-                        yellowButton,
+                        questions[3].button3_text,
+                        orangeButton,
                         func = {
                             if (numberOfQuestions > 4) {
+                                insertAffect(notificationTimeId, "3", questions[3].id.toString())
                                 navController.navigate("Question_5")
-                                insertAffect(notificationTimeId, "EEEEE")
+
                             }
                             else {
-                                insertContext(notificationTimeId, "eeeee")
+                                insertContext(notificationTimeId, "3", questions[3].id.toString())
                             }
                         }),
                     fourth = LabelButton(
-                        "answer4.4",
-                        yellowButton,
+                        questions[3].button4_text,
+                        redButton,
                         func = {
                             if (numberOfQuestions > 4) {
+                                insertAffect(notificationTimeId, "4", questions[3].id.toString())
                                 navController.navigate("Question_5")
-                                insertAffect(notificationTimeId, "RRRRR")
+
                             }
                             else {
-                                insertContext(notificationTimeId, "rrrrr")
+                                insertContext(notificationTimeId, "4", questions[3].id.toString())
                             }
                         }),
-                    question = "Question 4",
+                    question = questions[3].question,
+                    buttonVisibility = listOf(questions[3].button1, questions[3].button2,
+                        questions[3].button3, questions[3].button4),
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            composable("Question_5") {
+            composable("Question_5") {val buttonVisibility = remember { mutableStateListOf<Boolean>() }
+                repeat(4) {
+                    buttonVisibility.add(it < numberOfQuestions)
+                }
+
                 LabelView(
                     first = LabelButton(
-                        "answer5.1",
-                        contextButton,
-                        func = { insertContext(notificationTimeId, "mmmmmmmm") }),
+                        questions[4].button1_text,
+                        greenButton,
+                        func = { insertContext(notificationTimeId, "1", questions[4].id.toString()) }),
                     second = LabelButton(
-                        "answer5.2",
-                        contextButton,
-                        func = { insertContext(notificationTimeId, "xxxxxxxx") }),
+                        questions[4].button2_text,
+                        blueButton,
+                        func = { insertContext(notificationTimeId, "2", questions[4].id.toString()) }),
                     third = LabelButton(
-                        "answer5.3",
-                        contextButton,
-                        func = { insertContext(notificationTimeId, "ccccccccc") }),
+                        questions[4].button3_text,
+                        yellowButton,
+                        func = { insertContext(notificationTimeId, "3", questions[4].id.toString()) }),
                     fourth = LabelButton(
-                        "answer5.4",
-                        contextButton,
-                        func = { insertContext(notificationTimeId, "vvvvvvvvv")}),
-                    question = "Question 5",
+                        questions[4].button4_text,
+                        redButton,
+                        func = { insertContext(notificationTimeId, "4", questions[4].id.toString())}),
+
+                    question = questions[4].question,
+                    buttonVisibility = listOf(questions[4].button1, questions[4].button2,
+                        questions[4].button3, questions[4].button4),
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -495,6 +554,7 @@ class LabelActivity : ComponentActivity() {
         third: LabelButton,
         fourth: LabelButton,
         question: String,
+        buttonVisibility: List<Boolean>,
         modifier: Modifier = Modifier
     ) {
         Column(
@@ -505,7 +565,7 @@ class LabelActivity : ComponentActivity() {
             Text(
                 text = question,
                 modifier = Modifier.padding(16.dp, 24.dp, 16.dp, 8.dp),
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
@@ -516,35 +576,43 @@ class LabelActivity : ComponentActivity() {
                     .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Chip(
-                    onClick = first.func,
-                    label = {
-                        Text(
-                            text = first.label,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 12.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    colors = ChipDefaults.primaryChipColors(backgroundColor = Color(first.color)),
-                    modifier = Modifier.weight(1f).padding(end = 4.dp)
-
-                )
-                Chip(
-                    onClick = second.func,
-                    label = {
-                        Text(
-                            text = second.label,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 12.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    colors = ChipDefaults.primaryChipColors(backgroundColor = Color(second.color)),
-                    modifier = Modifier.weight(1f)
-                )
+                if (buttonVisibility.getOrNull(0) == true) {
+                    Chip(
+                        onClick = first.func,
+                        label = {
+                            Text(
+                                text = first.label,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        },
+                        colors = ChipDefaults.primaryChipColors(backgroundColor = Color(first.color)),
+                        modifier = Modifier
+                            .width(90.dp)
+                            //.weight(1f)
+                            .padding(end = 4.dp)
+                    )
+                }
+                if (buttonVisibility.getOrNull(1) == true) {
+                    Chip(
+                        onClick = second.func,
+                        label = {
+                            Text(
+                                text = second.label,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        },
+                        colors = ChipDefaults.primaryChipColors(backgroundColor = Color(second.color)),
+                        modifier = Modifier
+                            .width(90.dp)
+                            //.weight(1f)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(5.dp).width(5.dp))
@@ -555,36 +623,44 @@ class LabelActivity : ComponentActivity() {
                     .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Chip(
-                    onClick = third.func,
-                    label = {
-                        Text(
-                            text = third.label,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 12.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    colors = ChipDefaults.primaryChipColors(backgroundColor = Color(third.color)),
-                    modifier = Modifier.weight(1f).padding(end = 4.dp)
-                )
-                Chip(
-                    onClick = fourth.func,
-                    label = {
-                        Text(
-                            text = fourth.label,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 12.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    colors = ChipDefaults.primaryChipColors(backgroundColor = Color(fourth.color)),
-                    modifier = Modifier.weight(1f)
-                )
+                if (buttonVisibility.getOrNull(2) == true) {
+                    Chip(
+                        onClick = third.func,
+                        label = {
+                            Text(
+                                text = third.label,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        },
+                        colors = ChipDefaults.primaryChipColors(backgroundColor = Color(third.color)),
+                        modifier = Modifier
+                            .width(90.dp)
+                            //.weight(1f)
+                            .padding(end = 4.dp)
+                    )
+                }
+                if (buttonVisibility.getOrNull(3) == true) {
+                    Chip(
+                        onClick = fourth.func,
+                        label = {
+                            Text(
+                                text = fourth.label,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        },
+                        colors = ChipDefaults.primaryChipColors(backgroundColor = Color(fourth.color)),
+                        modifier = Modifier
+                            .width(90.dp)
+                            //.weight(1f)
+                    )
+                }
             }
         }
     }
-
 }

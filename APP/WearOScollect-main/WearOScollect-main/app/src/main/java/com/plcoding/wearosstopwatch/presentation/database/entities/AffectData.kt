@@ -8,5 +8,7 @@ data class AffectData(
     @PrimaryKey(autoGenerate = true)
     var id: Long,
     var notification_id: Long,
-    var affect: String
+    var affect: String,
+    var question: String,
+    var transferred: Boolean = false
 )

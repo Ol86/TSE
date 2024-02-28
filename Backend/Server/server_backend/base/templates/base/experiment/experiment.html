@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block style %}
-    <link rel="stylesheet" href="{% static 'styles/styles.css' %}"/>
+    <link rel="stylesheet" href="{% static 'base/experiment/experiment.css' %}"/>
 {% endblock %}
 {% block title %}
     <title>
@@ -11,5 +11,57 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{{experiment.title}}</h1>
+    <header>
+        <a class="header-button" href="{% url 'edit-experiment' experiment.id %}">edit</a>
+        <a class="header-button" href="{% url 'experiments' %}">quit</a>
+    </header>
+    <div id="experimentBody">
+        <h1>{{experiment.title}}</h1>
+        <p>
+            Watchid: {% for watch_id in experiment.watch_id.all %}
+            <li>{{ watch_id }}</li>
+            {% endfor %} <br>
+            Max time: {{experiment.max_time}}
+        </p>    
+        <table>
+            <tr>
+                <th>Accelerometer:</th>
+                <th>Heartrate:</th>
+                <th>Bia:</th>
+            </tr>
+            <tr>
+                <td>{{experiment.accelerometer}}</td>
+                <td>{{experiment.heart_rate}}</td>
+                <td>{{experiment.bia}}</td>
+            </tr>
+            <tr>
+                <th>PPG Green:</th>
+                <th>PPG IR:</th>
+                <th>PPG Red:</th>
+            </tr>
+            <tr>
+                <td>{{experiment.ppg_green}}</td>
+                <td>{{experiment.ppg_ir}}</td>
+                <td>{{experiment.ppg_red}}</td>
+            </tr>
+            <tr>
+                <th>Ecg:</th>
+                <th>Spo2:</th>
+                <th>Sweat loss:</th>
+            </tr>
+            <tr>
+                <td>{{experiment.ecg}}</td>
+                <td>{{experiment.spo2}}</td>
+                <td>{{experiment.sweat_loss}}</td>
+            </tr>
+        </table>
+        <p> 
+            Question interval: {{experiment.question_interval}} <br>
+            Questions: {% for questions in experiment.questions.all %}
+            <li>{{ questions }}</li>
+            {% endfor %} <br>
+            Created by: {{experiment.created_by}} <br>
+            Created at: {{experiment.created_at}} <br>
+        </p>
+    </div>
 {% endblock %}

@@ -1,6 +1,15 @@
+::placeholder {
+    color: #888888;
+    opacity: 1;
+}
+
+::-ms-input-placeholder {
+    color: #888888;
+}
+
 body {
     margin: 0;
-    padding: 8px;
+    padding: 16px;
     display: grid;
     grid-template-columns: 100px auto 480px auto 100px;
     grid-template-rows: 50px auto 50px;
@@ -52,6 +61,44 @@ h2 {
     grid-area: form;
 }
 
+td {
+    width: 160px;
+    text-align: center;
+}
+
+.multipleSelect {
+    display: block;
+    margin: 10px 0;
+    padding: 20px 10px;
+    height: 80px;
+    border-radius: 4px;
+    background: #333333;
+    color: #ffffff;
+    overflow: scroll;
+    border: none;
+    outline: none;
+    font-weight: 500;
+    font-size: 1em;
+}
+
+.multipleSelect::-webkit-scrollbar {
+    display: none;
+}
+
+.multipleSelect {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.headline {
+    color: #888888;
+    text-transform: capitalize;
+}
+
+hr {
+    border: solid 1px #888888;
+}
+
 input {
     margin: 10px 0;
     width: 100%;
@@ -63,6 +110,48 @@ input {
     color: #ffffff;
     font-weight: 500;
     font-size: 1em;
+}
+
+input[type="checkbox"] {
+    margin: 0;
+    height: 20px;
+    accent-color: turquoise;
+}
+
+#id_questions>div {
+    height: 20px;
+    margin: 10px 0;
+}
+
+#id_questions>div:first-child {
+    margin-top: 0;
+}
+
+#id_questions>div:last-child {
+    margin-bottom: 0;
+}
+
+#id_questions>div>label>input{
+    width: 30px;
+    vertical-align: middle;
+}
+
+#id_watch_id>div {
+    height: 20px;
+    margin: 10px 0;
+}
+
+#id_watch_id>div:first-child {
+    margin-top: 0;
+}
+
+#id_watch_id>div:last-child {
+    margin-bottom: 0;
+}
+
+#id_watch_id>div>label>input{
+    width: 30px;
+    vertical-align: middle;
 }
 
 #submit {

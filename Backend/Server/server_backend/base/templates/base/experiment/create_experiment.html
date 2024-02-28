@@ -12,21 +12,27 @@
 {% endblock %}
 
 {% block content %}
-    <a id="quit" href="{% url 'home' %}">quit</a>
-    <form class="creationForm" method="POST" action="" >
+    <a id="quit" href="{% url 'experiments' %}">quit</a>
+    <form id="creationForm" method="POST" action="" >
         <h2> Create Experiment</h2>
-        <div class="formElements">
-            {% csrf_token %}
+        {% csrf_token %}
+        <div class="tab">
+            <span class="headline">Enter the title of the experiment</span>
             {{ form.title }}
+            <span class="headline">Enter either 0 to make a neverending experiment or enter the number of minutes in 5min steps.</span>
+            {{ form.max_time }}
+        </div>
+        <div class="tab">
+            <span class="headline">Enter the sensors to be used for the experiment</span>
             <table>
                 <tr>
                     <td>{{ form.accelerometer.label }}</td>
-                    <td>{{ form.hearth_rate.label }}</td>
+                    <td>{{ form.heart_rate.label }}</td>
                     <td>{{ form.bia.label }}</td>
                 </tr>
                 <tr>
                     <td>{{ form.accelerometer }}</td>
-                    <td>{{ form.hearth_rate }}</td>
+                    <td>{{ form.heart_rate }}</td>
                     <td>{{ form.bia }}</td>
                 </tr>
                 <tr>
@@ -50,17 +56,98 @@
                     <td>{{ form.sweat_loss }}</td>
                 </tr>
             </table>
-            <div class="multipleSelect">
-                <span class="headline">{{ form.questions.name }}</span>
-                <hr>
-                {{ form.questions }}
-            </div>
-            <div class="multipleSelect">
-                <span class="headline">{{ form.watches.name }}</span>
-                <hr>
-                {{ form.watches }}
-            </div>
-        </diV>
-        <input id="submit" type="submit" value="Submit"/>
+        </div>
+        <div class="tab">
+            <span class="headline">Enter the question interval</span>
+            {{ form.question_interval }}
+            <span class="headline">Select the question for the experiment</span>
+            {{ form.questions }}
+        </div>
+        <div class="tab">
+            <span class="headline">Select the watches for the experiment</span>
+            {{ form.watch_id }}
+        </div>
+        <div style="overflow:auto;">
+          <div style="float:right;">
+            <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
+            <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:40px;">
+          <span class="step"></span>
+          <span class="step"></span>
+          <span class="step"></span>
+          <span class="step"></span>
+        </div>
     </form>
+{% endblock %}
+
+{% block script %}
+    <script>
+        var currentTab = 0
+        showTab(currentTab)
+
+        function showTab(n) {
+            console.log(n);
+            var tabs = document.getElementsByClassName("tab");
+            console.log(tabs.length - 1)
+            tabs[n].style.display = "block";
+
+            if (n == 0) {
+                document.getElementById("prevBtn").style.display = "none";
+            } else {
+                document.getElementById("prevBtn").style.display = "inline";
+            }
+            if (n == tabs.length - 1) {
+                document.getElementById("nextBtn").innerHTML = "Submit";
+            } else {
+                document.getElementById("nextBtn").innerHTML = "Next";
+            }
+            fixStepIndicator(n);
+        }
+
+        function nextPrev(n) {
+            var tabs = document.getElementsByClassName("tab");
+            
+            if (n == 1 && !validateForm()) return false;
+            tabs[currentTab].style.display = "none";
+
+            currentTab = currentTab + n;
+            if (currentTab >= tabs.length) {
+                document.getElementById("creationForm").submit();
+                return false;
+            } else {
+                showTab(currentTab);
+            }
+        }
+
+        function validateForm() {
+            var tabs, input, i, valid = true;
+            tabs = document.getElementsByClassName("tab");
+            input = tabs[currentTab].getElementsByTagName("input");
+
+            for (i = 0; i < input.length; i++) {
+                if (input[i].value == "") {
+                    input[i].className += " invalid";
+                    valid = false;
+                }
+            }
+
+            if (valid) {
+                document.getElementsByClassName("step")[currentTab].className += " finish";
+            }
+
+            return valid;
+        }
+
+        function fixStepIndicator(n) {
+            var i, steps = document.getElementsByClassName("step");
+
+            for (i = 0; i < steps.length; i++) {
+                steps[i].className = steps[i].className.replace(" active", "");
+            }
+
+            steps[n].className += " active";
+        }
+    </script>
 {% endblock %}

@@ -12,16 +12,16 @@
 {% endblock %}
 
 {% block content %}
-    <a id="quit" href="{{request.META.HTTP_REFERER}}">quit</a>
+    <a id="quit" href="{% url 'questions' %}">quit</a>
     <form class="creationForm" method="POST" action="" >
         <h2>Create Question</h2>
         <div class="formElements">
             {% csrf_token %}
-            {{ form.question }}
-            {{ form.button1_text }}
-            {{ form.button2_text }}
-            {{ form.button3_text }}
-            {{ form.button4_text }}
+            {{ questionForm.question }}
+            {{ answer1Form.answer }}
+            {{ answer2Form.answer }}
+            {{ answer3Form.answer }}
+            {{ answer4Form.answer }}
         </div>
         <input id="submit" type="submit" value="Submit"/>
     </form>

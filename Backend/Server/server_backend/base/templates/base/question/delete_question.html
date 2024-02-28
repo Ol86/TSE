@@ -20,7 +20,7 @@
             <p>"{{question.question}}"</p>
         </div>
                 
-        <a class="back" href="{{request.META.HTTP_REFERER}}">Go back</a>
+        <a class="back" href="{% url 'questions' %}">Go back</a>
         <input id="submit" type="submit" value="Confirm"/>
     </form>
 {% endblock %}

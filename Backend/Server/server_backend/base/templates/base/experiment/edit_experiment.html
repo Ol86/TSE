@@ -2,31 +2,32 @@
 {% load static %}
 
 {% block style %}
-    <link rel="stylesheet" href="{% static 'base/create_experiment.css' %}"/>
+    <link rel="stylesheet" href="{% static 'base/experiment/edit_experiment.css' %}"/>
 {% endblock %}
 
 {% block title %}
     <title>
-        Create Experiment
+        Edit Experiment
     </title>
 {% endblock %}
 
 {% block content %}
-    <a id="quit" href="{% url 'home' %}">quit</a>
+    <a id="quit" href="{% url 'experiments' %}">quit</a>
     <form class="creationForm" method="POST" action="" >
-        <h2> Create Experiment</h2>
+        <h2> Edit Experiment</h2>
         <div class="formElements">
             {% csrf_token %}
             {{ form.title }}
+            {{ form.max_time }}
             <table>
                 <tr>
                     <td>{{ form.accelerometer.label }}</td>
-                    <td>{{ form.hearth_rate.label }}</td>
+                    <td>{{ form.heart_rate.label }}</td>
                     <td>{{ form.bia.label }}</td>
                 </tr>
                 <tr>
                     <td>{{ form.accelerometer }}</td>
-                    <td>{{ form.hearth_rate }}</td>
+                    <td>{{ form.heart_rate }}</td>
                     <td>{{ form.bia }}</td>
                 </tr>
                 <tr>
@@ -50,15 +51,16 @@
                     <td>{{ form.sweat_loss }}</td>
                 </tr>
             </table>
+            {{ form.question_interval }}
             <div class="multipleSelect">
-                <span class="headline">{{ form.questions.name }}</span>
+                <span class="headline">Questions</span>
                 <hr>
                 {{ form.questions }}
             </div>
             <div class="multipleSelect">
-                <span class="headline">{{ form.watches.name }}</span>
+                <span class="headline">Watches</span>
                 <hr>
-                {{ form.watches }}
+                {{ form.watch_id }}
             </div>
         </diV>
         <input id="submit" type="submit" value="Submit"/>

@@ -25,7 +25,7 @@ class NotificationManager(private val context: Context) {
     private val channelName = "Primary Notification Channel"
     private val channelDescription = "This channel shall handle all the prompt-notifications for the user"
 
-    fun promptNotification(notificationTimeId: Long) {
+    fun promptNotification(notificationTimeId: Long, questions: List<TemplateQuestion>?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
         }
@@ -36,6 +36,11 @@ class NotificationManager(private val context: Context) {
             flags = Intent.FLAG_ACTIVITY_TASK_ON_HOME or Intent.FLAG_ACTIVITY_NEW_TASK// or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         notificationIntent.putExtra("NotificationTimeId", notificationTimeId)
+        if (questions != null) {
+            Log.i("Manager", "questions")
+            notificationIntent.putExtra("questions", questions.toTypedArray())
+            Log.i("Manager", "questionsAfter")
+        }
 
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context,
             notificationTimeId.toInt(), notificationIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
@@ -43,11 +48,12 @@ class NotificationManager(private val context: Context) {
 
         val notification = NotificationCompat.Builder(context, channelId)
             .setContentTitle("Zeit zu interagieren!")
-            .setContentText("Wie fühlst du dich gerade?")
+            //.setContentText("Wie fühlst du dich gerade?")
             .setSmallIcon(R.drawable.logo)
             .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
-            .setTimeoutAfter(180000) // will remove the notification after 3 Minutes
+            .setAutoCancel(false)
+            .setTimeoutAfter(30000) // will remove the notification after 30 seconds
+            .setPriority(NotificationCompat.PRIORITY_HIGH) // Set notification priority to high
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
         with(NotificationManagerCompat.from(context)) {
@@ -69,8 +75,8 @@ class NotificationManager(private val context: Context) {
             .setContentText(text)
             .setSmallIcon(1)
             //.setContentIntent(pendingIntent)
-            .setAutoCancel(true)
-            .setTimeoutAfter(60000) // will remove the notification after 3 Minutes
+            .setAutoCancel(false)
+            .setTimeoutAfter(15000) // will remove the notification after 3 Minutes
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
         with(NotificationManagerCompat.from(context)) {

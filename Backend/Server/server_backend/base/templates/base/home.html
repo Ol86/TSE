@@ -14,26 +14,21 @@
 {% block content %}
     <a class="logout-button" href="{% url 'logout' %}">Logout</a>
     <header>
-        <a class="creation-buttons" href="{% url 'home' %}">Experiments</a>
+        <a class="creation-buttons" href="{% url 'experiments' %}">Experiments</a>
         <a class="creation-buttons" href="{% url 'questions' %}">Questions</a>
         <a class="creation-buttons" href="{% url 'watches' %}">Watches</a>
+        <a class="creation-buttons" href="{% url 'sql_lab' %}">SQL Laboratory</a>
     </header>
-    <h1>Experiments</h1>
-    <div id="experiment-delete">
-        {% for experiment in experiments %}
-        <a class="experiment" id="delete-button" href="{% url 'delete-experiment' experiment.id %}">Delete</a>
-        {% endfor %}
-    </div>
-    <div id="experiment-title">
-    {% for experiment in experiments %}
-        <div class="experiment">
-            <a id="text" href="{% url 'experiment' experiment.id %}">{{experiment.title}}</a>
-            <span class="date">{{ experiment.created_at|date:"d.m.Y" }} - {{experiment.created_at|time:"H:i"}}</span>
-        </div>
-    {% endfor %}
+    <h1>Welcome to our homepage</h1>
+    <div id="homeBody">
+        <p>
+            This website is the main management tool for your research.<br> 
+            You can create your experiments here and manage all your watches.<br>
+            To create an experiment, navigate to your navbar and click on the button "Experiments".<br>
+            Afterwards click on the "+" button in the bottom right to create your experiment.
+        </p>
     </div>
     <nav class="buttonList">
-        <a href="{% url 'create-experiment' %}"><i class="fa fa-plus fa-2x" aria-hidden="true"></i></a>
         <a href="#top"><i class="fa fa-angle-up fa-2x" aria-hidden="true"></i></a>
     </nav>
 {% endblock %}

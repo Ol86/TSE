@@ -182,8 +182,9 @@ def createDataset(url, csrf_token, auth_token, session):
         ],
         "schema": "public",
         "sql": "SELECT hr, TIMESTAMP, watch_id\nFROM session_data\nJOIN heart_rate_measurement ON session_data.id = heart_rate_measurement.session_id\nWHERE session_id = 1 and hr_status= 1",
-        "table_name": "HR by Time Exp1"
+        "table_name": "test"
     }
+    #TODO table name umbenannt  
     dataset_resp = session.post(f'{url}/api/v1/dataset/', headers=headers, json=body)
     dataset = dataset_resp.json()
     saveToFile(json.dumps(dataset, indent=4))

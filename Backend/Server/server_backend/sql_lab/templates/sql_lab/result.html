@@ -1,0 +1,53 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'sql_lab/result.css' %}"/>
+{% endblock %}
+
+{% block title %}
+    <title>
+        SQL Laboratory
+    </title>    
+{% endblock %}
+
+{% block content %}
+    <a class="logout-button" href="{% url 'logout' %}">Logout</a>
+    <header>
+        <a class="creation-buttons" href="{% url 'experiments' %}">Experiments</a>
+        <a class="creation-buttons" href="{% url 'questions' %}">Questions</a>
+        <a class="creation-buttons" href="{% url 'watches' %}">Watches</a>
+        <a class="creation-buttons" href="{% url 'sql_lab' %}">SQL Laboratory</a>
+    </header>
+    <h2>SQL Laboratory</h2>
+    <main>
+        
+        <form method="post" action="{% url 'sql_lab' %}">
+            <h3 id="formHeader">SQL-request</h3>
+            {% csrf_token %}
+            {{ form.content }}
+            <input id="submit" type="submit" value="Translate"/>
+        </form>
+        <div class="given">
+            <h3>Verarbeiteter Text</h3>
+            <input type="text" readonly value="{{ original_text }}"/>
+        </div>
+        <input id="processed-text" type="text" readonly value="{{ processed_text }}"/>
+        <button class="copy" onclick="CopyToClipboard();">Copy Text</button>
+        
+        <div class="database-table">
+            {% include 'sql_lab/database.html' %}
+        </div>
+    </main>
+    {% endblock %}
+
+{% block script %}
+    <script>
+        function CopyToClipboard() {
+            var copyText = document.getElementById("processed-text");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+        }
+    </script>
+{% endblock %}

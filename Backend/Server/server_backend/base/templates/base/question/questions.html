@@ -14,9 +14,10 @@
 {% block content %}
     <a class="logout-button" href="{% url 'logout' %}">Logout</a>
     <header>
-        <a class="creation-buttons" href="{% url 'home' %}">Experiments</a>
+        <a class="creation-buttons" href="{% url 'experiments' %}">Experiments</a>
         <a class="creation-buttons" href="{% url 'questions' %}">Questions</a>
         <a class="creation-buttons" href="{% url 'watches' %}">Watches</a>
+        <a class="creation-buttons" href="{% url 'sql_lab' %}">SQL Laboratory</a>
     </header>
     <h1>Questions</h1>
     <div id="question-delete">

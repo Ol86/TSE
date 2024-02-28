@@ -1,5 +1,6 @@
 package com.plcoding.wearosstopwatch.presentation
 // PpgGreenTracker.kt
+import android.util.Log
 import com.samsung.android.service.health.tracking.HealthTracker
 import com.samsung.android.service.health.tracking.HealthTrackerException
 import com.samsung.android.service.health.tracking.HealthTrackingService
@@ -23,6 +24,7 @@ class HeartRateTracker(
             if (availableTrackers.contains(HealthTrackerType.HEART_RATE)) {
                 heartRateTracker = healthTracking.getHealthTracker(HealthTrackerType.HEART_RATE)
                 heartRateTracker?.setEventListener(trackerListener)
+                Log.i("THeartRate", "Active")
             }
         } catch (e: HealthTrackerException) {
             // Handle connection error

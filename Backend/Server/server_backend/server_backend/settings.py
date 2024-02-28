@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 
     'user',
     'base',
+    'sql_lab',
 
     'rest_framework',
     'rest_framework.authtoken',
@@ -109,6 +110,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+    'DATETIME_FORMAT': '%s000',
 }
 
 

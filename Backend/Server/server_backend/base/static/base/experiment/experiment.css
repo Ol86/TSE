@@ -9,21 +9,26 @@
 
 body {
     margin: 0;
-    padding: 8px;
+    padding: 16px;
     display: grid;
     grid-template-columns: 100px auto 480px auto 100px;
     grid-template-rows: 50px auto 50px;
     grid-template-areas: 
-        ". . . . quit"
-        ". . main . ."
-        ". . . . ."
+        ". . .  header header"
+        ". . main . . "
+        ". . . . . "
     ;
 }
 
-#quit {
-    grid-area: quit;
-    text-align: center;
-    height: fit-content;
+header {
+    grid-area: header;
+    justify-self: end;
+}
+
+.header-button {
+    display: inline-block;
+    width: fit-content;
+    margin: 0 4px;
     padding: 12px;
     background: darkslategray;
     color: turquoise;
@@ -33,6 +38,23 @@ body {
     cursor: pointer;
     border-radius: 4px;
     text-transform: uppercase;
+}
+
+#experimentBody {
+    grid-area: main;
+    margin: 10px 0;
+    width: 100%;
+    background: #333333;
+    border: none;
+    outline: none;
+    padding: 25px 10px 7.5px;
+    border-radius: 4px;
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 1em;
+    box-shadow: 0 15px 35px rgba(0,0,0,9); 
+    align-self: center;
+    justify-self: center;
 }
 
 .creationForm {
@@ -136,20 +158,20 @@ input[type="checkbox"] {
     vertical-align: middle;
 }
 
-#id_watches>div {
+#id_watch_id>div {
     height: 20px;
     margin: 10px 0;
 }
 
-#id_watches>div:first-child {
+#id_watch_id>div:first-child {
     margin-top: 0;
 }
 
-#id_watches>div:last-child {
+#id_watch_id>div:last-child {
     margin-bottom: 0;
 }
 
-#id_watches>div>label>input{
+#id_watch_id>div>label>input{
     width: 30px;
     vertical-align: middle;
 }

@@ -1,3 +1,4 @@
+#TODO: Add comment
 from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
@@ -8,14 +9,17 @@ from user.models import BaseUser, Profile, Watch
 # --------------------------------------------------------------------------------------------------- #
 
 class UserCreationForm(forms.ModelForm):
+    # TODO: Add comment
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
 
     class Meta:
+        # TODO: Add comment
         model = BaseUser
         fields = ('username', 'type',)
 
     def clean_password2(self):
+        # TODO: Add comment
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
@@ -23,6 +27,7 @@ class UserCreationForm(forms.ModelForm):
         return password2
 
     def save(self, commit=True):
+        # TODO: Add comment
         user = super().save(commit=False)
         if self.cleaned_data["type"] == 1:
             user.is_admin = True
@@ -32,16 +37,20 @@ class UserCreationForm(forms.ModelForm):
         return user
 
 class UserChangeForm(forms.ModelForm):
+    # TODO: Add comment
     password = ReadOnlyPasswordHashField()
 
     class Meta:
+        # TODO: Add comment
         model = BaseUser
         fields = ('username', 'password', 'type', 'is_active')
     
     def clean_password(self):
+        # TODO: Add comment
         return self.initial["password"]
 
 class BaseUserAdmin(UserAdmin):
+    # TODO: Add comment
     form = UserChangeForm
     add_form = UserCreationForm
 

@@ -1,2 +1,2 @@
 # Json
-This folder saves the json files of the posted data from the api.
+This folder holds the templatge of the api receiving data.
