@@ -225,6 +225,7 @@ def createStandarizedDashboard(url, csrf_token, auth_token, session):
     createChart_hr(url, csrf_token, auth_token, session)
     createDataset_answers(url, csrf_token, auth_token, session)
     createChart_answers(url, csrf_token, auth_token, session)
+    createChart_poincare(url, csrf_token, auth_token, session)
 
     updateDashboard(url, csrf_token, auth_token, session)
     dashboard = dashboard_res.json()
@@ -518,6 +519,40 @@ def createChart_answers(url, csrf_token, auth_token, session):
         "query_context_generation": True,
         "slice_name": "Answers",
         "viz_type": "pie"
+    }
+
+    chart_resp = session.post(f'{url}/api/v1/chart/', headers=headers, json=body)
+    chart = chart_resp.json()
+    saveToFile(json.dumps(chart, indent=4))
+    return chart
+
+
+def createChart_poincare(url, csrf_token, auth_token, session):
+    headers = {
+        'Authorization': f'Bearer {auth_token}',
+        'X-CSRFToken': csrf_token,
+    }
+
+    body = {
+        "cache_timeout": 0,
+        "certification_details": None,
+        "certified_by": None,
+        "dashboards": [
+            get_dashboard_id(getDashboards(url, auth_token), "Standarized Dashboard")
+        ],
+        "datasource_id": get_datasource_id(getDatasets(url, auth_token), "base_heart_rate"),
+        "datasource_name": "base_heart_rate",
+        "datasource_type": "table",
+        "description": None,
+        "is_managed_externally": False,
+        "owners": [
+            1
+        ],
+        "params": "{\"datasource\":\"2__table\",\"viz_type\":\"echarts_timeseries_scatter\",\"slice_id\":80,\"x_axis\":\"time\",\"time_grain_sqla\":\"PT1S\",\"x_axis_sort_asc\":true,\"x_axis_sort_series\":\"name\",\"x_axis_sort_series_ascending\":true,\"metrics\":[{\"aggregate\":\"MAX\",\"column\":{\"advanced_data_type\":null,\"certification_details\":null,\"certified_by\":null,\"column_name\":\"ibi\",\"description\":null,\"expression\":null,\"filterable\":true,\"groupby\":true,\"id\":5,\"is_certified\":false,\"is_dttm\":false,\"python_date_format\":null,\"type\":\"INTEGER\",\"type_generic\":0,\"verbose_name\":null,\"warning_markdown\":null},\"datasourceWarning\":false,\"expressionType\":\"SIMPLE\",\"hasCustomLabel\":false,\"label\":\"MAX(ibi)\",\"optionName\":\"metric_csxnvnbhcva_7damk1qjipj\",\"sqlExpression\":null}],\"groupby\":[\"session_id\"],\"adhoc_filters\":[{\"clause\":\"WHERE\",\"comparator\":\"No filter\",\"expressionType\":\"SIMPLE\",\"operator\":\"TEMPORAL_RANGE\",\"subject\":\"time\"}],\"order_desc\":true,\"row_limit\":10000,\"truncate_metric\":true,\"show_empty_columns\":true,\"comparison_type\":\"values\",\"annotation_layers\":[],\"forecastPeriods\":10,\"forecastInterval\":0.8,\"x_axis_title_margin\":15,\"y_axis_title_margin\":15,\"y_axis_title_position\":\"Left\",\"sort_series_type\":\"sum\",\"color_scheme\":\"supersetColors\",\"only_total\":true,\"markerSize\":6,\"show_legend\":true,\"legendType\":\"scroll\",\"legendOrientation\":\"top\",\"x_axis_time_format\":\"smart_date\",\"rich_tooltip\":true,\"tooltipTimeFormat\":\"smart_date\",\"y_axis_format\":\"SMART_NUMBER\",\"truncateXAxis\":true,\"y_axis_bounds\":[null,null],\"extra_form_data\":{},\"dashboards\":[1]}",
+        "query_context": None,
+        "query_context_generation": True,
+        "slice_name": "Poincare",
+        "viz_type": "echarts_timeseries_scatter"
     }
 
     chart_resp = session.post(f'{url}/api/v1/chart/', headers=headers, json=body)
