@@ -93,9 +93,10 @@ class LabelActivity : ComponentActivity() {
             navController = navController,
             startDestination = "overview"
         ) {
-            val redButton = 0xFFFF4522
-            val greenButton = 0xFFAAAF50
-            val yellowButton = 0xFFCCA62B
+            val redButton = 0xFFAC3123
+            val greenButton = 0xFF32CD32
+            val yellowButton = 0xFFFFF2C000
+            val orangeButton = 0xFFFFF28111
             val blueButton = 0xFF008CE4
             val contextButton = 0xFF505050
 
@@ -123,7 +124,7 @@ class LabelActivity : ComponentActivity() {
                         }),
                     second = LabelButton(
                         questions[0].button2_text,
-                        blueButton,
+                        yellowButton,
                         func = {
                             if (numberOfQuestions > 1) {
                                 insertAffect(notificationTimeId, "2", questions[0].id.toString())
@@ -135,7 +136,7 @@ class LabelActivity : ComponentActivity() {
                         }),
                     third = LabelButton(
                         questions[0].button3_text,
-                        yellowButton,
+                        orangeButton,
                         func = {
                             if (numberOfQuestions > 1) {
                                 insertAffect(notificationTimeId, "3", questions[0].id.toString())
@@ -471,7 +472,7 @@ class LabelActivity : ComponentActivity() {
                         }),
                     second = LabelButton(
                         questions[3].button2_text,
-                        blueButton,
+                        yellowButton,
                         func = {
                             if (numberOfQuestions > 4) {
 
@@ -483,8 +484,8 @@ class LabelActivity : ComponentActivity() {
                             }
                         }),
                     third = LabelButton(
-                        questions[3].button4_text,
-                        yellowButton,
+                        questions[3].button3_text,
+                        orangeButton,
                         func = {
                             if (numberOfQuestions > 4) {
                                 insertAffect(notificationTimeId, "3", questions[3].id.toString())

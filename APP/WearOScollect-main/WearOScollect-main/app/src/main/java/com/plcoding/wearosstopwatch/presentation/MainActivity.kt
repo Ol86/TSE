@@ -537,7 +537,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         Log.i("TemplateData", templateData.questions[0].question)
 
         if (templateData.question_interval < 15) {
-            val periodicWorkRequest = createNotificationWorker(templateData.question_interval.toLong(),
+            val periodicWorkRequest = createNotificationWorker(0,
                 templateData.question_interval.toLong() * 2, templateData)
             WorkManager.getInstance(this).enqueue(periodicWorkRequest)
 
@@ -551,7 +551,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             WorkManager.getInstance(this).enqueue(periodicWorkRequest)
         }
 
-        val periodicWorkRequestTheThird = createBackEndWorker(1, 1)
+        val periodicWorkRequestTheThird = createBackEndWorker(0, 1)
         WorkManager.getInstance(this).enqueue(periodicWorkRequestTheThird)
 
         /*val periodicWorkRequest4 = createW()
@@ -709,7 +709,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                     val tokenResponse = apiService.getToken(
 
                         JsonObject().apply {
-                            addProperty("username", "Watch1")
+                            addProperty("username", "Watch2")
                             addProperty("password", "tse-KIT-2023")
                         }
                     ).execute()
