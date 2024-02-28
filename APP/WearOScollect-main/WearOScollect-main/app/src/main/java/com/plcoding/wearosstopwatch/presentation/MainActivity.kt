@@ -343,9 +343,9 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         // Erstellen des WorkManagers
 
         // Konfiguration für die PeriodicWorkRequest
-        /*val constraints = Constraints.Builder()
+        val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()*/
+            .build()
 
         val promptFrequencyTimeUnit = TimeUnit.MINUTES
         // Erstellen der PeriodicWorkRequest
@@ -355,7 +355,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             //repeatInterval = 10, // Alle 10 Sekunden wiederholen
             //repeatIntervalTimeUnit = TimeUnit.SECONDS
         )
-            //.setConstraints(constraints)
+            .setConstraints(constraints)
             .setInitialDelay(initialDelay, promptFrequencyTimeUnit)
             .addTag("BackEndWorker")
             .build()
