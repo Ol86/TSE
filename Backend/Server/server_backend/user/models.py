@@ -57,7 +57,7 @@ class BaseUserManager(Manager):
         user.is_active = True
         user.save(using=self.db)
         profile = Profile.objects.create(user=user)
-        profile.role = 1
+        profile.role = "admin"
         profile.save()
         return user
 
@@ -136,6 +136,7 @@ class Profile(models.Model):
     ]
     user = models.OneToOneField(BaseUser, on_delete=models.CASCADE, primary_key=True)
     role = models.CharField(max_length=10, choices=ROLE)
+    sql_database = models.JSONField(blank=True, null=True)
 
     def __str__(self):
         """This method sets the display name.

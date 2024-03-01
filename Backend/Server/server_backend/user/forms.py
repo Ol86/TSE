@@ -49,3 +49,4 @@ class UserRegisterForm(UserCreationForm):
         # TODO: Add comment
         model = BaseUser
         fields = ["username", "password1", "password2", "role"]
+        exclude = ('sql_database',)
