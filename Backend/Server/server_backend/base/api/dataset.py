@@ -6,11 +6,10 @@ import requests
 
     Auf Basis dieser werden nun danach Dashboards erstellt, für die Experimente der Researcher
 """
-#TODO First table normally, seconde does not have session_id, third...
-#TODO other tables
+
 table_names = ['base_spo2', 'base_ppg_red', 'base_ppg_ir', 'base_ppg_green', 'base_heart_rate', 
     'base_ecg', 'base_answers', 'base_accelerometer']
-table_connected = ['base_experiment_watch_id', 'base_experiment_questions', 'base_session'] # Base_questions für jeden Sichtbar, da auch alle Fragen für jeden Sichtbar
+table_connected = ['base_experiment_watch_id', 'base_experiment_questions', 'base_session'] 
 special_tables = ['base_experiment']
 
 url = 'http://193.196.36.62:8088'
@@ -83,6 +82,22 @@ def create_one(permissions, user_id, superset_id, session, headers, username):
         })
         if dataset.status_code == 201:
             permissions.append(getPermissionID(session, headers, username + '_' + name, dataset.json()['id']))
+
+    sql = "SELECT * FROM Base_Questions"
+    dataset = session.post(f'{url}/api/v1/dataset', headers=headers, json={
+            "always_filter_main_dttm": False,
+            "database": 1, 
+            "external_url": '',
+            "is_managed_externally": False,
+            "normalize_columns": False,
+            "owners": [
+                superset_id       
+            ],
+            "schema": "public",
+            "sql": sql,
+            "table_name": username + '_' + name
+        })
+    permissions.append(getPermissionID(session, headers, username + '_' + name, dataset.json()['id']))
 
 def create_two(permissions, user_id, superset_id, session, headers, username):
     for name in table_connected:
