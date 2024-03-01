@@ -34,4 +34,6 @@ urlpatterns = [
     path('api/watch/data/', views.sendWatchData, name="data"),
     path('api/watch/session/', views.createSession, name="session"),
     path('api/watch/quit/', views.endSession, name="quit"),
+
+    path('testing/', views.testing, name="testing"),
 ]

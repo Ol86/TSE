@@ -29,6 +29,11 @@ from base.forms import ExperimentForm, QuestionForm, QuestionAnswersForm
 # The handling methods to save the given data to the database.
 from base.json import *
 
+def testing(request):
+    result = Profile.objects.all()
+    context = {"test": result}
+    return render(request, 'base/test.html', context)
+
 # --------------------------------------------------------------------------------------------------- #
 def loginPage(request):
     """ This function handle the generation of the loginpage.
