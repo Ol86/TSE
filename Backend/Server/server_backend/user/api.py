@@ -44,7 +44,7 @@ def entrypoint(username, password, is_admin, id):
         "last_name": username,
         "password": password,
         "roles": [
-            4, role.json()['id']
+            5, role.json()['id']
         ],
         "username": username
     })

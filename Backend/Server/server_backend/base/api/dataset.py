@@ -83,7 +83,7 @@ def create_one(permissions, user_id, superset_id, session, headers, username):
         if dataset.status_code == 201:
             permissions.append(getPermissionID(session, headers, username + '_' + name, dataset.json()['id']))
 
-    sql = "SELECT * FROM Base_Questions"
+    sql = "SELECT * FROM base_questions"
     dataset = session.post(f'{url}/api/v1/dataset', headers=headers, json={
             "always_filter_main_dttm": False,
             "database": 1, 
@@ -95,7 +95,7 @@ def create_one(permissions, user_id, superset_id, session, headers, username):
             ],
             "schema": "public",
             "sql": sql,
-            "table_name": username + '_' + name
+            "table_name": username + '_' + 'base_questions'
         })
     permissions.append(getPermissionID(session, headers, username + '_' + name, dataset.json()['id']))
 
@@ -146,7 +146,7 @@ def create_datasets(user_id, role_id, superset_id):
     headers = get_header(session)
     username_request = session.get(f'{url}/api/v1/security/users/' + str(superset_id), headers=headers)
     username = username_request.json()['result']['username']
-    permissions = []
+    permissions = [107, 108, 109, 111, 137, 138, 189, 190]
     create_one(permissions, user_id, superset_id, session, headers, username)
     create_two(permissions, user_id, superset_id, session, headers, username)
     create_three(permissions, user_id, superset_id, session, headers, username)
@@ -169,6 +169,6 @@ def getPermissionID(session, headers, table_name, table_id):
         view_menu_name = request.json()['result']['view_menu']['name']
         if name == view_menu_name:
             found = True
-    #TODO Vlt lässt sich über die Table id die Permission id berechnen
-
     return i
+
+#TODO Permission for SQLLAB

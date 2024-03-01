@@ -5,7 +5,6 @@ import openai
 from openai import OpenAI
 import os
 
-#TODO experiment hat keine Questions
 
 openai.api_key = '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'
 #TODO korrekten Pfad
