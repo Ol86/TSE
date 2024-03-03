@@ -175,3 +175,12 @@ def getPermissionID(session, headers, table_name, table_id):
     return i
 
 #TODO Permission for SQLLAB
+
+def updateDatasets():
+    session = requests.session()
+    datasets = session.get(f'{url}/api/v1/dataset/', headers=get_header(session))
+    result = session.get(f'{url}/api/v1/dataset/?q=%7B%22page_size%22%3A%20' + str(datasets.json()['count']) + '%7D', headers=get_header(session)).json()['ids']
+    for i in result:
+        session.put(f'{url}/api/v1/dataset/{i}/refresh', headers=get_header(session))
+
+updateDatasets()

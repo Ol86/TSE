@@ -29,6 +29,8 @@ from base.forms import ExperimentForm, QuestionForm, QuestionAnswersForm
 # The handling methods to save the given data to the database.
 from base.json import *
 
+from base.api.dataset import updateDatasets
+
 def testing(request):
     result = Profile.objects.all()
     context = {"test": result}
@@ -67,6 +69,11 @@ def logoutUser(request):
     :return: The function returns the resulting webpage and logouts the current user.
     """
     logout(request)
+    return redirect('home')
+
+# --------------------------------------------------------------------------------------------------- #
+def refresh(request):
+    updateDatasets()
     return redirect('home')
 
 # --------------------------------------------------------------------------------------------------- #
