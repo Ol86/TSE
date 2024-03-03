@@ -9,7 +9,8 @@ import requests
 
 table_names = ['base_spo2', 'base_ppg_red', 'base_ppg_ir', 'base_ppg_green', 'base_heart_rate', 
     'base_ecg', 'base_answers', 'base_accelerometer']
-table_connected = ['base_experiment_watch_id', 'base_experiment_questions', 'base_session'] 
+table_connected = ['base_experiment_watch_id', 'base_experiment_questions', 'base_session']
+table_questions = ['base_questions', 'base_questionanswers'] 
 special_tables = ['base_experiment']
 
 url = 'http://193.196.36.62:8088'
@@ -83,21 +84,23 @@ def create_one(permissions, user_id, superset_id, session, headers, username):
         if dataset.status_code == 201:
             permissions.append(getPermissionID(session, headers, username + '_' + name, dataset.json()['id']))
 
-    sql = "SELECT * FROM base_questions"
-    dataset = session.post(f'{url}/api/v1/dataset', headers=headers, json={
-            "always_filter_main_dttm": False,
-            "database": 1, 
-            "external_url": '',
-            "is_managed_externally": False,
-            "normalize_columns": False,
-            "owners": [
-                superset_id       
-            ],
-            "schema": "public",
-            "sql": sql,
-            "table_name": username + '_' + 'base_questions'
-        })
-    permissions.append(getPermissionID(session, headers, username + '_' + name, dataset.json()['id']))
+    for name in table_questions:
+        sql = "SELECT * FROM " + name
+        dataset = session.post(f'{url}/api/v1/dataset', headers=headers, json={
+                "always_filter_main_dttm": False,
+                "database": 1, 
+                "external_url": '',
+                "is_managed_externally": False,
+                "normalize_columns": False,
+                "owners": [
+                    superset_id       
+                ],
+                "schema": "public",
+                "sql": sql,
+                "table_name": username + '_' + name
+            })
+        if dataset.status_code == 201:
+            permissions.append(getPermissionID(session, headers, username + '_' + name, dataset.json()['id']))
 
 def create_two(permissions, user_id, superset_id, session, headers, username):
     for name in table_connected:
