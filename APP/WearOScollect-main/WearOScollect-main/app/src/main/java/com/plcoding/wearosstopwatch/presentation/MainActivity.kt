@@ -565,6 +565,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         stopDataCollection()
         WorkManager.getInstance(this).cancelAllWork()
         viewModel.resetTimer()
+        sendQuit()
     }
 
     private fun startDataCollection() {
@@ -709,7 +710,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                     val tokenResponse = apiService.getToken(
 
                         JsonObject().apply {
-                            addProperty("username", "Watch2")
+                            addProperty("username", "Watch1")
                             addProperty("password", "tse-KIT-2023")
                         }
                     ).execute()
@@ -774,6 +775,48 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             }
         }
         return sessionID
+    }
+
+    private fun sendQuit() {
+        val thread = Thread {
+            try {
+                Log.i("APImessage", "Connect")
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("http://193.196.36.62:9000/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+
+                val apiService: ApiService = retrofit.create(ApiService::class.java)
+
+                try {
+                    val tokenResponse = apiService.getToken(
+
+                        JsonObject().apply {
+                            addProperty("username", "Watch1")
+                            addProperty("password", "tse-KIT-2023")
+                        }
+                    ).execute()
+
+                    if (tokenResponse.isSuccessful) {
+                        val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
+                        println(token)
+
+                        val quitMessage = apiService.sendQuit(token).execute()
+                        Log.i("SendQuit", quitMessage.body().toString().trimIndent())
+                        Log.i("SendQuit", "Done")
+                    } else {
+                        Log.i("SendQuit", "Failed")
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+        thread.start()
+        thread.join()
     }
     companion object {
         private const val TAG = "MainActivity DataCollection"
