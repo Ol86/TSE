@@ -1,7 +1,7 @@
 import json
 import requests
-from IPython.core.display import JSON
-import matplotlib.pyplot as plt
+# from IPython.core.display import JSON
+# import matplotlib.pyplot as plt
 
 import api
 
@@ -48,12 +48,17 @@ ole = {
     "id": 3,
     "last_name": "OleMenke"
 }
+headers = {
+        'Authorization': f'Bearer {auth_token}',
+        'X-CSRFToken': csrf_token,
+    }
 
+api.createDataset_poincare(url, session, headers, maedche)
 
 #api.getDatasets(url, auth_token, session)
 #print(api.get_datasource_id(api.getDatasets(url, auth_token, session), owner.get('last_name') + "_base_session"))
-api.createStandarizedDashboard(url, csrf_token, auth_token, session, maedche)
-api.createStandarizedDashboard(url, csrf_token, auth_token, session, ole)
+# api.createStandarizedDashboard(url, csrf_token, auth_token, session, maedche)
+# api.createStandarizedDashboard(url, csrf_token, auth_token, session, ole)
 
 #api.getDatasets(url, auth_token)
 # api.getCharts(url, auth_token)
