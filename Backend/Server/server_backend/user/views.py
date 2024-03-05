@@ -72,7 +72,6 @@ def registerUser(response):
             #TODO: Add entripoint method.
             id = Profile.objects.last().user.id
             entrypoint(username, password, True, id)
-
             user = authenticate(username=username, password=password)
             login(response, user)
 

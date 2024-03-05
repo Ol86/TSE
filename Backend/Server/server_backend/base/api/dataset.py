@@ -1,4 +1,6 @@
 import requests
+from dashboard import saveToFile
+import json
 """
     Hier werden Datasets für die einzelnen User erstellt und geupdatet
     Die Datasets werden den Namen: username_tablename haben
@@ -184,3 +186,72 @@ def updateDatasets():
         session.put(f'{url}/api/v1/dataset/{i}/refresh', headers=get_header(session))
 
 updateDatasets()
+
+
+def createDataset(url, csrf_token, auth_token, session):
+    headers = {
+        'Authorization': f'Bearer {auth_token}',
+        'X-CSRFToken': csrf_token,
+    }
+
+    body = {
+        "always_filter_main_dttm": False,
+        "database": 1,
+        "external_url": "string",
+        "is_managed_externally": True,
+        "normalize_columns": False,
+        "owners": [
+            1
+        ],
+        "schema": "public",
+        "sql": "SELECT hr, TIMESTAMP, watch_id\nFROM session_data\nJOIN heart_rate_measurement ON session_data.id = heart_rate_measurement.session_id\nWHERE session_id = 1 and hr_status= 1",
+        "table_name": "test"
+    }
+
+    dataset_resp = session.post(f'{url}/api/v1/dataset/', headers=headers, json=body)
+    dataset = dataset_resp.json()
+    saveToFile(json.dumps(dataset, indent=4))
+    return dataset
+
+
+def createDataset_answers(url, session, headers, owner):
+
+    body = {
+        "always_filter_main_dttm": False,
+        "database": 1,
+        "external_url": '',
+        "is_managed_externally": True,
+        "normalize_columns": False,
+        "owners": [
+            1 #TODO alternative owner.get('id')
+        ],
+        "schema": "public",
+        "sql": "SELECT base_questionanswers.id AS answer_id, answer, question_id, experiment_id, session_id FROM base_questionanswers JOIN base_answers ON base_questionanswers.id = base_answers.answer_id where session_id IN (SELECT base_session.id as session_id FROM base_session JOIN base_experiment ON base_experiment.id = base_session.experiment_id where created_by_id = " + str(owner.get('id')) + ")",
+        "table_name": owner.get('last_name') + "_base_answers_ids"
+    }
+    dataset_resp = session.post(f'{url}/api/v1/dataset/', headers=headers, json=body)
+    dataset = dataset_resp.json()
+    saveToFile(json.dumps(dataset, indent=4))
+    return dataset
+
+
+def createDataset_poincare(url, session, headers, owner):
+
+    body = {
+        "always_filter_main_dttm": False,
+        "database": 1,
+        "external_url": "string",
+        "is_managed_externally": True,
+        "normalize_columns": False,
+        "owners": [
+            owner.get('id')
+        ],
+        "schema": "public",
+        # TODO change the table names here with the ones with the integrated owner id in the SQL table names
+        "sql": "SELECT session_id, id, ibi AS current, next FROM (SELECT session_id, id, ibi, LEAD(ibi) OVER (ORDER BY id) AS next FROM base_heart_rate WHERE ibi_status = 0 AND hr_status = 1 AND ibi < 2000) AS subquery WHERE next < 2000 AND session_id IN (SELECT base_session.id as session_id FROM base_session JOIN base_experiment ON base_experiment.id = base_session.experiment_id WHERE created_by_id = " + str(owner.get('id')) + ")",
+        "table_name":  owner.get('last_name')+ "_poincare_data"
+    }
+    dataset_resp = session.post(f'{url}/api/v1/dataset/', headers=headers, json=body)
+    dataset = dataset_resp.json()
+    saveToFile(json.dumps(dataset, indent=4))
+    return dataset

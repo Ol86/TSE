@@ -1,5 +1,6 @@
 import requests
 from base.api.dataset import create_datasets
+from base.api.dashboard import createStandarizedDashboard
 
 def entrypoint(username, password, is_admin, id):
     """Entrypoint for the main api-calls with authorization.
@@ -51,42 +52,11 @@ def entrypoint(username, password, is_admin, id):
     #TODO sollte ein User gelöscht werden, kann es hier zu Probleme kommen. Vlt eigene Methode machen die usernames vergleicht
     superset_id = session.get(f'{url}/api/v1/security/users', headers=headers).json()
     create_datasets(id, role.json()['id'], superset_id['count'])
+    
+    user = {
+    "first_name": "user",
+    "id": role.json()['id'],
+    "last_name": username
+    }
+    createStandarizedDashboard(headers, session, user)
     session.close()
-
-"""
-Next Steps:
-Bei Erstellung des Standartisierten Dashboards bzw zum ähnlichen Zeitpunkt sollten alle Wichtigen Datasets für den User erstellt werden.
-Der "Role" die den namen des Spielers trägt werden dann nutzungsrechte zum Dashboard und zum Dataset gegeben.
-
-Erstellung Datasets:
-session.post(f'{url}/api/v1/security/dataset', headers=headers, json={
-    "always_filter_main_dttm": false,    <- nicht required
-    "database": 0,   <- Standard Database 
-    "external_url": "string",     <- nicht required
-    "is_managed_externally": true,     <- nicht required
-    "normalize_columns": false,     <- nicht required
-    "owners": [     <- owner Liste könnte uns die Aufgabe abnehmen die Roles zu erstellen und zu ergänzen
-        0       
-    ],
-    "schema": "string",
-    "sql": "string",
-    "table_name": "string"
-})
-
-
-
-Zuweisung Berechtigungen:
-session.post(f'{url}/api/v1/security/roles/{role_id}/permissions', headers=headers, json={
-    ***
-}
-
-
-Bei Swagger V1 gibt es einen Block mit Security Permissions und Security Permissions (view menus)
-
-
-
-
-Man kann einer Role permissions über die Permission id hinzufügen.
-Die Permission ID bekommt man durch ***
-Idee 1: Die Permissions abrufen mit get methode und vergleichen.
-"""
