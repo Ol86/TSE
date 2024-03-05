@@ -18,6 +18,10 @@ interface ApiService {
     @Headers("Content-Type: application/json")
     fun testPost(@Body body: JsonObject, @Header("Authorization") token: String): Call<Unit>
 
+    @POST("api/watch/data/")
+    @Headers("Content-Type: application/json")
+    fun sendAllData(@Body body: JsonObject, @Header("Authorization") token: String): Call<Unit>
+
     @GET("api/watch/template")
     @Headers("Content-Type: application/json")
     fun getTemplate(@Header("Authorization") token: String): Call<JsonObject>

@@ -51,7 +51,8 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
         timer = Timer()
         timer?.scheduleAtFixedRate(timerTask {
             Log.i("WorkerTest2", "In startSending")
-            connectApi()
+            //connectApi()
+            //TODO
         }, 0, intervalMillis.toLong())
     }
 
@@ -156,7 +157,7 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
                     val tokenResponse = apiService.getToken(
 
                         JsonObject().apply {
-                            addProperty("username", "Watch1")
+                            addProperty("username", "Watch2")
                             addProperty("password", "tse-KIT-2023")
                         }
                     ).execute()
