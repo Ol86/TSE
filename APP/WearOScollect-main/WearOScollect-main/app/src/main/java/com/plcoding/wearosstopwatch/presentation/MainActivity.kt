@@ -73,6 +73,9 @@ import android.net.NetworkCapabilities
 import androidx.compose.runtime.Composable
 import androidx.work.Constraints
 import androidx.work.NetworkType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : ComponentActivity(), LifecycleOwner {
 
@@ -208,7 +211,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         "title": "{Default}",
         "watches": [
             {
-                "name": "Watch1",
+                "name": "Watch2",
                 "watch": "RFAW31MPVBJ"
             }
         ],
@@ -550,9 +553,9 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                 templateData.question_interval.toLong(), templateData)
             WorkManager.getInstance(this).enqueue(periodicWorkRequest)
         }
-
-        val periodicWorkRequestTheThird = createBackEndWorker(0, 1)
-        WorkManager.getInstance(this).enqueue(periodicWorkRequestTheThird)
+        //TODO
+        // val periodicWorkRequestTheThird = createBackEndWorker(0, 1)
+        // WorkManager.getInstance(this).enqueue(periodicWorkRequestTheThird)
 
         /*val periodicWorkRequest4 = createW()
         WorkManager.getInstance(this).enqueue(periodicWorkRequest4)*/
@@ -561,11 +564,61 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         startDataCollection()
         //startDataSending()
     }
+
     private fun resetRoutine(viewModel: StopWatchViewModel) {
+        Log.i("ResetRoutine", "1")
         stopDataCollection()
+        Log.i("ResetRoutine", "2")
         WorkManager.getInstance(this).cancelAllWork()
+        Log.i("ResetRoutine", "3")
         viewModel.resetTimer()
+        Log.i("ResetRoutine", "4")
+        sendAllData()
+        Log.i("ResetRoutine", "5")
         sendQuit()
+        Log.i("ResetRoutine", "6")
+    }
+
+    private fun sendAllData() {
+        val thread = Thread {
+            try {
+                Log.i("APImessage", "Connect")
+                val retrofit = Retrofit.Builder()
+                        .baseUrl("http://193.196.36.62:9000/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
+
+                val apiService: ApiService = retrofit.create(ApiService::class.java)
+
+                try {
+                    val tokenResponse = apiService.getToken(
+
+                            JsonObject().apply {
+                                addProperty("username", "Watch2")
+                                addProperty("password", "tse-KIT-2023")
+                            }
+                    ).execute()
+
+                    if (tokenResponse.isSuccessful) {
+                        val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
+                        println(token)
+
+                        val dataMessage = apiService.sendAllData(this.dbDataTOJSON(), token).execute()
+                        Log.i("SendAll", dataMessage.body().toString().trimIndent())
+                        Log.i("SendAll", "Done")
+                    } else {
+                        Log.i("SendAll", "Failed")
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+        thread.start()
+        thread.join()
     }
 
     private fun startDataCollection() {
@@ -630,7 +683,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                     val tokenResponse = apiService.getToken(
 
                         JsonObject().apply {
-                            addProperty("username", "Watch1")
+                            addProperty("username", "Watch2")
                             addProperty("password", "tse-KIT-2023")
                         }
                     ).execute()
@@ -710,7 +763,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                     val tokenResponse = apiService.getToken(
 
                         JsonObject().apply {
-                            addProperty("username", "Watch1")
+                            addProperty("username", "Watch2")
                             addProperty("password", "tse-KIT-2023")
                         }
                     ).execute()
@@ -792,7 +845,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                     val tokenResponse = apiService.getToken(
 
                         JsonObject().apply {
-                            addProperty("username", "Watch1")
+                            addProperty("username", "Watch2")
                             addProperty("password", "tse-KIT-2023")
                         }
                     ).execute()
@@ -820,6 +873,69 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
     }
     companion object {
         private const val TAG = "MainActivity DataCollection"
+    }
+
+    private lateinit var context: Context
+    private val scope = CoroutineScope(Dispatchers.Main)
+    private var dbData: String = ""
+
+    private fun dbDataTOJSON(): JsonObject {
+        try {
+            this.addQuestionData()
+            val job = scope.launch {
+                dbData = UserDataStore.getUserRepository(context).getLatestDataAsJson()
+            }
+            runBlocking(Dispatchers.IO) {
+                job.join()
+            }
+        } catch (e: Exception){
+
+            println("Error in Converting to Json!")
+        }
+        Log.i("DebuggingA1", "DB:" + dbData)
+        val jsonObject: JsonObject = JsonParser().parse(dbData)
+                .getAsJsonObject()
+        Log.i("DebuggingA1", "JSON:" + jsonObject.toString())
+        return jsonObject
+    }
+
+    private fun addQuestionData(){
+        var questionData: QuestionData
+        val affectDataList = UserDataStore.getUserRepository(context).affectDao.getAllAffectData()
+        try {
+            affectDataList.forEach { element ->
+                if (element.transferred == false) {
+                    Log.i("DebuggingA35.1", element.transferred.toString())
+                    Log.i("DebuggingA35.2", element.id.toString())
+                    val time: String
+                    val affect: String
+                    val questionid: String
+                    affect =
+                            UserDataStore.getUserRepository(context).affectDao.getAffectDataByID(element.id).affect
+                    questionid =
+                            UserDataStore.getUserRepository(context).affectDao.getAffectDataByID(element.id).question
+                    time =
+                            UserDataStore.getUserRepository(context).notificationDao.getNotificationDataByID(
+                                    UserDataStore.getUserRepository(context).affectDao.getAffectDataByID(
+                                            element.id
+                                    ).notification_id
+                            ).time
+                    questionData = QuestionData(time, affect, questionid, "0")
+                    Log.i("DebuggingA35.3", affect + " " + questionid + " " + time)
+
+                    scope.launch {
+
+                        Log.i("DebuggingA35.4", questionData.questionid)
+                        UserDataStore.getUserRepository(context).questionDao.upsertQuestionData(questionData)
+                        UserDataStore.getUserRepository(context).affectDao.markAsTransferred(element.id)
+                    }
+                } else {
+                    Log.i("DebuggingA35.5", element.id.toString())
+                }
+            }
+        }catch (e: Exception){
+            println("Error in Adding QuestionData!")
+        }
     }
 
 
