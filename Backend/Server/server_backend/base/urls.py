@@ -34,6 +34,6 @@ urlpatterns = [
     path('api/watch/data/', views.sendWatchData, name="data"),
     path('api/watch/session/', views.createSession, name="session"),
     path('api/watch/quit/', views.endSession, name="quit"),
+    # This url refreshes the datasets and sends the user back to the homepage.
     path('refresh/', views.refresh, name='refresh'),
-    path('testing/', views.testing, name="testing"),
 ]

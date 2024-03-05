@@ -1,5 +1,6 @@
 # Json to handle json opperations.
 import json
+# Datetime to convert unix timestamp.
 from datetime import datetime
 
 # The seriallizer to get all the required informations of the Models.
@@ -47,7 +48,6 @@ def returnExperimentInfo(experiment, watch_id):
         }
         questions.append(questionResult)
     
-# TODO: get current watch
     watch = Watch.objects.get(user_id=watch_id)
     current_watch = []
     current_watch.append({'name': watch.user.username, 'watch': watch.serialnumber})
@@ -188,8 +188,12 @@ def insertPPGGreenData(data):
         )
         line.save()
 
-# --------------------------------------------------------------------------------------------------- #
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 def insertAnswers(data):
+    """This method handle the saving process of the answers.
+
+    :param data: The send data of the watch.
+    """
     session = Session.objects.get(id=data["session"])
     for answer in data["questions"]:
         answers = QuestionAnswers.objects.get(question_id=answer["question"], position=answer["answer"])

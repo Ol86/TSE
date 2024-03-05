@@ -15,8 +15,6 @@ from rest_framework.authtoken.models import Token
 # Json to encrypt and decrypt json into dictionarys to work with.
 import json
 
-from datetime import datetime
-
 # Methods to guid the user.
 from django.shortcuts import render, redirect
 
@@ -28,13 +26,8 @@ from base.models import *
 from base.forms import ExperimentForm, QuestionForm, QuestionAnswersForm
 # The handling methods to save the given data to the database.
 from base.json import *
-
+# The method to update the datasets.
 from base.api.dataset import updateDatasets
-
-def testing(request):
-    result = Profile.objects.all()
-    context = {"test": result}
-    return render(request, 'base/test.html', context)
 
 # --------------------------------------------------------------------------------------------------- #
 def loginPage(request):
@@ -72,7 +65,13 @@ def logoutUser(request):
     return redirect('home')
 
 # --------------------------------------------------------------------------------------------------- #
+@login_required(login_url='login')
 def refresh(request):
+    """This function handles the progress of updating the virtual datasets and change the columns.
+
+    :param request: The request of the page and the user.
+    :return: The funtion redirects to the homepage.
+    """
     updateDatasets()
     return redirect('home')
 
@@ -173,14 +172,19 @@ def editExperiment(request, pk):
     return render(request, 'base/experiment/edit_experiment.html', context)
 
 # --------------------------------------------------------------------------------------------------- #
-# TODO: Add comment
 @login_required(login_url='login')
 def questions(request):
+    """This function handles the display of the questions and their answers.
+
+    :param request: It handles the request to display the questions.
+    :return: The page of the questions.
+    """
     result = []
     questions = Questions.objects.all()
     for question in questions:
         answer1 = QuestionAnswers.objects.get(question=question, position=1)
         answer2 = QuestionAnswers.objects.get(question=question, position=2)
+        # Diffreneciate how many answers are given.
         if question.button3:
             if question.button4:
                 answer3 = QuestionAnswers.objects.get(question=question, position=3)
@@ -230,9 +234,13 @@ def questions(request):
     return render(request, 'base/question/questions.html', context)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
-# TODO: Add comment
 @login_required(login_url='login')
 def createQuestion(request):
+    """This funtion handles the creation progres of a question.
+
+    :param request: It handles the request to create a new question
+    :return: The new Question with the given answers.
+    """
     questionForm = QuestionForm()
     answer1Form = QuestionAnswersForm(prefix='1')
     answer2Form = QuestionAnswersForm(prefix='2')
@@ -293,7 +301,6 @@ def deleteQuestion(request, pk):
     :return: This function returns the same page before delete was clicked, 
     or it redirects the user to the homepage if the deletion of a question was successful.
     """
-
     question = Questions.objects.get(id=pk)
     if request.method == 'POST':
         question.delete()
@@ -301,7 +308,6 @@ def deleteQuestion(request, pk):
     return render(request, 'base/question/delete_question.html', {'question': question})
 
 # --------------------------------------------------------------------------------------------------- #
-# TODO: Add comment
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def testApi(request):
@@ -310,10 +316,16 @@ def testApi(request):
     return Response({'error': 'Wrong rest method'})
 
 # --------------------------------------------------------------------------------------------------- #
-# TODO: Add comment
+# This section shows the api calls.
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getExperimentTemplate(request):
+    """This function creates the experiment template and sends the current template to the 
+        requestion watch.
+
+    :param request: It handles the form of REST-API call and the authorization token.
+    :return: The json template of the current experiment.
+    """
     if request.method == 'GET':
         key = request.META['HTTP_AUTHORIZATION'].split(" ")[1]
         token = Token.objects.get(key=key)
@@ -338,10 +350,15 @@ def getExperimentTemplate(request):
     return Response({'error': 'Wrong rest method'})
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
-# TODO: Add comment
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def sendWatchData(request):
+    """This function handles the process of receiving data from the watch and 
+        saving it to the dedicated tables inside of the database.
+
+    :param request: It handles the form of REST-API call and the authorization.
+    :return: A resulting message if the sending process worked.
+    """
     if request.method == 'POST':
         data = request.data
 
@@ -369,10 +386,14 @@ def sendWatchData(request):
     return Response({'error': 'Wrong rest method'}, status=status.HTTP_400_BAD_REQUEST)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
-# TODO: Add comment
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def createSession(request):
+    """This function creates a new session for the given experiment.
+
+    :param request: It handles the form of REST-API call and the authorization.
+    :return: The current session id and the new status of the watch.
+    """
     if request.method == 'GET':
         key = request.META['HTTP_AUTHORIZATION'].split(" ")[1]
         token = Token.objects.get(key=key)
@@ -403,10 +424,14 @@ def createSession(request):
     return Response({'error': 'Wrong rest method'}, status=status.HTTP_400_BAD_REQUEST)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
-# TODO: Add comment
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def endSession(request):
+    """This function ends a session of a watch.
+
+    :param request: It handles the form of REST-API call and the authorization.
+    :return: The new state of the watch.
+    """
     if request.method == 'GET':
         key = request.META['HTTP_AUTHORIZATION'].split(" ")[1]
         token = Token.objects.get(key=key)

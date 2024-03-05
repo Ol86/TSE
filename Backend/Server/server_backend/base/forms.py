@@ -43,9 +43,16 @@ class QuestionForm(ModelForm):
         """
         model = Questions
         fields = '__all__'
-        
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #        
 class QuestionAnswersForm(ModelForm):
+    """This function handles the form of every single answer.
+
+    :param ModelForm: The base structure for the form.
+    """
     answer = forms.CharField(required=False, max_length=50, widget=forms.TextInput(attrs={'placeholder': 'Enter Answer'}))
     class Meta:
+        """This class specifies what model and fields should be used.
+        """
         model = QuestionAnswers
         exclude = ('question', 'position')

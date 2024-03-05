@@ -39,6 +39,8 @@ class QuestionAnswerSerializer(serializers.ModelSerializer):
         model = QuestionAnswers
         fields = '__all__'
 
+# --------------------------------------------------------------------------------------------------- #
+
 class SessionSerializer(serializers.ModelSerializer):
     """This class creates the serializer for the session model.
 

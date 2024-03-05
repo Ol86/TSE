@@ -2,60 +2,8 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-import time
-
 # The user models for cross connections between tables inside the database.
 from user.models import Watch, Profile
-
-# --------------------------------------------------------------------------------------------------- #
-class Questions(models.Model):
-    """This class creates the question model.
-
-    :param models: The base stucture for a model.
-    :return: The question as a model.
-    """
-    id = models.AutoField(auto_created=True, primary_key=True)
-    question = models.CharField(max_length=200)
-    # Answer 1
-    button1 = models.BooleanField(default=True)
-    # Answer 2
-    button2 = models.BooleanField(default=True)
-    # Answer 3
-    button3 = models.BooleanField(default=True)
-    # Answer 4
-    button4 = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        """This class defines the ordering of the database table.
-        """
-        ordering = ['id']
-
-    def __str__(self):
-        """This method defines the display name.
-
-        :return: The qestion as a display.
-        """
-        return self.question
-    
-class QuestionAnswers(models.Model):
-    id = models.AutoField(auto_created=True, primary_key=True)
-    question = models.ForeignKey(Questions, on_delete=models.CASCADE)
-    position = models.PositiveSmallIntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(4)])
-    answer = models.CharField(blank=True, max_length=50)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ['id']
-
-    def __str__(self):
-        """This method defines the display name.
-
-        :return: The answer id and the answer with the given answer.
-        """
-        result = self.id + ": " + self.question.question + " => " + self.answer
-        return result
-
 
 # --------------------------------------------------------------------------------------------------- #
 class Experiment(models.Model):
@@ -124,6 +72,59 @@ class Session(models.Model):
         return result
 
 # --------------------------------------------------------------------------------------------------- #
+class Questions(models.Model):
+    """This class creates the question model.
+
+    :param models: The base stucture for a model.
+    :return: The question as a model.
+    """
+    id = models.AutoField(auto_created=True, primary_key=True)
+    question = models.CharField(max_length=200)
+    button1 = models.BooleanField(default=True)
+    button2 = models.BooleanField(default=True)
+    button3 = models.BooleanField(default=True)
+    button4 = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        """This class defines the ordering of the database table.
+        """
+        ordering = ['id']
+
+    def __str__(self):
+        """This method defines the display name.
+
+        :return: The qestion as a display.
+        """
+        return self.question
+    
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
+class QuestionAnswers(models.Model):
+    """This class creates the questionanswer model.
+
+    :param models: The base stucture for a model.
+    :return: The answer as a model.
+    """
+    id = models.AutoField(auto_created=True, primary_key=True)
+    question = models.ForeignKey(Questions, on_delete=models.CASCADE)
+    position = models.PositiveSmallIntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(4)])
+    answer = models.CharField(blank=True, max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        """This class defines the ordering of the database table.
+        """
+        ordering = ['id']
+
+    def __str__(self):
+        """This method defines the display name.
+
+        :return: The answer id and the answer with the given answer.
+        """
+        result = self.id + ": " + self.question.question + " => " + self.answer
+        return result
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 class Answers(models.Model):
     """This class defines the answer model.
 
@@ -236,7 +237,11 @@ class SPO2(models.Model):
 
 # --------------------------------------------------------------------------------------------------- #
 class Accelerometer(models.Model):
-    # TODO: Add comment
+    """This class creates the accelerometer model.
+
+    :param models: The base stucture for a model.
+    :return: The accelerometer as a model.
+    """
     id = models.AutoField(auto_created=True, primary_key=True)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     x = models.IntegerField(default=0)
@@ -259,7 +264,11 @@ class Accelerometer(models.Model):
 
 # --------------------------------------------------------------------------------------------------- #
 class PPG_Green(models.Model):
-    # TODO: Add comment
+    """This class creates the ppg_green model.
+
+    :param models: The base stucture for a model.
+    :return: The ppg_green as a model.
+    """
     id = models.AutoField(auto_created=True, primary_key=True)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     ppg_green = models.IntegerField(default=0)
@@ -280,7 +289,11 @@ class PPG_Green(models.Model):
 
 # --------------------------------------------------------------------------------------------------- #
 class PPG_IR(models.Model):
-    # TODO: Add comment
+    """This class creates the ppg_ir model.
+
+    :param models: The base stucture for a model.
+    :return: The ppg_ir as a model.
+    """
     id = models.AutoField(auto_created=True, primary_key=True)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     ppg_ir = models.IntegerField(default=0)
@@ -301,7 +314,11 @@ class PPG_IR(models.Model):
 
 # --------------------------------------------------------------------------------------------------- #
 class PPG_Red(models.Model):
-    # TODO: Add comment
+    """This class creates the ppg_red model.
+
+    :param models: The base stucture for a model.
+    :return: The ppg_red as a model.
+    """
     id = models.AutoField(auto_created=True, primary_key=True)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     ppg_red = models.IntegerField(default=0)
