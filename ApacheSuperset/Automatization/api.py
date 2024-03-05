@@ -431,14 +431,14 @@ def createDataset_answers(url, session, headers, owner):
     body = {
         "always_filter_main_dttm": False,
         "database": 1,
-        "external_url": "string",
+        "external_url": '',
         "is_managed_externally": True,
         "normalize_columns": False,
         "owners": [
-            owner.get('id')
+            1 #TODO alternative owner.get('id')
         ],
         "schema": "public",
-        "sql": "SELECT " + owner.get('last_name') + "_base_questionanswers.id AS answer_id, answer, question_id, experiment_id, session_id\nFROM " + owner.get('last_name') + "_base_questionanswers \nJOIN " + owner.get('last_name') + "_base_answers ON " + owner.get('last_name') + "_base_questionanswers.id = " + owner.get('last_name') + "_base_answers.answer_id\n",
+        "sql": "SELECT base_questionanswers.id AS answer_id, answer, question_id, experiment_id, session_id FROM base_questionanswers JOIN base_answers ON base_questionanswers.id = base_answers.answer_id where session_id IN (SELECT base_session.id as session_id FROM base_session JOIN base_experiment ON base_experiment.id = base_session.experiment_id where created_by_id = " + str(owner.get('id')) + ")",
         "table_name": owner.get('last_name') + "_base_answers_ids"
     }
     dataset_resp = session.post(f'{url}/api/v1/dataset/', headers=headers, json=body)
@@ -460,7 +460,7 @@ def createDataset_poincare(url, session, headers, owner):
         ],
         "schema": "public",
         # TODO change the table names here with the ones with the integrated owner id in the SQL table names
-        "sql": "SELECT\r\n    session_id,\r\n    id,\r\n    ibi AS current,\r\n    next\r\nFROM (\r\n    SELECT\r\n        session_id,\r\n        id,\r\n        ibi,\r\n        LEAD(ibi) OVER (ORDER BY id) AS next\r\n    FROM\r\n        " + owner.get('last_name') + "_base_heart_rate\r\n    WHERE\r\n        ibi_status = 0\r\n        AND hr_status = 1\r\n        AND ibi < 2000\r\n) AS H\r\nWHERE\r\n    next < 2000;",
+        "sql": "SELECT session_id, id, ibi AS current, next FROM (SELECT session_id, id, ibi, LEAD(ibi) OVER (ORDER BY id) AS next FROM base_heart_rate WHERE ibi_status = 0 AND hr_status = 1 AND ibi < 2000) AS subquery WHERE next < 2000 AND session_id IN (SELECT base_session.id as session_id FROM base_session JOIN base_experiment ON base_experiment.id = base_session.experiment_id WHERE created_by_id = " + str(owner.get('id')) + ")",
         "table_name":  owner.get('last_name')+ "_poincare_data"
     }
     dataset_resp = session.post(f'{url}/api/v1/dataset/', headers=headers, json=body)
