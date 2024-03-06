@@ -38,11 +38,12 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
     override fun doWork(): Result {
         return try {
             runBlocking(Dispatchers.IO) {
-                Log.i("WorkerTest1", "In runBlocking")
+                Log.i("BackendWorker", "In runBlocking")
                 startSending()
             }
             Result.success()
         } catch (e: Exception) {
+            Log.e("BackendWorker", "${e.printStackTrace()}")
             Result.failure()
         }
     }
@@ -50,9 +51,8 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
     fun startSending() {
         timer = Timer()
         timer?.scheduleAtFixedRate(timerTask {
-            Log.i("WorkerTest2", "In startSending")
-            //connectApi()
-            //TODO
+            Log.i("BackendWorker", "In startSending")
+            connectApi()
         }, 0, intervalMillis.toLong())
     }
 
@@ -60,7 +60,7 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
         timer?.cancel()
     }
 
-    private fun dbDataTOJSON(): JsonObject {
+    fun dbDataTOJSON(): JsonObject {
         try {
             this.addQuestionData()
             val job = scope.launch {
@@ -70,13 +70,12 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
                 job.join()
             }
         } catch (e: Exception){
-
-            println("Error in Converting to Json!")
+            Log.e("DbDataToJSON", "${e.printStackTrace()}")
         }
-        Log.i("DebuggingA1", dbData)
+        Log.i("DbDataToJSON", "DB: $dbData")
         val jsonObject: JsonObject = JsonParser().parse(dbData)
             .getAsJsonObject()
-        Log.i("DebuggingA1", jsonObject.toString())
+        Log.i("DbDataToJSON", "JSON: $jsonObject")
         return jsonObject
     }
 
@@ -86,8 +85,8 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
         try {
             affectDataList.forEach { element ->
                 if (element.transferred == false) {
-                    Log.i("DebuggingA35.1", element.transferred.toString())
-                    Log.i("DebuggingA35.2", element.id.toString())
+                    Log.i("AddQuestionData", element.transferred.toString())
+                    Log.i("AddQuestionData", element.id.toString())
                     val time: String
                     val affect: String
                     val questionid: String
@@ -102,35 +101,20 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
                             ).notification_id
                         ).time
                     questionData = QuestionData(time, affect, questionid, "0")
-                    Log.i("DebuggingA35.3", affect + " " + questionid + " " + time)
+                    Log.i("AddQuestionData", affect + " " + questionid + " " + time)
 
                     scope.launch {
 
-                        Log.i("DebuggingA35.4", questionData.questionid)
+                        Log.i("AddQuestionData", questionData.questionid)
                         UserDataStore.getUserRepository(context).questionDao.upsertQuestionData(questionData)
                         UserDataStore.getUserRepository(context).affectDao.markAsTransferred(element.id)
                     }
                 } else {
-                    Log.i("DebuggingA35.5", element.id.toString())
+                    Log.i("AddQuestionData", element.id.toString())
                 }
             }
-            /*val questionDataList =
-                UserDataStore.getUserRepository(context).questionDao.getAllQuestionData()
-            questionDataList.forEach { element ->
-                if (element.sync == "0") {
-                    Log.i("DebuggingA36.1", element.id.toString())
-                    Log.i("DebuggingA36.2", element.sync)
-                    val q: QuestionData = element
-                    scope.launch {
-                        UserDataStore.getUserRepository(context).questionDao.markAsSynced(
-                            "1",
-                            element.id
-                        )
-                    }
-                }
-            }*/
         }catch (e: Exception){
-            println("Error in Adding QuestionData!")
+            Log.e("AddQuestionData", "${e.printStackTrace()}")
         }
     }
 
@@ -140,7 +124,7 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
             .readTimeout(timeoutSeconds.toLong(), TimeUnit.SECONDS)
             .writeTimeout(timeoutSeconds.toLong(), TimeUnit.SECONDS)
             .build()
-        Log.i("sendDataApi0001", "Testing Timeout fix")
+        Log.i("SendData", "Testing Timeout fix")
         val thread = Thread {
             try {
                 Log.i("APImessage", "Connect")
@@ -161,11 +145,11 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
                             addProperty("password", "tse-KIT-2023")
                         }
                     ).execute()
-                    Log.i("sendDataApi0", "Test")
+                    Log.i("SendData", "Test")
 
                     if (tokenResponse.isSuccessful) {
                         val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
-                        //Log.i("sendDataApi1", token)
+                        Log.i("SendData", token)
 
                         val postResponse = apiService.testPost(
                             this.dbDataTOJSON(),
@@ -179,28 +163,23 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
                         if (postResponse.isSuccessful) {
                             //println(postResponse.body())
                             //Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
-                            Log.i("sendDataApi2", postResponse.toString())
-                            Log.i("sendDataApi3", "${postResponse.code()}")
-                            Log.i("sendDataApi3", postResponse.body().toString())
+                            Log.i("SendData", postResponse.toString())
+                            Log.i("SendData", "${postResponse.code()}")
+                            Log.i("SendData", postResponse.body().toString())
 
                         } else {
-                            Log.i("sendDataApi4", postResponse.toString())
-
-
-                            Log.i("sendDataApi5", "${postResponse.code()}")
+                            Log.w("SendData", "${postResponse.code()}")
                             //Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
                         }
                     } else {
-                        Log.i("sendDataApi6", "${tokenResponse.code()}")
-                        Log.i("sendDataApi6,5", tokenResponse.toString())
+                        Log.w("SendData", "${tokenResponse.code()}")
                     }
 
                 } catch (e: Exception) {
-                    e.printStackTrace()
-                    Log.i("sendDataApi7", "${e.printStackTrace()}")
+                    Log.e("SendData", "${e.printStackTrace()}")
                 }
             } catch (e: java.lang.Exception) {
-                Log.i("sendDataApi8", "${e.printStackTrace()}")
+                Log.e("SendData", "${e.printStackTrace()}")
             }
         }
         thread.start()

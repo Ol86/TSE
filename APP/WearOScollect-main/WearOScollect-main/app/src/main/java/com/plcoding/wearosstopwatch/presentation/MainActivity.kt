@@ -52,7 +52,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import androidx.room.Room
 import androidx.work.Data
 import androidx.work.PeriodicWorkRequest
 import com.google.gson.Gson
@@ -289,34 +288,6 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         Manifest.permission.POST_NOTIFICATIONS
     )
 
-    /*val listType: Type = object : TypeToken<List<TemplateQuestion>>() {}.type
-    var templateDataJson = gson.toJson(templateData.questions, listType)
-    private var templateQuestions = Data.Builder()
-        .putString("template_questions", templateDataJson)
-        .build()
-
-    private val promptFrequency = 1500L
-    private val promptFrequencyTimeUnit = TimeUnit.SECONDS
-    private val initialDelay = 10L
-    private val periodicWorkRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
-        promptFrequency,
-        promptFrequencyTimeUnit
-    )
-        .setInitialDelay(initialDelay, promptFrequencyTimeUnit)
-        .addTag("notification")
-        .setInputData(templateQuestions)
-        .build()*/
-
-    /*private val initialDelay2 = 2L
-    private val periodicWorkRequest_Second_Test = PeriodicWorkRequestBuilder<NotificationWorker>(
-        promptFrequency,
-        promptFrequencyTimeUnit
-    )
-        .setInitialDelay(initialDelay2, promptFrequencyTimeUnit)
-        .addTag("notification2")
-        .setInputData(templateQuestions)
-        .build()*/
-
     private fun createNotificationWorker(initialDelay: Long, promptFrequency: Long,
                                          templateData: TemplateInfos) : PeriodicWorkRequest {
 
@@ -410,19 +381,6 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             false
         }
     }
-
-    /*private val workerList: List<UUID> = listOf()
-    private fun observeWorkers(workerIdList: List<UUID>): Boolean {
-        var notifyDone = false
-        WorkManager.getInstance(this).getWorkInfoByIdLiveData(workerIdList[0])
-            .observe(this) { workInfo ->
-                if (workInfo != null && workInfo.state == WorkInfo.State.SUCCEEDED) {
-                    notifyDone = true
-                    Log.i("Worker", "Worker has been called")
-                }
-            }
-        return notifyDone
-    }*/
 
     private var notifyCounter = 0
 
@@ -553,9 +511,9 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                 templateData.question_interval.toLong(), templateData)
             WorkManager.getInstance(this).enqueue(periodicWorkRequest)
         }
-        //TODO
-        // val periodicWorkRequestTheThird = createBackEndWorker(0, 1)
-        // WorkManager.getInstance(this).enqueue(periodicWorkRequestTheThird)
+
+        val periodicWorkRequestTheThird = createBackEndWorker(0, 1)
+        WorkManager.getInstance(this).enqueue(periodicWorkRequestTheThird)
 
         /*val periodicWorkRequest4 = createW()
         WorkManager.getInstance(this).enqueue(periodicWorkRequest4)*/
@@ -573,57 +531,8 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         Log.i("ResetRoutine", "3")
         viewModel.resetTimer()
         Log.i("ResetRoutine", "4")
-        sendAllData()
-        Log.i("ResetRoutine", "5")
         sendQuit()
-        Log.i("ResetRoutine", "6")
-    }
-
-    private fun sendAllData() {
-        val thread = Thread {
-            try {
-                Log.i("APImessage", "Connect")
-                val retrofit = Retrofit.Builder()
-                        .baseUrl("http://193.196.36.62:9000/")
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build()
-
-                val apiService: ApiService = retrofit.create(ApiService::class.java)
-
-                try {
-                    val tokenResponse = apiService.getToken(
-
-                            JsonObject().apply {
-                                addProperty("username", "Watch2")
-                                addProperty("password", "tse-KIT-2023")
-                            }
-                    ).execute()
-
-                    if (tokenResponse.isSuccessful) {
-                        val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
-                        println(token)
-                        Log.i("SendAll", token)
-                        val dataMessage = apiService.sendAllData(this.dbDataTOJSON(), token).execute()
-                        Log.i("SendAll", "Test")
-                        if (dataMessage.isSuccessful) {
-                            Log.i("SendAll", dataMessage.body().toString().trimIndent())
-                            Log.i("SendAll", "Done")
-                        } else {
-                            Log.i("SendAll", "Failed")
-                        }
-                    } else {
-                        Log.i("SendAll", "Failed")
-                    }
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
-            }
-        }
-        thread.start()
-        thread.join()
+        Log.i("ResetRoutine", "5")
     }
 
     private fun startDataCollection() {
@@ -721,19 +630,19 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                                 ", ${templateDataInstance.ppgR}, ${templateDataInstance.spo2}")
 
                         if (template.isSuccessful) {
-                            Log.i("GetTemplateApi1", template.body().toString().trimIndent())
+                            Log.i("GetTemplate", template.body().toString().trimIndent())
                         } else {
-                            Log.i("GetTemplateApi2", "${template.code()}")
+                            Log.w("GetTemplate", "${template.code()}")
                         }
                     } else {
-                        Log.i("GetTemplateApi3", "${tokenResponse.code()}")
+                        Log.w("GetTemplate", "${tokenResponse.code()}")
                     }
 
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Log.e("GetTemplate", "${e.printStackTrace()}")
                 }
             } catch (e: java.lang.Exception) {
-                e.printStackTrace()
+                Log.e("GetTemplate", "${e.printStackTrace()}")
             }
         }
 
@@ -796,19 +705,19 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                         //println("Questions: ${templateDataInstance.questions}")
 
                         if (session.isSuccessful) {
-                            Log.i("GetSessionApi1", session.body().toString().trimIndent())
+                            Log.i("GetSession", session.body().toString().trimIndent())
                         } else {
-                            Log.i("GetSessionApi2", "${session.code()}")
+                            Log.w("GetSession", "${session.code()}")
                         }
                     } else {
-                        Log.i("GetSessionApi3", "${tokenResponse.code()}")
+                        Log.w("GetSession", "${tokenResponse.code()}")
                     }
 
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Log.e("GetSession", "${e.printStackTrace()}")
                 }
             } catch (e: java.lang.Exception) {
-                e.printStackTrace()
+                Log.e("GetSession", "${e.printStackTrace()}")
             }
         }
 
@@ -867,10 +776,10 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                     }
 
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Log.e("SendQuit", "${e.printStackTrace()}")
                 }
             } catch (e: java.lang.Exception) {
-                e.printStackTrace()
+                Log.e("SendQuit", "${e.printStackTrace()}")
             }
         }
         thread.start()
@@ -879,69 +788,6 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
     companion object {
         private const val TAG = "MainActivity DataCollection"
     }
-
-    private lateinit var context: Context
-    private val scope = CoroutineScope(Dispatchers.Main)
-    private var dbData: String = ""
-
-    private fun dbDataTOJSON(): JsonObject {
-        try {
-            this.addQuestionData()
-            val job = scope.launch {
-                dbData = UserDataStore.getUserRepository(context).getLatestDataAsJson()
-            }
-            runBlocking(Dispatchers.IO) {
-                job.join()
-            }
-        } catch (e: Exception){
-            Log.e("DbDataToJSON", e.message.toString())
-        }
-        Log.i("DbDataToJSON", "DB:" + dbData)
-        val jsonObject: JsonObject = JsonParser().parse(dbData)
-                .getAsJsonObject()
-        Log.i("DbDataToJSON", "JSON:" + jsonObject.toString())
-        return jsonObject
-    }
-
-    private fun addQuestionData(){
-        var questionData: QuestionData
-        val affectDataList = UserDataStore.getUserRepository(context).affectDao.getAllAffectData()
-        try {
-            affectDataList.forEach { element ->
-                if (element.transferred == false) {
-                    Log.i("AddQuestionData", element.transferred.toString())
-                    Log.i("AddQuestionData", element.id.toString())
-                    val time: String
-                    val affect: String
-                    val questionid: String
-                    affect =
-                            UserDataStore.getUserRepository(context).affectDao.getAffectDataByID(element.id).affect
-                    questionid =
-                            UserDataStore.getUserRepository(context).affectDao.getAffectDataByID(element.id).question
-                    time =
-                            UserDataStore.getUserRepository(context).notificationDao.getNotificationDataByID(
-                                    UserDataStore.getUserRepository(context).affectDao.getAffectDataByID(
-                                            element.id
-                                    ).notification_id
-                            ).time
-                    questionData = QuestionData(time, affect, questionid, "0")
-                    Log.i("AddQuestionData", affect + " " + questionid + " " + time)
-
-                    scope.launch {
-
-                        Log.i("AddQuestionData", questionData.questionid)
-                        UserDataStore.getUserRepository(context).questionDao.upsertQuestionData(questionData)
-                        UserDataStore.getUserRepository(context).affectDao.markAsTransferred(element.id)
-                    }
-                } else {
-                    Log.i("AddQuestionData", element.id.toString())
-                }
-            }
-        }catch (e: Exception){
-            Log.e("AddQuestionData", e.message.toString())
-        }
-    }
-
 
     //Werte von activeTracker sind irrelevant
     private fun accelerometerOff(){
@@ -1186,8 +1032,8 @@ private fun StopWatch(
                         onBackToSettings()
                     },
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 35.dp),
+                            .fillMaxWidth()
+                            .padding(horizontal = 35.dp),
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color.DarkGray
                     )
@@ -1223,8 +1069,8 @@ private fun FirstScreen(
         Spacer(modifier = Modifier.height(30.dp))
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
@@ -1276,15 +1122,15 @@ private fun FirstScreen(
         Spacer(modifier = Modifier.height(25.dp))
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
                 onClick = { onSyncTemplates() },
                 modifier = Modifier
-                    .weight(1.5f)
-                    .padding(horizontal = 5.dp),
+                        .weight(1.5f)
+                        .padding(horizontal = 5.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(parseColor("#0FADF0"))
                 )
@@ -1300,8 +1146,8 @@ private fun FirstScreen(
                     }
                 },
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 5.dp),
+                        .weight(1f)
+                        .padding(horizontal = 5.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (templateData.value.id != 31415
                         && templateData.value.title != "{Default}") Color(parseColor("#32CD32"))
@@ -1330,15 +1176,15 @@ private fun SecondActivity(
         Spacer(modifier = Modifier.height(10.dp))
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
                 onClick = onNext,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 46.dp),
+                        .fillMaxWidth()
+                        .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(parseColor("#32CD32"))
                 )
@@ -1354,8 +1200,8 @@ private fun SecondActivity(
             Button(
                 onClick = {},
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 46.dp),
+                        .fillMaxWidth()
+                        .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (trackers.value[0]) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
@@ -1372,8 +1218,8 @@ private fun SecondActivity(
             Button(
                 onClick = {},
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 46.dp),
+                        .fillMaxWidth()
+                        .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (trackers.value[1]) Color(parseColor("#0FADF0"))
                         else Color(parseColor("#AC3123"))
@@ -1390,8 +1236,8 @@ private fun SecondActivity(
             Button(
                 onClick = {},
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 46.dp),
+                        .fillMaxWidth()
+                        .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (trackers.value[2]) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
@@ -1408,8 +1254,8 @@ private fun SecondActivity(
             Button(
                 onClick = {},
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 46.dp),
+                        .fillMaxWidth()
+                        .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (trackers.value[3]) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
@@ -1426,8 +1272,8 @@ private fun SecondActivity(
             Button(
                 onClick = {},
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 46.dp),
+                        .fillMaxWidth()
+                        .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (trackers.value[4]) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
@@ -1444,8 +1290,8 @@ private fun SecondActivity(
             Button(
                 onClick = {},
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 46.dp),
+                        .fillMaxWidth()
+                        .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (trackers.value[5]) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
@@ -1457,15 +1303,15 @@ private fun SecondActivity(
         Spacer(modifier = Modifier.height(10.dp))
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
                 onClick = {},
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 46.dp),
+                        .fillMaxWidth()
+                        .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (trackers.value[6]) Color(parseColor("#0FADF0"))
                     else Color(parseColor("#AC3123"))
@@ -1477,15 +1323,15 @@ private fun SecondActivity(
         Spacer(modifier = Modifier.height(10.dp))
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 10.dp),
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
                 onClick = onBack,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 46.dp),
+                        .fillMaxWidth()
+                        .padding(horizontal = 46.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.DarkGray
                 )
@@ -1519,8 +1365,8 @@ private fun ConfirmActionScreen(
 
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+                    .fillMaxWidth()
+                    .padding(16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
@@ -1529,8 +1375,8 @@ private fun ConfirmActionScreen(
                     backgroundColor = Color(0xFFAC3123)
                 ),
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 7.dp)
+                        .weight(1f)
+                        .padding(end = 7.dp)
             ) {
                 Text("Cancel")
             }
@@ -1541,8 +1387,8 @@ private fun ConfirmActionScreen(
                     backgroundColor = Color(0xFF32CD32)
                 ),
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 7.dp)
+                        .weight(1f)
+                        .padding(start = 7.dp)
             ) {
                 Text("Confirm")
             }
