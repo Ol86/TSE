@@ -47,10 +47,10 @@ main {
     grid-template-columns: auto 150px;
     grid-template-rows: auto;
     grid-template-areas:
-        "database database"
         "form form"
         "given given"
         "result copy"
+        "database database"
     ;
     grid-gap: 8px;
 

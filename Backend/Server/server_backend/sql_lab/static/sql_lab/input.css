@@ -47,9 +47,9 @@ main {
     grid-template-columns: auto;
     grid-template-rows: auto;
     grid-template-areas:
-        "database"
         "input"
         "submit"
+        "database"
     ;
     grid-gap: 8px;
 
