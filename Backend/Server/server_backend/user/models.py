@@ -134,7 +134,6 @@ class Profile(models.Model):
     ]
     user = models.OneToOneField(BaseUser, on_delete=models.CASCADE, primary_key=True)
     role = models.CharField(max_length=10, choices=ROLE)
-    sql_database = models.JSONField(blank=True, null=True)
 
     def __str__(self):
         """This method sets the display name.

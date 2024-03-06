@@ -5,9 +5,14 @@ import openai
 from openai import OpenAI
 import os
 
+import environ
+
+env = environ.Env()
+environ.Env.read_env()
+
 """Here is the main connection of the sql laboratory to OpenAI
 """
-openai.api_key = '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'
+openai.api_key = env('OPENAI_KEY')
 #TODO korrekten Pfad
 with open('./sql_lab/database.json', 'r') as f:
     database = f.read()
@@ -19,7 +24,7 @@ messages = [
 # todo großen JSON string auslagern!
 
 client = OpenAI(
-    api_key='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'
+    api_key=env('OPENAI_KEY')
 )
 
 chat_completion = client.chat.completions.create(

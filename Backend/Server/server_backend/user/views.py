@@ -69,7 +69,6 @@ def registerUser(response):
             password = form.cleaned_data.get('password1')
             #TODO: is_admin
             
-            #TODO: Add entripoint method.
             id = Profile.objects.last().user.id
             entrypoint(username, password, True, id)
             user = authenticate(username=username, password=password)
