@@ -5,7 +5,8 @@ import openai
 from openai import OpenAI
 import os
 
-
+"""Here is the main connection of the sql laboratory to OpenAI
+"""
 openai.api_key = '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'
 #TODO korrekten Pfad
 with open('./sql_lab/database.json', 'r') as f:
@@ -30,6 +31,10 @@ chat_completion = client.chat.completions.create(
 # print(chat_completion.choices[0].message.content)
 
 def translating(message):
+    """In this method the user input gets connected to GPT-3.5
+
+    :param message: The user input
+    """
     mes = str(message)
     messages.append(
         {"role": "user", "content": mes},
@@ -44,32 +49,3 @@ def translating(message):
         {"role": "system", "content": content},
     )
     return reply
-
-# print(translating("give me the two tables combined"))
-
-#TODO Usernames einbauen?
-"""
-Here will be the Prototype of the complete JSON
-
-A Table will always follow this format:
-    {
-     "name": "table1",
-       "columns": [
-         {
-           "name": "",
-           "type": ""
-         },
-         {
-           "name": "",
-           "type": ""
-         },
-         {
-           "name": "",
-           "type": ""
-         }
-         
-       ]
-       "primary key": ""
-    }
-
-"""

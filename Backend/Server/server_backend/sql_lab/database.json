@@ -2,7 +2,7 @@
   "database": {
     "tables": [
       {
-        "name": "experiment",
+        "name": "base_experiment",
         "columns": [
           {
             "name": "id",
@@ -57,7 +57,7 @@
             "type": "Watch"
           },
           {
-            "name": "created_by",
+            "name": "created_by_id",
             "type": "integer"
           },
           {
@@ -68,7 +68,7 @@
         "primary key": "id"
       },
       {
-        "name": "questions",
+        "name": "base_questions",
         "columns": [
           {
             "name": "id",
@@ -102,7 +102,7 @@
         "primary key": "id"
       },
       {
-        "name": "question_answers",
+        "name": "base_question_answers",
         "columns": [
           {
             "name": "id",
@@ -128,7 +128,7 @@
         "primary key": "id"
       },
       {
-        "name": "session",
+        "name": "base_session",
         "columns": [
           {
             "name": "id",
@@ -150,7 +150,7 @@
         "primary key": "id"
       },
       {
-        "name": "answers",
+        "name": "base_answers",
         "columns": [
           {
             "name": "id",
@@ -176,7 +176,7 @@
         "primary key": "id"
       },
       {
-        "name": "ecg",
+        "name": "base_ecg",
         "columns": [
           {
             "name": "id",
@@ -218,7 +218,7 @@
         "primary key": "id"
       },
       {
-        "name": "heart_rate",
+        "name": "base_heart_rate",
         "columns": [
           {
             "name": "id",
@@ -252,7 +252,7 @@
         "primary key": "id"
       },
       {
-        "name": "spo2",
+        "name": "base_spo2",
         "columns": [
           {
             "name": "id",
@@ -282,7 +282,7 @@
         "primary key": "id"
       },
       {
-        "name": "accelerometer",
+        "name": "base_accelerometer",
         "columns": [
           {
             "name": "id",
@@ -312,7 +312,7 @@
         "primary key": "id"
       },
       {
-        "name": "ppg_ir",
+        "name": "base_ppg_ir",
         "columns": [
           {
             "name": "id",
@@ -334,7 +334,7 @@
         "primary key": "id"
       },
       {
-        "name": "ppg_green",
+        "name": "base_ppg_green",
         "columns": [
           {
             "name": "id",
@@ -356,7 +356,7 @@
         "primary key": "id"
       },
       {
-        "name": "ppg_red",
+        "name": "base_ppg_red",
         "columns": [
           {
             "name": "id",
@@ -378,7 +378,7 @@
         "primary key": "id"
       },
       {
-        "name": "experiment_watch_id",
+        "name": "base_experiment_watch_id",
         "columns": [
           {
             "name": "id",
@@ -396,7 +396,7 @@
         "primary key": "id"
       },
       {
-        "name": "experiment_questions",
+        "name": "base_experiment_questions",
         "columns": [
           {
             "name": "id",
