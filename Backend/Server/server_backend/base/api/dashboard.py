@@ -9,8 +9,14 @@ from dataset import createDataset_poincare
 ## ----------------------------------------------------------------
 # TODO test if working with the owner parameter
 def createStandarizedDashboard(headers, session, owner):
-    url = 'http://193.196.36.62:8088'
+    """This method is the main focus point of this generation process
     
+    :param headers: The sessions header
+    :param session: The current request session
+    :param owner: the owner of the dashboard
+    :return: The newly created dashboard
+    """
+    url = 'http://193.196.36.62:8088'
     body = {
         "certification_details": "string",
         "certified_by": "ale",
@@ -45,32 +51,45 @@ def createStandarizedDashboard(headers, session, owner):
 
     updateDashboard(url, session, headers, owner)
     dashboard = dashboard_res.json()
-    saveToFile(json.dumps(dashboard, indent=4))
     return dashboard
 
 
-def saveToFile(result):
-    with open("test.json", "w") as output:
-        output.write(result)
-
-
 def getDashboards(url, auth_token):
+    """This Method requests the dashboards from superset
+
+    :param url: the api url
+    :param auth_token: the auth token
+    :return: a list containing all dashboards
+    """
     headers = {'Authorization': f'Bearer {auth_token}'}
     dashboards_res = requests.get(f'{url}/api/v1/dashboard/', headers=headers)
     dashboards = dashboards_res.json()
-    saveToFile(json.dumps(dashboards, indent=4))
     return dashboards
 
 
 def getDatasets(url, auth_token, session):
+    """This methods requests all datasets from superset
+
+    :param url: the api url
+    :param auth_token: the auth token
+    :param session: the current session
+    :return: a list containing all datasets
+    """
     headers = {'Authorization': f'Bearer {auth_token}'}
     datasets = session.get(f'{url}/api/v1/dataset/', headers=headers)
     result = session.get(f'{url}/api/v1/dataset/?q=%7B%22page_size%22%3A%20' + str(datasets.json()['count']) + '%7D', headers=headers).json()
-    saveToFile(json.dumps(result, indent=4))
     return result
 
 
 def createDashboard(url, csrf_token, auth_token, session):
+    """This method creates a new dashboard
+
+    :param url: the api url
+    :param csrf_token: the csrf token
+    :param auth_token: the auth token
+    :param session: the current session
+    :return: the newly created dashboard
+    """
     headers = {
         'Authorization': f'Bearer {auth_token}',
         'X-CSRFToken': csrf_token,
@@ -97,12 +116,18 @@ def createDashboard(url, csrf_token, auth_token, session):
 
     dashboard_res = session.post(f'{url}/api/v1/dashboard/', headers=headers, json=body)
     dashboard = dashboard_res.json()
-    saveToFile(json.dumps(dashboard, indent=4))
     return dashboard
 
 
 def updateDashboard(url, session, headers, owner):
+    """This method updates the dashboard to make sure the new charts are on it
 
+    :param url: the api url
+    :param session: the current session
+    :param headers: the header for the api calls
+    :param owner: the dashboard owner
+    :return: the newly updated dashboard
+    """
     auth_token = headers['Authorization'].split('Bearer ')[1]
 
     ids_to_update = get_charts_from_dashboard(c.getCharts(url, auth_token),
@@ -145,7 +170,6 @@ def updateDashboard(url, session, headers, owner):
         f'{url}/api/v1/dashboard/' + str(get_dashboard_id(getDashboards(url, auth_token), "Standardized Dashboard of " + owner.get('last_name'))),
         headers=headers, json=body)
     dashboard = dashboard_res.json()
-    saveToFile(json.dumps(dashboard, indent=4))
     return dashboard
 
 
@@ -154,6 +178,12 @@ def updateDashboard(url, session, headers, owner):
 ##
 # gets the chart info from a specific dashboard
 def get_charts_from_dashboard(chart_json, dashboard_id):
+    """This method gives out all the charts from the dashboard
+
+    :param chart_json: A list containing charts
+    :param dashboard_id: the dashboard id
+    :return: A list with all the charts
+    """
     charts_from_dash = {}
     for chart in chart_json["result"]:
         for dashboards in chart['dashboards']:
@@ -169,6 +199,12 @@ def get_charts_from_dashboard(chart_json, dashboard_id):
 
 
 def get_dashboard_id(dashboards, title):
+    """This method returns the dashboard id
+    
+    :param dashboards: A list with all dashboards
+    :param title: The dashboard title
+    :return: the dashboard id or -1 if a error has occured
+    """
     for dashboard in dashboards['result']:
         if dashboard['dashboard_title'] == title:
             return dashboard['id']
@@ -177,6 +213,11 @@ def get_dashboard_id(dashboards, title):
 
 
 def get_datasource_id(datasets, table_name):
+    """This method gets a datasource id
+    :param datasets: A list containing all datasets
+    :param table_name: the table name
+    :return: the dataset id or -1 if an error has occured
+    """
     for dataset in datasets['result']:
         if dataset['table_name'] == table_name:
             return dataset['id']

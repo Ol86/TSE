@@ -11,61 +11,17 @@ def getCharts(url, auth_token):
     saveToFile(json.dumps(charts, indent=4))
     return charts
 
-#TODO test method can be removed
-def createChart(url, csrf_token, auth_token, session):
-    headers = {
-        'Authorization': f'Bearer {auth_token}',
-        'X-CSRFToken': csrf_token,
-    }
-
-    body = {
-        "cache_timeout": 0,
-        "certification_details": None,
-        "certified_by": None,
-        "dashboards": [
-            2
-        ],
-        "datasource_id": 5,
-        "datasource_name": "heart_rate_measurement",
-        "datasource_type": "table",
-        "description": None,
-        "is_managed_externally": False,
-        "owners": [
-            1
-        ],
-        "params": "{\"datasource\":\"5__table\",\"viz_type\":\"echarts_timeseries_line\",\"slice_id\":2,"
-                  "\"x_axis\":\"timestamp\",\"time_grain_sqla\":\"P1D\",\"x_axis_sort_asc\":true,"
-                  "\"x_axis_sort_series\":\"name\",\"x_axis_sort_series_ascending\":true,\"metrics\":[{"
-                  "\"aggregate\":\"AVG\",\"column\":{\"advanced_data_type\":null,\"certification_details\":null,"
-                  "\"certified_by\":null,\"column_name\":\"hr\",\"description\":null,\"expression\":null,"
-                  "\"filterable\":true,\"groupby\":true,\"id\":32,\"is_certified\":false,\"is_dttm\":false,"
-                  "\"python_date_format\":null,\"type\":\"BIGINT\",\"type_generic\":0,\"verbose_name\":null,"
-                  "\"warning_markdown\":null},\"datasourceWarning\":false,\"expressionType\":\"SIMPLE\","
-                  "\"hasCustomLabel\":false,\"label\":\"AVG(hr)\",\"optionName\":\"metric_0tsmc0mjqzne_1oh7icdr566\","
-                  "\"sqlExpression\":null}],\"groupby\":[],\"adhoc_filters\":[],\"order_desc\":true,"
-                  "\"row_limit\":10000,\"truncate_metric\":true,\"show_empty_columns\":true,"
-                  "\"comparison_type\":\"values\",\"annotation_layers\":[],\"forecastPeriods\":10,"
-                  "\"forecastInterval\":0.8,\"x_axis_title_margin\":15,\"y_axis_title_margin\":15,"
-                  "\"y_axis_title_position\":\"Left\",\"sort_series_type\":\"sum\","
-                  "\"color_scheme\":\"supersetColors\",\"seriesType\":\"line\",\"only_total\":true,\"opacity\":0.2,"
-                  "\"markerSize\":6,\"show_legend\":true,\"legendType\":\"scroll\",\"legendOrientation\":\"top\","
-                  "\"x_axis_time_format\":\"smart_date\",\"rich_tooltip\":true,\"tooltipTimeFormat\":\"smart_date\","
-                  "\"y_axis_format\":\"SMART_NUMBER\",\"y_axis_bounds\":[null,null],\"extra_form_data\":{},"
-                  "\"dashboards\":[2]}",
-        "query_context": None,
-        "query_context_generation": True,
-        "slice_name": "Ale",
-        "viz_type": "echarts_timeseries_line"
-    }
-
-    chart_resp = session.post(f'{url}/api/v1/chart/', headers=headers, json=body)
-    chart = chart_resp.json()
-    saveToFile(json.dumps(chart, indent=4))
-    return chart
-
 
 def createChart_numberOfSessions(url, session, headers, owner):
+    """This method creates a chart for the Dashboard
+    This chart contains one big number with the amounf of sessions
 
+    :param url: the api url
+    :param session: the request session
+    :param headers: the api header
+    :param owner: the charts owner
+    :return: the newly created chart
+    """
     auth_token = headers['Authorization'].split('Bearer ')[1]
 
     body = {
@@ -111,7 +67,15 @@ def createChart_numberOfSessions(url, session, headers, owner):
 
 
 def createChart_numberOfWatches(url, session, headers, owner):
+    """This method creates a chart for the Dashboard
+    This chart contains a big number with the amount of watches used
 
+    :param url: the api url
+    :param session: the request session
+    :param headers: the api header
+    :param owner: the charts owner
+    :return: the newly created chart
+    """
     auth_token = headers['Authorization'].split('Bearer ')[1]
 
     body = {
@@ -154,7 +118,15 @@ def createChart_numberOfWatches(url, session, headers, owner):
 
 
 def createChart_experimentInformation(url,session, headers, owner):
+    """This method creates a chart for the Dashboard
+    This chart contains teh specific experiment information
 
+    :param url: the api url
+    :param session: the request session
+    :param headers: the api header
+    :param owner: the charts owner
+    :return: the newly created chart
+    """
     auth_token = headers['Authorization'].split('Bearer ')[1]
 
     body = {
@@ -193,7 +165,15 @@ def createChart_experimentInformation(url,session, headers, owner):
 
 
 def createChart_questions(url, session, headers, owner):
+    """This method creates a chart for the Dashboard
+    This chart contains all used questions
 
+    :param url: the api url
+    :param session: the request session
+    :param headers: the api header
+    :param owner: the charts owner
+    :return: the newly created chart
+    """
     auth_token = headers['Authorization'].split('Bearer ')[1]
 
     body = {
@@ -224,7 +204,15 @@ def createChart_questions(url, session, headers, owner):
 
 
 def createChart_hr(url, session, headers, owner):
+    """This method creates a chart for the Dashboard
+    This chart contains a heart rate line for each session
 
+    :param url: the api url
+    :param session: the request session
+    :param headers: the api header
+    :param owner: the charts owner
+    :return: the newly created chart
+    """
     auth_token = headers['Authorization'].split('Bearer ')[1]
 
     body = {
@@ -255,7 +243,15 @@ def createChart_hr(url, session, headers, owner):
     return chart
 
 def createChart_answers(url, session, headers, owner):
+    """This method creates a chart for the Dashboard
+    This chart contains all the given answers 
 
+    :param url: the api url
+    :param session: the request session
+    :param headers: the api header
+    :param owner: the charts owner
+    :return: the newly created chart
+    """
     auth_token = headers['Authorization'].split('Bearer ')[1]
 
     body = {
@@ -287,7 +283,15 @@ def createChart_answers(url, session, headers, owner):
 
 
 def createChart_poincare(url, session, headers, owner):
+    """This method creates a chart for the Dashboard
+    This chart contains a poncare plot 
 
+    :param url: the api url
+    :param session: the request session
+    :param headers: the api header
+    :param owner: the charts owner
+    :return: the newly created chart
+    """
     auth_token = headers['Authorization'].split('Bearer ')[1]
 
     body = {
