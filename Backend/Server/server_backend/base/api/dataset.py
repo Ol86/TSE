@@ -1,5 +1,5 @@
 import requests
-from dashboard import saveToFile
+from base.api.dashboard import saveToFile
 import json
 
 

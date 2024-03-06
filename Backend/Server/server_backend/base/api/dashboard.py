@@ -1,10 +1,9 @@
 import json
 import requests
 
-import charts as c
+import base.api.charts as c
 
-from dataset import createDataset_answers
-from dataset import createDataset_poincare
+from base.api.dataset import createDataset_answers, createDataset_poincare
 
 ## ----------------------------------------------------------------
 # TODO test if working with the owner parameter

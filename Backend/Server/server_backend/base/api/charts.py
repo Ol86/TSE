@@ -1,7 +1,7 @@
 import json
 import requests
-import dashboard as d
-from dashboard import saveToFile
+import base.api.dashboard as d
+from base.api.dashboard import saveToFile
 
 def getCharts(url, auth_token):
     headers = {'Authorization': f'Bearer {auth_token}'}
