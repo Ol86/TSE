@@ -602,10 +602,15 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                     if (tokenResponse.isSuccessful) {
                         val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
                         println(token)
-
+                        Log.i("SendAll", token)
                         val dataMessage = apiService.sendAllData(this.dbDataTOJSON(), token).execute()
-                        Log.i("SendAll", dataMessage.body().toString().trimIndent())
-                        Log.i("SendAll", "Done")
+                        Log.i("SendAll", "Test")
+                        if (dataMessage.isSuccessful) {
+                            Log.i("SendAll", dataMessage.body().toString().trimIndent())
+                            Log.i("SendAll", "Done")
+                        } else {
+                            Log.i("SendAll", "Failed")
+                        }
                     } else {
                         Log.i("SendAll", "Failed")
                     }
@@ -889,13 +894,12 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                 job.join()
             }
         } catch (e: Exception){
-
-            println("Error in Converting to Json!")
+            Log.e("DbDataToJSON", e.message.toString())
         }
-        Log.i("DebuggingA1", "DB:" + dbData)
+        Log.i("DbDataToJSON", "DB:" + dbData)
         val jsonObject: JsonObject = JsonParser().parse(dbData)
                 .getAsJsonObject()
-        Log.i("DebuggingA1", "JSON:" + jsonObject.toString())
+        Log.i("DbDataToJSON", "JSON:" + jsonObject.toString())
         return jsonObject
     }
 
@@ -905,8 +909,8 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         try {
             affectDataList.forEach { element ->
                 if (element.transferred == false) {
-                    Log.i("DebuggingA35.1", element.transferred.toString())
-                    Log.i("DebuggingA35.2", element.id.toString())
+                    Log.i("AddQuestionData", element.transferred.toString())
+                    Log.i("AddQuestionData", element.id.toString())
                     val time: String
                     val affect: String
                     val questionid: String
@@ -921,20 +925,20 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                                     ).notification_id
                             ).time
                     questionData = QuestionData(time, affect, questionid, "0")
-                    Log.i("DebuggingA35.3", affect + " " + questionid + " " + time)
+                    Log.i("AddQuestionData", affect + " " + questionid + " " + time)
 
                     scope.launch {
 
-                        Log.i("DebuggingA35.4", questionData.questionid)
+                        Log.i("AddQuestionData", questionData.questionid)
                         UserDataStore.getUserRepository(context).questionDao.upsertQuestionData(questionData)
                         UserDataStore.getUserRepository(context).affectDao.markAsTransferred(element.id)
                     }
                 } else {
-                    Log.i("DebuggingA35.5", element.id.toString())
+                    Log.i("AddQuestionData", element.id.toString())
                 }
             }
         }catch (e: Exception){
-            println("Error in Adding QuestionData!")
+            Log.e("AddQuestionData", e.message.toString())
         }
     }
 

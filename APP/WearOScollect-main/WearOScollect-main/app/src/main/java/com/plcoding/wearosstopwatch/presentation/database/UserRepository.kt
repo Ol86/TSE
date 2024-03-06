@@ -61,34 +61,42 @@ class UserRepository(db: UserDatabase) {
         sessionid = sessionIDDao.getActiveSessionID().session
         return withContext(Dispatchers.IO) {
             val questionData = questionDao.getAllQuestionData()
+            Log.i("ConvertTable", "Added " + questionData.size + " rows from questions")
             questionData.forEach { element ->
                 questionDao.markAsSynced("1", element.id)
             }
             val ecgData = ecgDao.getLatestEcgData()
+            Log.i("ConvertTable", "Added " + ecgData.size + " rows from ecg")
             ecgData.forEach { element ->
                 ecgDao.markAsSynced("1", element.id)
             }
             val heartrateData = heartrateDao.getAllLatestHeartrateData()
+            Log.i("ConvertTable", "Added " + heartrateData.size + " rows from heartrate")
             heartrateData.forEach { element ->
                 heartrateDao.markAsSynced("1", element.id)
             }
             val spo2Data = spo2Dao.getLatestSpo2Data()
+            Log.i("ConvertTable", "Added " + spo2Data.size + " rows from spo2")
             spo2Data.forEach { element ->
                 spo2Dao.markAsSynced("1", element.id)
             }
             val accelerometerData = accelerometerDao.getAllLatestAccelerometerData()
+            Log.i("ConvertTable", "Added " + accelerometerData.size + " rows from accelerometer")
             accelerometerData.forEach { element ->
                 accelerometerDao.markAsSynced("1", element.id)
             }
             val ppgIRData = ppgIRDao.getAllLatestPpgIRData()
+            Log.i("ConvertTable", "Added " + ppgIRData.size + " rows from ppgir")
             ppgIRData.forEach { element ->
                 ppgIRDao.markAsSynced("1", element.id)
             }
             val ppgRedData = ppgRedDao.getAllLatestPpgRedData()
+            Log.i("ConvertTable", "Added " + ppgRedData.size + " rows from ppgred")
             ppgRedData.forEach { element ->
                 ppgRedDao.markAsSynced("1", element.id)
             }
             val ppgGreenData = ppgGreenDao.getAllLatestPpgGreenData()
+            Log.i("ConvertTable", "Added " + ppgGreenData.size + " rows from ppggreen")
             ppgGreenData.forEach { element ->
                 ppgGreenDao.markAsSynced("1", element.id)
             }
