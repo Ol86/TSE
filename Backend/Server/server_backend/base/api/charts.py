@@ -1,14 +1,12 @@
 import json
 import requests
 import base.api.dashboard as d
-from base.api.dashboard import saveToFile
 
 def getCharts(url, auth_token):
     headers = {'Authorization': f'Bearer {auth_token}'}
     params = {"limit": 100}
     charts_res = requests.get(f'{url}/api/v1/chart/', headers=headers, params=params)
     charts = charts_res.json()
-    saveToFile(json.dumps(charts, indent=4))
     return charts
 
 
@@ -62,7 +60,6 @@ def createChart_numberOfSessions(url, session, headers, owner):
 
     chart_resp = session.post(f'{url}/api/v1/chart/', headers=headers, json=body)
     chart = chart_resp.json()
-    saveToFile(json.dumps(chart, indent=4))
     return chart
 
 
@@ -113,7 +110,6 @@ def createChart_numberOfWatches(url, session, headers, owner):
 
     chart_resp = session.post(f'{url}/api/v1/chart/', headers=headers, json=body)
     chart = chart_resp.json()
-    saveToFile(json.dumps(chart, indent=4))
     return chart
 
 
@@ -160,7 +156,6 @@ def createChart_experimentInformation(url,session, headers, owner):
 
     chart_resp = session.post(f'{url}/api/v1/chart/', headers=headers, json=body)
     chart = chart_resp.json()
-    saveToFile(json.dumps(chart, indent=4))
     return chart
 
 
@@ -199,7 +194,6 @@ def createChart_questions(url, session, headers, owner):
 
     chart_resp = session.post(f'{url}/api/v1/chart/', headers=headers, json=body)
     chart = chart_resp.json()
-    saveToFile(json.dumps(chart, indent=4))
     return chart
 
 
@@ -239,7 +233,6 @@ def createChart_hr(url, session, headers, owner):
 
     chart_resp = session.post(f'{url}/api/v1/chart/', headers=headers, json=body)
     chart = chart_resp.json()
-    saveToFile(json.dumps(chart, indent=4))
     return chart
 
 def createChart_answers(url, session, headers, owner):
@@ -278,7 +271,6 @@ def createChart_answers(url, session, headers, owner):
 
     chart_resp = session.post(f'{url}/api/v1/chart/', headers=headers, json=body)
     chart = chart_resp.json()
-    saveToFile(json.dumps(chart, indent=4))
     return chart
 
 
@@ -318,5 +310,4 @@ def createChart_poincare(url, session, headers, owner):
 
     chart_resp = session.post(f'{url}/api/v1/chart/', headers=headers, json=body)
     chart = chart_resp.json()
-    saveToFile(json.dumps(chart, indent=4))
     return chart

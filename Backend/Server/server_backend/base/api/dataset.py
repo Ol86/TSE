@@ -1,5 +1,4 @@
 import requests
-from base.api.dashboard import saveToFile
 import json
 
 
@@ -266,7 +265,6 @@ def createDataset(url, csrf_token, auth_token, session):
 
     dataset_resp = session.post(f'{url}/api/v1/dataset/', headers=headers, json=body)
     dataset = dataset_resp.json()
-    saveToFile(json.dumps(dataset, indent=4))
     return dataset
 
 
@@ -294,7 +292,6 @@ def createDataset_answers(url, session, headers, owner):
     }
     dataset_resp = session.post(f'{url}/api/v1/dataset/', headers=headers, json=body)
     dataset = dataset_resp.json()
-    saveToFile(json.dumps(dataset, indent=4))
     return dataset
 
 
@@ -323,5 +320,4 @@ def createDataset_poincare(url, session, headers, owner):
     }
     dataset_resp = session.post(f'{url}/api/v1/dataset/', headers=headers, json=body)
     dataset = dataset_resp.json()
-    saveToFile(json.dumps(dataset, indent=4))
     return dataset
