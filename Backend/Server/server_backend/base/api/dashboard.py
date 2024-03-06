@@ -17,12 +17,12 @@ def createStandarizedDashboard(headers, session, owner):
     """
     url = 'http://193.196.36.62:8088'
     body = {
-        "certification_details": "string",
-        "certified_by": "ale",
-        "css": "string",
+        "certification_details": "",
+        "certified_by": owner.get('last_name'),
+        "css": "",
         "dashboard_title": "Standardized Dashboard of " + owner.get('last_name'),
-        "external_url": "string",
-        "is_managed_externally": True,
+        "external_url": "",
+        "is_managed_externally": False,
         "json_metadata": "",
         "owners": [
             owner.get('id')
