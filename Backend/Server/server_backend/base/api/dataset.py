@@ -231,41 +231,10 @@ def updateDatasets():
     """
     session = requests.session()
     datasets = session.get(f'{url}/api/v1/dataset/', headers=get_header(session))
-    result = session.get(f'{url}/api/v1/dataset/?q=%7B%22page_size%22%3A%20' + str(datasets.json()['count']) + '%7D', headers=get_header(session)).json()['ids']
-    for i in result:
-        session.put(f'{url}/api/v1/dataset/{i}/refresh', headers=get_header(session))
-
-
-def createDataset(url, csrf_token, auth_token, session):
-    """This method creates a needed dataset for the dashboard creation in the file dashboard.py
-
-    :param url: the auth token
-    :param csrf_token: the csrf token
-    :param session: the current request session
-    :return: the newly created dataset
-    """
-    headers = {
-        'Authorization': f'Bearer {auth_token}',
-        'X-CSRFToken': csrf_token,
-    }
-
-    body = {
-        "always_filter_main_dttm": False,
-        "database": 1,
-        "external_url": "string",
-        "is_managed_externally": True,
-        "normalize_columns": False,
-        "owners": [
-            1
-        ],
-        "schema": "public",
-        "sql": "SELECT hr, TIMESTAMP, watch_id\nFROM session_data\nJOIN heart_rate_measurement ON session_data.id = heart_rate_measurement.session_id\nWHERE session_id = 1 and hr_status= 1",
-        "table_name": "test"
-    }
-
-    dataset_resp = session.post(f'{url}/api/v1/dataset/', headers=headers, json=body)
-    dataset = dataset_resp.json()
-    return dataset
+    result = session.get(f'{url}/api/v1/dataset/?q=%7B%22page_size%22%3A%20' + str(datasets.json()['count']) + '%7D', headers=get_header(session))
+    all_ids = result.json()['ids']
+    for i in all_ids:
+        updatest_dataset = session.put(f'{url}/api/v1/dataset/{i}/refresh', headers=get_header(session))
 
 
 def createDataset_answers(url, session, headers, owner):
@@ -281,7 +250,7 @@ def createDataset_answers(url, session, headers, owner):
         "always_filter_main_dttm": False,
         "database": 1,
         "external_url": '',
-        "is_managed_externally": True,
+        "is_managed_externally": False,
         "normalize_columns": False,
         "owners": [
             owner.get('id')
@@ -308,7 +277,7 @@ def createDataset_poincare(url, session, headers, owner):
         "always_filter_main_dttm": False,
         "database": 1,
         "external_url": "string",
-        "is_managed_externally": True,
+        "is_managed_externally": False,
         "normalize_columns": False,
         "owners": [
             owner.get('id')
