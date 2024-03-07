@@ -34,13 +34,11 @@ class PpgRedTrackerListener(private val trackerType: HealthTrackerType, private 
                 if (trackerActive) {
                     val allValues = ArrayList<String>()
                     allValues.add(dataPoint.timestamp.toString())
-
                     allValues.add(dataPoint.getValue(ValueKey.PpgRedSet.PPG_RED).toString())
 
                     json.dataToJSON("ppgred", allValues)
                     val ppgRedData = PpgRedData(dataPoint.timestamp.toString(), dataPoint.getValue(ValueKey.PpgRedSet.PPG_RED).toString(), "0")
                     val job = scope.launch {
-                        //db.ppgRedDao.upsertPpgRedData(ppgRedData)
                         UserDataStore.getUserRepository(context).ppgRedDao.upsertPpgRedData(ppgRedData)
                     }
                     runBlocking(Dispatchers.IO) {

@@ -34,14 +34,11 @@ class PpgGreenTrackerListener(private val trackerType: HealthTrackerType,private
                 if (trackerActive) {
                     val allValues = ArrayList<String>()
                     allValues.add(dataPoint.timestamp.toString())
-
                     allValues.add(dataPoint.getValue(ValueKey.PpgGreenSet.PPG_GREEN).toString())
 
                     json.dataToJSON("ppggreen", allValues)
-                   // Log.d("Json Green", allValues.toString())
                     val ppgGreenData = PpgGreenData(dataPoint.timestamp.toString(), dataPoint.getValue(ValueKey.PpgGreenSet.PPG_GREEN).toString(), "0")
                     val job = scope.launch {
-                        //db.ppgGreenDao.upsertPpgGreenData(ppgGreenData)
                         UserDataStore.getUserRepository(context).ppgGreenDao.upsertPpgGreenData(ppgGreenData)
                     }
                     runBlocking(Dispatchers.IO) {

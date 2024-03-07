@@ -6,6 +6,10 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
+/*
+Stores the questions and answers you can specify per experiment in the backend
+Used as List in @TemplateInfos
+ */
 data class TemplateQuestion(
     val id: Int,
     val question: String,

@@ -23,9 +23,25 @@ import java.util.Timer
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timerTask
 
+/*
+IMPORTANT:
+The value of username has to be changed per watch that is used in
+the experiment.
+The value has to be one of the usernames you gave the watches in the backend
+when you created them.
+This has to be changed in the methods:
+    @MainActivity class:
+        - getTemplate()
+        - getSession()
+        - sendQuit()
+    @BackEndWorker class:
+        - sendData()
+
+Sorry for the inconvenience
+ */
 class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(contextInput, params){
 
-    private lateinit var context: Context
+    private var context: Context
     private val scope = CoroutineScope(Dispatchers.Main)
     private var timer: Timer? = null
     private val intervalMillis = 60000 // Intervall in Millisekunden (hier 10 Sekunden)
@@ -52,7 +68,7 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
         timer = Timer()
         timer?.scheduleAtFixedRate(timerTask {
             Log.i("BackendWorker", "In startSending")
-            connectApi()
+            sendData()
         }, 0, intervalMillis.toLong())
     }
 
@@ -60,6 +76,9 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
         timer?.cancel()
     }
 
+    /*
+    Converts data from intern database to jsonObject
+     */
     fun dbDataTOJSON(): JsonObject {
         try {
             this.addQuestionData()
@@ -79,6 +98,10 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
         return jsonObject
     }
 
+    /*
+    Gets questionData(answers) from intern database
+    Is used above in dbDataTOJSON()
+     */
     private fun addQuestionData(){
         var questionData: QuestionData
         val affectDataList = UserDataStore.getUserRepository(context).affectDao.getAllAffectData()
@@ -118,8 +141,12 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
         }
     }
 
-    private fun connectApi(){
-        val timeoutSeconds = 30// Set your desired timeout value in seconds
+    /*
+    Sends data as json with retrofit to backend
+     */
+    private fun sendData(){
+        // Set your desired timeout value in seconds
+        val timeoutSeconds = 30
         val client = OkHttpClient.Builder()
             .readTimeout(timeoutSeconds.toLong(), TimeUnit.SECONDS)
             .writeTimeout(timeoutSeconds.toLong(), TimeUnit.SECONDS)
@@ -153,23 +180,16 @@ class BackEndWorker (contextInput: Context, params: WorkerParameters) : Worker(c
 
                         val postResponse = apiService.testPost(
                             this.dbDataTOJSON(),
-                            //json.getStoredDataAsJsonObject(),
-                            /*JsonObject().apply {
-                                addProperty("test1", "Hello World")
-                            },*/
                             token
                         ).execute()
 
                         if (postResponse.isSuccessful) {
-                            //println(postResponse.body())
-                            //Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
                             Log.i("SendData", postResponse.toString())
                             Log.i("SendData", "${postResponse.code()}")
                             Log.i("SendData", postResponse.body().toString())
 
                         } else {
                             Log.w("SendData", "${postResponse.code()}")
-                            //Log.i("StoredDataApi",json.getStoredDataAsJsonObject().toString())
                         }
                     } else {
                         Log.w("SendData", "${tokenResponse.code()}")

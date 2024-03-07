@@ -10,6 +10,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color.parseColor
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -32,7 +34,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
@@ -41,45 +45,53 @@ import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
+import com.plcoding.wearosstopwatch.presentation.api.ApiService
+import com.plcoding.wearosstopwatch.presentation.database.UserDataStore
+import com.plcoding.wearosstopwatch.presentation.database.entities.SessionIDData
 import com.samsung.android.service.health.tracking.ConnectionListener
 import com.samsung.android.service.health.tracking.HealthTrackerException
 import com.samsung.android.service.health.tracking.HealthTrackingService
 import com.samsung.android.service.health.tracking.data.HealthTrackerType
-import java.util.concurrent.TimeUnit
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import androidx.work.Data
-import androidx.work.PeriodicWorkRequest
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import com.google.gson.reflect.TypeToken
-import com.plcoding.wearosstopwatch.presentation.api.ApiService
-import com.plcoding.wearosstopwatch.presentation.database.UserDataStore
-import com.plcoding.wearosstopwatch.presentation.database.entities.QuestionData
-import com.plcoding.wearosstopwatch.presentation.database.entities.SessionIDData
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Type
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import androidx.compose.runtime.Composable
-import androidx.work.Constraints
-import androidx.work.NetworkType
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 
+
+/*
+IMPORTANT:
+The value of username has to be changed per watch that is used in
+the experiment.
+The value has to be one of the usernames you gave the watches in the backend
+when you created them.
+This has to be changed in the methods:
+    @MainActivity class:
+        - getTemplate()
+        - getSession()
+        - sendQuit()
+    @BackEndWorker class:
+        - sendData()
+
+Sorry for the inconvenience
+ */
 class MainActivity : ComponentActivity(), LifecycleOwner {
 
     private val json = JSON()
-
+    private var notifyCounter = 0
+    private val gson = Gson()
+    private var isDataCollectionRunning1 = false
+    private val lock = ReentrantLock()
 
     lateinit var healthTracking : HealthTrackingService
 
@@ -100,19 +112,81 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
     private lateinit var sPO2TrackerListener: SPO2TrackerListener
 
     private lateinit var dataSender: DataSender
-//    private val ppgGreenTrackerListener = PpgGreenTrackerListener(HealthTrackerType.PPG_GREEN, json, db)
-//    private val heartRateTrackerListener = HeartRateTrackerListener(HealthTrackerType.HEART_RATE, json, db)
-//    private val ecgTrackerListener = ECGTrackerListener(HealthTrackerType.ECG, json, db)
-//    private val accelerometerTrackerListener = AccelerometerTrackerListener(HealthTrackerType.ACCELEROMETER, json, db)
-//    private val sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2, json, db)
-//    private val ppgIRTrackerListener = PpgIRTrackerListener(HealthTrackerType.PPG_IR, json, db)
-//    private val ppgRedTrackerListener = PpgRedTrackerListener(HealthTrackerType.PPG_RED, json, db)
+
+    //Default template so variables are not null at beginning
+    //Gets overwritten when new template is synced
+    private val defaultTemplate: String = """
+    {
+        "id": 31415,
+        "max_time":0,
+        "title": "{Default}",
+        "watches": [
+            {
+                "name": "Watch2",
+                "watch": "RFAW31MPVBJ"
+            }
+        ],
+        "acc": true,
+        "hr": true,
+        "ppg_g": true,
+        "ppg_i": true,
+        "ppg_r": true,
+        "bia": true,
+        "ecg": true,
+        "spo2": true,
+        "swl": true,
+        "created_at": "2024-02-10T16:37:04.512963+01:00",
+        "question_interval":10,
+        "questions": [
+            {
+                "id": 1,
+                "question": "aaaaaaaaaaaaaa",
+                "button1": true,
+                "button1_text": "11111",
+                "button2": true,
+                "button2_text": "Negativ",
+                "button3": true,
+                "button3_text": "Neutral",
+                "button4": false,
+                "button4_text": "",
+                "created_at": "2024-02-10T16:36:00.218111+01:00"
+            },
+            {
+                "id": 2,
+                "question": "bbbbbbbb",
+                "button1": true,
+                "button1_text": "Gut",
+                "button2": true,
+                "button2_text": "Schlecht",
+                "button3": true,
+                "button3_text": "Gestresst",
+                "button4": true,
+                "button4_text": "Entspannt",
+                "created_at": "2024-02-10T16:36:20.549078+01:00"
+            },
+            {
+                "id": 3,
+                "question": "cccccccccccccc",
+                "button1": true,
+                "button1_text": "Ja",
+                "button2": true,
+                "button2_text": "Nein",
+                "button3": false,
+                "button3_text": "",
+                "button4": false,
+                "button4_text": "",
+                "created_at": "2024-02-10T16:36:31.426244+01:00"
+            }
+        ]
+    }
+""".trimIndent()
+
+    private var templateData: TemplateInfos = gson.fromJson(defaultTemplate, TemplateInfos::class.java)
+    private var activeTrackers = templateData.getTrackerBooleans()
 
     val connectionListener = object : ConnectionListener {
         override fun onConnectionSuccess() {
-            println("wwwwwwwwwwwwwwwwwwwwwwwwwwwww")
             Log.d("HealthTracker", "Connection success")
-            //val availableTrackers = healthTrackingService.trackingCapability.supportHealthTrackerTypes
 
             val availableTrackers: List<HealthTrackerType> =
                 healthTracking.trackingCapability.supportHealthTrackerTypes
@@ -183,7 +257,6 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         }
 
         override fun onConnectionFailed(e: HealthTrackerException) {
-            println("ffffffffffffffffffffff")
             Log.e("HealthTracker", "Connection failed: ${e.errorCode}")
             if (e.hasResolution()) {
                 e.resolve(this@MainActivity)
@@ -191,93 +264,6 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         }
     }
 
-    /*private var _healthTrackingService: HealthTrackingService? = null
-    private val healthTrackingService: HealthTrackingService
-        get() = _healthTrackingService ?: HealthTrackingService(connectionListener,
-            this@com.plcoding.wearosstopwatch.presentation.MainActivity).also { _healthTrackingService = it }*/
-
-    //private lateinit var healthTrackingService: HealthTrackingService
-
-    val gson = Gson()
-
-    private var isDataCollectionRunning1 = false
-
-    private val lock = ReentrantLock()
-    private val defaultTemplate: String = """
-    {
-        "id": 31415,
-        "max_time":0,
-        "title": "{Default}",
-        "watches": [
-            {
-                "name": "Watch2",
-                "watch": "RFAW31MPVBJ"
-            }
-        ],
-        "acc": true,
-        "hr": true,
-        "ppg_g": true,
-        "ppg_i": true,
-        "ppg_r": true,
-        "bia": true,
-        "ecg": true,
-        "spo2": true,
-        "swl": true,
-        "created_at": "2024-02-10T16:37:04.512963+01:00",
-        "question_interval":10,
-        "questions": [
-            {
-                "id": 1,
-                "question": "aaaaaaaaaaaaaa",
-                "button1": true,
-                "button1_text": "11111",
-                "button2": true,
-                "button2_text": "Negativ",
-                "button3": true,
-                "button3_text": "Neutral",
-                "button4": false,
-                "button4_text": "",
-                "created_at": "2024-02-10T16:36:00.218111+01:00"
-            },
-            {
-                "id": 2,
-                "question": "bbbbbbbb",
-                "button1": true,
-                "button1_text": "Gut",
-                "button2": true,
-                "button2_text": "Schlecht",
-                "button3": true,
-                "button3_text": "Gestresst",
-                "button4": true,
-                "button4_text": "Entspannt",
-                "created_at": "2024-02-10T16:36:20.549078+01:00"
-            },
-            {
-                "id": 3,
-                "question": "cccccccccccccc",
-                "button1": true,
-                "button1_text": "Ja",
-                "button2": true,
-                "button2_text": "Nein",
-                "button3": false,
-                "button3_text": "",
-                "button4": false,
-                "button4_text": "",
-                "created_at": "2024-02-10T16:36:31.426244+01:00"
-            }
-        ]
-    }
-""".trimIndent()
-
-    private var templateData: TemplateInfos = gson.fromJson(defaultTemplate, TemplateInfos::class.java)
-
-    //Accelerometer,ECG,HeartRate,ppgGreen,ppgIR,ppgRed,SPO2
-    //private var activeTrackers = arrayListOf(true, true, true, true, true, true, true)
-    private var activeTrackers = templateData.getTrackerBooleans()
-
-
-
-    private val WORK_TAG = "NotificationWorker"
     private val requestedPermissions = arrayOf(
         Manifest.permission.BODY_SENSORS,
         Manifest.permission.FOREGROUND_SERVICE,
@@ -291,7 +277,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
     private fun createNotificationWorker(initialDelay: Long, promptFrequency: Long,
                                          templateData: TemplateInfos) : PeriodicWorkRequest {
 
-        //promptFrequency min sind 15min deswegen bringt das nichts <15
+        //promptFrequency min are 15min per worker instance
 
         val listType: Type = object : TypeToken<List<TemplateQuestion>>() {}.type
         val templateDataJson = gson.toJson(templateData.questions, listType)
@@ -314,19 +300,15 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
     }
 
     private fun createBackEndWorker(initialDelay: Long, promptFrequency: Long) : PeriodicWorkRequest{
-        // Erstellen des WorkManagers
-
-        // Konfiguration für die PeriodicWorkRequest
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
         val promptFrequencyTimeUnit = TimeUnit.MINUTES
-        // Erstellen der PeriodicWorkRequest
         val periodicWorkRequest = PeriodicWorkRequestBuilder<BackEndWorker>(
             promptFrequency,
             promptFrequencyTimeUnit
-            //repeatInterval = 10, // Alle 10 Sekunden wiederholen
+            //repeatInterval = 10, // Repeat every 10 secs
             //repeatIntervalTimeUnit = TimeUnit.SECONDS
         )
             .setConstraints(constraints)
@@ -335,25 +317,6 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             .build()
 
         Log.i("BackendWorker", "created")
-        return periodicWorkRequest
-    }
-
-    private fun createW() : PeriodicWorkRequest{
-        // Erstellen des WorkManagers
-
-        // Konfiguration für die PeriodicWorkRequest
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        // Erstellen der PeriodicWorkRequest
-        val periodicWorkRequest = PeriodicWorkRequestBuilder<MyWorker>(
-            repeatInterval = 10, // Alle 10 Sekunden wiederholen
-            repeatIntervalTimeUnit = TimeUnit.SECONDS
-        )
-            .setConstraints(constraints)
-            .build()
-
         return periodicWorkRequest
     }
 
@@ -367,6 +330,8 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         sPO2TrackerListener.trackerActive = activeTrackerList[6]
     }
 
+    //Check if watch got internet
+    //Used for the green/red dot in stopwatch screen
     private fun isNetworkAvailable(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
         return if (connectivityManager != null) {
@@ -382,8 +347,6 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         }
     }
 
-    private var notifyCounter = 0
-
     @SuppressLint("MutableCollectionMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -397,12 +360,10 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         sPO2TrackerListener = SPO2TrackerListener(HealthTrackerType.SPO2, json, lifecycleScope, applicationContext)
         dataSender = DataSender(lifecycleScope, applicationContext)
         requestPermissions(requestedPermissions, 0)
-        /*healthTracking = HealthTrackingService(connectionListener, this@MainActivity)*/
 
         accelerometerTrackerListener.trackerActive = activeTrackers[0]
         ecgTrackerListener.trackerActive = activeTrackers[1]
         heartRateTrackerListener.trackerActive = activeTrackers[2]
-        Log.i("HEARTRATE IMPORTANT", heartRateTrackerListener.trackerActive.toString())
         ppgGreenTrackerListener.trackerActive = activeTrackers[3]
         ppgIRTrackerListener.trackerActive = activeTrackers[4]
         ppgRedTrackerListener.trackerActive = activeTrackers[5]
@@ -420,11 +381,14 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             val templateDataState = remember { mutableStateOf(templateData) }
             val activeTrackersState = remember { mutableStateOf(activeTrackers) }
             var currentView by remember { mutableStateOf(ViewType.FirstScreen) }
-            //var workers by remember { mutableStateOf(workerList) }
             val notificationCounterState = remember { mutableStateOf(notifyCounter) }
 
             setTracker(activeTrackersState.value)
 
+            /*
+            This is for the notification counter
+            Receives signal from @NotificationWorker in line40 by Filter: "ACTION_WORK_COMPLETED"
+             */
             LaunchedEffect(Unit) {
                 val broadcastReceiver = object : BroadcastReceiver() {
                     override fun onReceive(context: Context?, intent: Intent?) {
@@ -436,14 +400,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                 }
                 val filter = IntentFilter("ACTION_WORK_COMPLETED")
                 applicationContext.registerReceiver(broadcastReceiver, filter)
-
             }
-            /*if (workers.isNotEmpty() && observeWorkers(workers)) {
-                notificationCounter += 1
-            }*/
-
-            //val labelActivityAnswer = intent.getIntExtra("currentView", 0)
-            //currentView = if (labelActivityAnswer == 1) ViewType.StopWatch else currentView
 
             when (currentView) {
                 ViewType.StopWatch -> {
@@ -452,22 +409,15 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                         time = stopWatchText,
                         maxTime = templateDataState.value.max_time,
                         notifications = notificationCounterState.value.toString(),
-                        notificationsMax = "10",
                         onStart = { startRoutine(viewModel, templateDataState.value) },
-                        onReset = { resetRoutine(viewModel) },
                         onEndStudy = {currentView = ViewType.ConfirmActionScreen},
-                        isDataCollectionRunning = isDataCollectionRunning1,
-                        onStartDataCollection = {startDataCollection()},
-                        onStopDataCollection = {stopDataCollection()},
                         onBackToSettings = {currentView = ViewType.FirstScreen},
-                        trackers = activeTrackersState.value,
                         dataUploaded = isNetworkAvailable(applicationContext),
                         modifier = Modifier.fillMaxSize()
                     )
                 }
                 ViewType.FirstScreen -> {
                     FirstScreen(
-                        onNavigateToSecondActivity = { currentView = ViewType.SecondActivity },
                         onAccept = { currentView = ViewType.SecondActivity },
                         onSyncTemplates = { templateDataState.value = getTemplate()
                             activeTrackersState.value = templateDataState.value.getTrackerBooleans() },
@@ -497,8 +447,9 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         WorkManager.getInstance(this).cancelAllWork()
         Log.i("TemplateData", templateData.questions[0].question)
 
+        //Starts Workers with specified time intervals
         if (templateData.question_interval < 15) {
-            val periodicWorkRequest = createNotificationWorker(0,
+            val periodicWorkRequest = createNotificationWorker(templateData.question_interval.toLong(),
                 templateData.question_interval.toLong() * 2, templateData)
             WorkManager.getInstance(this).enqueue(periodicWorkRequest)
 
@@ -515,12 +466,8 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         val periodicWorkRequestTheThird = createBackEndWorker(0, 1)
         WorkManager.getInstance(this).enqueue(periodicWorkRequestTheThird)
 
-        /*val periodicWorkRequest4 = createW()
-        WorkManager.getInstance(this).enqueue(periodicWorkRequest4)*/
-
         getSession()
         startDataCollection()
-        //startDataSending()
     }
 
     private fun resetRoutine(viewModel: StopWatchViewModel) {
@@ -535,6 +482,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         Log.i("ResetRoutine", "5")
     }
 
+    //Starts all health-trackers
     private fun startDataCollection() {
         try {
             Log.i(TAG, "Starting data collection. $connectionListener")
@@ -548,6 +496,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         }
     }
 
+    //Turns all health-trackers off
     private fun stopDataCollection() {
         try {
             Log.i(TAG, "Stopping data collection. $connectionListener")
@@ -571,19 +520,18 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
             Log.i(TAG, isDataCollectionRunning1.toString())
         } catch (e: Exception) {
             Log.e(TAG, "Error stopping data collection: ${e.message}")
-            // Handle the error appropriately (e.g., show a message to the user)
         }
     }
 
-    /*private fun startDataSending() {
-        dataSender.startSending()
-    }*/
-
-
+    /*
+    Gets Template from Backend
+    Returns instance of @TemplateInfos
+     */
     private fun getTemplate(): TemplateInfos{
         var templateAsJsonString: String? = null
 
         val thread = Thread {
+            //Configures Retrofit
             try {
                 Log.i("APImessage", "Connect")
                 val retrofit = Retrofit.Builder()
@@ -593,21 +541,40 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
 
                 val apiService: ApiService = retrofit.create(ApiService::class.java)
 
+                //Gets API token
                 try {
                     val tokenResponse = apiService.getToken(
 
+                        /*
+                        IMPORTANT:
+                        The value of username has to be changed per watch that is used in
+                        the experiment.
+                        The value has to be one of the usernames you gave the watches in the backend
+                        when you created them.
+                        This has to be changed in the methods:
+                            @MainActivity class:
+                                - getTemplate()
+                                - getSession()
+                                - sendQuit()
+                            @BackEndWorker class:
+                                - sendData()
+
+                        Sorry for the inconvenience
+                         */
                         JsonObject().apply {
                             addProperty("username", "Watch2")
                             addProperty("password", "tse-KIT-2023")
                         }
                     ).execute()
 
+                    //Gets template from backend
                     if (tokenResponse.isSuccessful) {
                         val token = "Token " + tokenResponse.body()?.getAsJsonPrimitive("token")?.asString
                         println(token)
 
                         val template = apiService.getTemplate(token).execute()
 
+                        //used to get value of "templateAsJsonString" outside from thread
                         lock.lock()
                         try {
                             templateAsJsonString = template.body().toString().trimIndent()
@@ -615,15 +582,16 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                             lock.unlock()
                         }
 
-                        // Parse the JSON
+                        // Parse the received JSON
                         val gson = Gson()
-                        val templateDataInstance: TemplateInfos = gson.fromJson(templateAsJsonString, TemplateInfos::class.java)
+                        val templateDataInstance: TemplateInfos =
+                            gson.fromJson(templateAsJsonString, TemplateInfos::class.java)
 
                         // Access the parsed data
-                        println("Title: ${templateDataInstance.title}")
-                        println("max_Time: ${templateDataInstance.max_time}")
-                        println("questionInterval: ${templateDataInstance.question_interval}")
-                        println("Questions: ${templateDataInstance.questions}")
+                        Log.i("Title:", templateDataInstance.title)
+                        Log.i("max_Time:", templateDataInstance.max_time.toString())
+                        Log.i("questionInterval:", templateDataInstance.question_interval.toString())
+                        Log.i("Questions:", templateDataInstance.questions.toString())
                         println("Tracker, ${templateDataInstance.acc}" +
                                 ", ${templateDataInstance.ecg}, ${templateDataInstance.hr}" +
                                 ", ${templateDataInstance.ppgG}, ${templateDataInstance.ppgI}" +
@@ -649,6 +617,7 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         thread.start()
         thread.join()
 
+        //Receive value of "templateAsJsonString" to use outside of thread
         lock.lock()
         try {
             val valueFromThread = templateAsJsonString
@@ -660,6 +629,26 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         return gson.fromJson(templateAsJsonString, TemplateInfos::class.java)
     }
 
+    /*
+    Gets session from backend
+    similar procedure as in getTemplate
+     */
+    /*
+    IMPORTANT:
+    The value of username has to be changed per watch that is used in
+    the experiment.
+    The value has to be one of the usernames you gave the watches in the backend
+    when you created them.
+    This has to be changed in the methods:
+        @MainActivity class:
+            - getTemplate()
+            - getSession()
+            - sendQuit()
+        @BackEndWorker class:
+            - sendData()
+
+    Sorry for the inconvenience
+     */
     private fun getSession(): String? {
         var sessionString: String? = null
 
@@ -695,14 +684,6 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
                         } finally {
                             lock.unlock()
                         }
-
-                        // Parse the JSON
-                        val gson = Gson()
-                        //val templateDataInstance: TemplateInfos = gson.fromJson(templateAsJsonString, TemplateInfos::class.java)
-
-                        // Access the parsed data
-                        //println("Title: ${templateDataInstance.title}")
-                        //println("Questions: ${templateDataInstance.questions}")
 
                         if (session.isSuccessful) {
                             Log.i("GetSession", session.body().toString().trimIndent())
@@ -744,6 +725,22 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
         return sessionID
     }
 
+    /*
+    IMPORTANT:
+    The value of username has to be changed per watch that is used in
+    the experiment.
+    The value has to be one of the usernames you gave the watches in the backend
+    when you created them.
+    This has to be changed in the methods:
+        @MainActivity class:
+            - getTemplate()
+            - getSession()
+            - sendQuit()
+        @BackEndWorker class:
+            - sendData()
+
+    Sorry for the inconvenience
+     */
     private fun sendQuit() {
         val thread = Thread {
             try {
@@ -788,8 +785,6 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
     companion object {
         private const val TAG = "MainActivity DataCollection"
     }
-
-    //Werte von activeTracker sind irrelevant
     private fun accelerometerOff(){
         activeTrackers[0] = false
         accelerometerTrackerListener.trackerActive = false
@@ -875,9 +870,8 @@ class MainActivity : ComponentActivity(), LifecycleOwner {
     }
     private fun oneTimeNotification() {
         val notificationManager = NotificationManager(applicationContext)
-        //notificationManager.oneTimeNotification("Hello", "World")
         notificationManager.promptNotification(123456789, null)
-        Log.i("Notify", "HELOOOOOOOOOOOOOOOO")
+        Log.i("OneTimeNotification", "Has been initialized")
     }
 }
 
@@ -887,15 +881,9 @@ private fun StopWatch(
     time: String,
     maxTime: Int,
     notifications: String,
-    notificationsMax: String,
     onStart: () -> Unit,
-    onReset: () -> Unit,
     onEndStudy: () -> Unit,
-    isDataCollectionRunning: Boolean,
-    onStartDataCollection: () -> Unit,
-    onStopDataCollection: () -> Unit,
     onBackToSettings: () -> Unit,
-    trackers: ArrayList<Boolean>,    //Accelerometer,ECG,HeartRate,ppgGreen,ppgIR,ppgRed,SPO2
     dataUploaded: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -981,7 +969,6 @@ private fun StopWatch(
                         colors = ChipDefaults.chipColors(
                             backgroundColor = Color.DarkGray
                         )
-                        //colors = ChipDefaults.primaryChipColors(backgroundColor = Color(0x99FFFFFF))
                     )
                 }
             }
@@ -1002,23 +989,6 @@ private fun StopWatch(
                     }
                 }
             }
-
-
-            /*Button(
-                onClick = { onConnectApi() },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (state == TimerState.RUNNING) {
-                        Color(parseColor("#ED9620"))
-                    } else {
-                        Color(parseColor("#f4c079"))
-                    },
-                )
-                ) {
-                Icon(
-                    imageVector = Icons.Default.UploadFile,
-                    contentDescription = "Send Data"
-                )
-            }*/
         }
 
         if (state != TimerState.RUNNING) {
@@ -1044,6 +1014,10 @@ private fun StopWatch(
         }
     }
 }
+
+/*
+Converts time from minutes to HHMMSS format, used to display maxTime of session
+ */
 private fun convertMinutesToHHMMSS(minutes: Int): String {
     val hours = minutes / 60
     val remainingMinutes = minutes % 60
@@ -1052,14 +1026,10 @@ private fun convertMinutesToHHMMSS(minutes: Int): String {
     return String.format("%02d:%02d:%02d", hours, remainingMinutes, seconds)
 }
 
-
-
 @Composable
 private fun FirstScreen(
-    onNavigateToSecondActivity: () -> Unit,
     onAccept: () -> Unit,
     onSyncTemplates: () -> Unit,
-    modifier: Modifier = Modifier,
     templateData: MutableState<TemplateInfos>
 ) {
     Column(
@@ -1083,41 +1053,7 @@ private fun FirstScreen(
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
-
-            /*Text(
-                text = templateData.value.title,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )*/
         }
-
-        /*Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp, 12.dp, 16.dp, 12.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Button(
-                onClick = { onSyncTemplates() },
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Sync,
-                    contentDescription = "Sync Template"
-                )
-            }
-
-            Spacer(modifier = Modifier.width(15.dp))
-            Button(
-                onClick = { onNavigateToSecondActivity() },
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "Tracker Settings"
-                )
-            }
-        }*/
 
         Spacer(modifier = Modifier.height(25.dp))
         Row(

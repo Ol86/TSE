@@ -18,7 +18,6 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
 import com.plcoding.wearosstopwatch.R
 
-
 class NotificationManager(private val context: Context) {
 
     private val channelId = "primary_notification_channel"
@@ -36,6 +35,8 @@ class NotificationManager(private val context: Context) {
             flags = Intent.FLAG_ACTIVITY_TASK_ON_HOME or Intent.FLAG_ACTIVITY_NEW_TASK// or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         notificationIntent.putExtra("NotificationTimeId", notificationTimeId)
+
+        //Inserts TemplateInfos class handed over by @MainActivity as typedArray to put as Intent Extra
         if (questions != null) {
             Log.i("Manager", "questions")
             notificationIntent.putExtra("questions", questions.toTypedArray())
@@ -63,6 +64,7 @@ class NotificationManager(private val context: Context) {
         Log.i("Notify", "manager")
     }
 
+    //Creates oneTimeNotification which are not used at the moment
     fun oneTimeNotification(title: String, text: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)

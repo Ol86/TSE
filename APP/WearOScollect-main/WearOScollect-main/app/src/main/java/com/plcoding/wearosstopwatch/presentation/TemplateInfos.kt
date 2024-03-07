@@ -4,6 +4,9 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
+/*
+Stores everything you can specify about experiment in the backend
+ */
 data class TemplateInfos(
     val id: Int,
     val max_time: Int,

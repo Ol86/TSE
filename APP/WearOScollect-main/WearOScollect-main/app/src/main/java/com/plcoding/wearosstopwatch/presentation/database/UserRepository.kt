@@ -13,9 +13,6 @@ import java.time.LocalDateTime
 
 class UserRepository(db: UserDatabase) {
 
-    //UserDataStore.getUserRepository(context)
-    //, private val context: Context
-
     private var sessionid = "1"
     val activeDao = db.getActiveMeasurementDao()
     val interactionDao = db.getInteractionMeasurementDao()
@@ -33,29 +30,6 @@ class UserRepository(db: UserDatabase) {
     val ppgRedDao = db.getPpgRedDao()
     val spo2Dao = db.getSpo2Dao()
     val sessionIDDao = db.getSessionIDDao()
-
-    /*fun handleHeartRateDataList(
-        list: MutableList<DataPointContainer>,
-        scope: CoroutineScope,
-        onFinished: (entity: MutableList<ActiveMeasurement>) -> Unit
-    ) {
-        var resultsToEntity: MutableList<ActiveMeasurement> = mutableListOf()
-        list.forEach { dataPointContainer ->
-            dataPointContainer.sampleDataPoints.forEach {
-                val heartRate: Double = it.value as Double
-                val heartRateAccuracy = it.accuracy.toString()
-                //TODO THESE TWO VALUES ARE FOR TESTING: MAKE SURE TO GET THE PROPER TIME AND ID
-                val currentTime = LocalDateTime.now().toString()
-                val notificationId = 0L
-                resultsToEntity
-                    .add(ActiveMeasurement(0, notificationId, currentTime, heartRate, heartRateAccuracy))
-            }
-        }
-        insertActiveMeasurementList(scope, resultsToEntity) {
-            Log.v("ActiveMeasurementCall", "Sent Entities to db")
-        }
-        onFinished(resultsToEntity)
-    }*/
 
     suspend fun getLatestDataAsJson(): String {
         sessionid = sessionIDDao.getActiveSessionID().session

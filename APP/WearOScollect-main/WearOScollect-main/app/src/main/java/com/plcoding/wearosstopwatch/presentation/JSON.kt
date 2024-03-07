@@ -6,6 +6,11 @@ import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
 
+/*
+This class sorts and formats the data per tracker
+so it can be stored in the intern database.
+Is used in every TrackerListener class
+ */
 class JSON {
     private val storedData: JSONObject = JSONObject()
 
@@ -76,14 +81,4 @@ class JSON {
         }
         //Log.d("StoredData", storedData.toString())
     }
-
-    /*
-    fun writeDatainJSONFile(trackerData) {
-        val file: File = File(this@MainActivity.filesDir, "trackerData.json")
-        val fileWriter = FileWriter(file)
-        val bufferedWriter = BufferedWriter(fileWriter)
-        bufferedWriter.write(trackerData.toString())
-        bufferedWriter.close()
-    }
-     */
 }

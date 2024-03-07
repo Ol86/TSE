@@ -1,21 +1,10 @@
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LifecycleCoroutineScope
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import com.plcoding.wearosstopwatch.presentation.PostApiService
-import com.plcoding.wearosstopwatch.presentation.api.ApiService
-import com.plcoding.wearosstopwatch.presentation.database.UserDataStore
-import com.plcoding.wearosstopwatch.presentation.database.entities.AffectDataTransferStatus
-import com.plcoding.wearosstopwatch.presentation.database.entities.NotificationDataTransferStatus
-import com.plcoding.wearosstopwatch.presentation.database.entities.QuestionData
-import kotlinx.coroutines.launch
-import org.json.JSONObject
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
-import kotlin.concurrent.timerTask
 
+
+/*
+Not used anymore, uncertain if i can delete
+ */
 class DataSender( coroutineScope: LifecycleCoroutineScope,private val context: Context) {
 /*
 
