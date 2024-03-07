@@ -30,7 +30,7 @@ def createStandarizedDashboard(headers, session, owner):
         "position_json": "",
         "published": True,
         "roles": [
-            owner.get('id')
+            owner.get('role_id')
         ],
         "slug": owner.get('first_name') + ' ' + owner.get('last_name')
     }

@@ -284,7 +284,7 @@ def createDataset_answers(url, session, headers, owner):
         "is_managed_externally": True,
         "normalize_columns": False,
         "owners": [
-            1 #TODO alternative owner.get('id')
+            owner.get('id')
         ],
         "schema": "public",
         "sql": "SELECT base_questionanswers.id AS answer_id, answer, question_id, experiment_id, session_id FROM base_questionanswers JOIN base_answers ON base_questionanswers.id = base_answers.answer_id where session_id IN (SELECT base_session.id as session_id FROM base_session JOIN base_experiment ON base_experiment.id = base_session.experiment_id where created_by_id = " + str(owner.get('id')) + ")",

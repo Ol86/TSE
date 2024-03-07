@@ -55,7 +55,8 @@ def entrypoint(username, password, is_admin, id):
     
     user = {
     "first_name": "user",
-    "id": role.json()['id'],
+    "id": superset_id['count'],
+    "role_id": role.json()['id'],
     "last_name": username
     }
     createStandarizedDashboard(headers, session, user)
