@@ -7,15 +7,15 @@ from base.api.dataset import createDataset_answers, createDataset_poincare
 
 ## ----------------------------------------------------------------
 # TODO test if working with the owner parameter
-def createStandarizedDashboard(headers, session, owner):
+def createStandarizedDashboard(url, headers, session, owner):
     """This method is the main focus point of this generation process
     
+    :param url: The base url
     :param headers: The sessions header
     :param session: The current request session
     :param owner: the owner of the dashboard
     :return: The newly created dashboard
     """
-    url = 'http://193.196.36.62:8088'
     body = {
         "certification_details": "",
         "certified_by": owner.get('last_name'),

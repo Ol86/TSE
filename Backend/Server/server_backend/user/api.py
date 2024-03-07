@@ -59,5 +59,5 @@ def entrypoint(username, password, is_admin, id):
     "role_id": role.json()['id'],
     "last_name": username
     }
-    createStandarizedDashboard(headers, session, user)
+    createStandarizedDashboard(url, headers, session, user)
     session.close()
