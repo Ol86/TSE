@@ -9,10 +9,7 @@ def entrypoint(username, password, is_admin, id):
     """
     session = requests.session()
     
-    # http://193.196.36.62:8088
     url = 'http://bia:8088'
-    # username = 'admin'
-    # password = 'admin'
 
     auth_res = session.post(f'{url}/api/v1/security/login', json={
         "password": "admin",
@@ -49,7 +46,7 @@ def entrypoint(username, password, is_admin, id):
         ],
         "username": username
     })
-    #TODO sollte ein User gelöscht werden, kann es hier zu Probleme kommen. Vlt eigene Methode machen die usernames vergleicht
+    
     superset_id = session.get(f'{url}/api/v1/security/users', headers=headers).json()
     create_datasets(id, role.json()['id'], superset_id['count'])
     
