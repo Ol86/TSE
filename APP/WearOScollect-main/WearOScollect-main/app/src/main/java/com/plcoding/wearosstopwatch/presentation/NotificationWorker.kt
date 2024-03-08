@@ -37,7 +37,6 @@ class NotificationWorker(context: Context, params: WorkerParameters) : Worker(co
                 )
             }
         }
-        //Broadcasts that Notification ended. Gets received in @MainActivity to update NotificationCounter
         val intent = Intent("ACTION_WORK_COMPLETED")
         applicationContext.sendBroadcast(intent)
         //TODO start oneTimeWorker to dismiss notification after 3 minutes

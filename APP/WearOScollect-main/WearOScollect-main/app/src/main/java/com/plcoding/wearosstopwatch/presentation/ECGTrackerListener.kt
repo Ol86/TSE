@@ -71,6 +71,7 @@ class ECGTrackerListener(private val trackerType: HealthTrackerType, private val
 
 
                     val job = scope.launch {
+                        //db.ecgDao.upsertEcgData(ecgData)
                         UserDataStore.getUserRepository(context).ecgDao.upsertEcgData(ecgData)
                     }
                     runBlocking(Dispatchers.IO) {
@@ -78,6 +79,14 @@ class ECGTrackerListener(private val trackerType: HealthTrackerType, private val
                     }
 
                     Log.i("ECG", dataPoint.getValue(ValueKey.EcgSet.ECG).toString())
+
+                    //println("JSON Test")
+
+                    /*val file: File = File(this@ECGTrackerListener.filesDir, "trackerData.json")
+                val fileWriter = FileWriter(file)
+                val bufferedWriter = BufferedWriter(fileWriter)
+                bufferedWriter.write(trackerData.toString())
+                bufferedWriter.close()*/
                 }
             }
         }

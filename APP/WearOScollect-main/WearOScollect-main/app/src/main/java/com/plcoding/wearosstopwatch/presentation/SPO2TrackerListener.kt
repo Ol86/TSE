@@ -34,12 +34,14 @@ class SPO2TrackerListener(private val trackerType: HealthTrackerType, private va
                 if (trackerActive) {
                     val allValues = ArrayList<String>()
                     allValues.add(dataPoint.timestamp.toString())
+
                     allValues.add(dataPoint.getValue(ValueKey.SpO2Set.SPO2).toString())
                     allValues.add(dataPoint.getValue(ValueKey.SpO2Set.HEART_RATE).toString())
                     allValues.add(dataPoint.getValue(ValueKey.SpO2Set.STATUS).toString())
                     val spo2Data= Spo2Data(dataPoint.timestamp.toString(), dataPoint.getValue(ValueKey.SpO2Set.SPO2).toString(), dataPoint.getValue(ValueKey.SpO2Set.HEART_RATE).toString(),
                         dataPoint.getValue(ValueKey.SpO2Set.STATUS).toString(), "0")
                     val job = scope.launch {
+                        //db.spo2Dao.upsertSpo2Data(spo2Data)
                         UserDataStore.getUserRepository(context).spo2Dao.upsertSpo2Data(spo2Data)
                     }
                     runBlocking(Dispatchers.IO) {

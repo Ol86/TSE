@@ -44,6 +44,7 @@ class HeartRateTrackerListener(private val trackerType: HealthTrackerType, priva
                     val heartrateData = HeartrateData(dataPoint.timestamp.toString(),dataPoint.getValue(ValueKey.HeartRateSet.HEART_RATE_IBI).toString(),"0",
                         dataPoint.getValue(ValueKey.HeartRateSet.HEART_RATE).toString(),dataPoint.getValue(ValueKey.HeartRateSet.STATUS).toString(),"0")
                     val job = scope.launch {
+                        //db.heartrateDao.upsertHeartrateData(heartrateData)
                         UserDataStore.getUserRepository(context).heartrateDao.upsertHeartrateData(heartrateData)
                     }
                     runBlocking(Dispatchers.IO) {

@@ -26,6 +26,25 @@ class StopWatchViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
 
+    /*val stopWatchText = _elapsedTime
+        .map { millis ->
+            val seconds = millis / 1000
+            val formattedTime = String.format(
+                "%02d:%02d:%02d",
+                seconds / 3600,
+                (seconds % 3600) / 60,
+                seconds % 60
+            )
+            formattedTime
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            "00:00:00"
+        )*/
+
+    // and comment out this line: _elapsedTime.update { 5000L }
+
     val stopWatchText = _elapsedTime
         .map { millis ->
             LocalTime.ofNanoOfDay(millis * 1_000_000).format(formatter)
